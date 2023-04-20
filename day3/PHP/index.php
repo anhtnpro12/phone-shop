@@ -1,12 +1,12 @@
 <?php
-require './components/header.php';
+    require './components/header.php';
 
-if (!isset($_SESSION['user'])) {
-    header('Location:./login.php');
-}
-$user = $_SESSION['user'];
+    if (!isset($_SESSION['user'])) {
+        header('Location:./login.php');
+    }
+    $user = $_SESSION['user'];
 
-$results = $connection->query("SELECT * FROM users;");
+    $results = $connection->query("SELECT * FROM users;");    
 ?>
 
 <div class="container mb-5">
@@ -20,43 +20,31 @@ $results = $connection->query("SELECT * FROM users;");
                 <th scope="col">Name</th>
                 <th scope="col">Age</th>
                 <th scope="col">Address</th>
-                <th scope="col">Sex</th>
+                <th scope="col">Sex</th>                
                 <th scope="col">Action</th>
             </tr>
         </thead>
         <tbody>
             <?php
-            while ($row = $results->fetch_array()) {
-                echo '<tr>
-                            <th>' . $row['id'] . '</th>
-                            <td>' . $row['user_name'] . '</td>
-                            <td>' . $row['password'] . '</td>
-                            <td>' . $row['name'] . '</td>
-                            <td>' . $row['age'] . '</td>
-                            <td>' . $row['address'] . '</td>
-                            <td>' . ($row['sex'] === '1' ? 'Male' : 'Female') . '</td>                            
+                while($row = $results->fetch_array()) {
+                    echo '<tr>
+                            <th>'.$row['id'].'</th>
+                            <td>'.$row['user_name'].'</td>
+                            <td>'.$row['password'].'</td>
+                            <td>'.$row['name'].'</td>
+                            <td>'.$row['age'].'</td>
+                            <td>'.$row['address'].'</td>
+                            <td>'.($row['sex']==='1'?'Male':'Female').'</td>                            
                             <td>
-                                <a href="./delete.php?id=' . $row['id'] . '"><button class="btn btn-danger">Delete</button></a>
-                                <a href="./edit.php?id=' . $row['id'] . '"><button class="btn btn-primary">Edit</button></a>
+                                <a href="./delete.php?id='.$row['id'].'"><button class="btn btn-danger">Delete</button></a>
+                                <a href="./edit.php?id='.$row['id'].'"><button class="btn btn-primary">Edit</button></a>
                             </td>
                         </tr>';
-            }
+                }
             ?>
-
+                        
         </tbody>
     </table>
-</div>
-
-<div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header">
-        <img src="..." class="rounded me-2" alt="...">
-        <strong class="me-auto">Bootstrap</strong>
-        <small>11 mins ago</small>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-        Hello, world! This is a toast message.
-    </div>
 </div>
 
 <?php require './components/footer.php'; ?>
