@@ -1,0 +1,7 @@
+Các phương thức magic method chủ yếu:
+__construct()
+__destruct()
+__get()
+__set()
+__toString()
+...
