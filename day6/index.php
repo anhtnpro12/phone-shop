@@ -62,14 +62,8 @@ class Student extends Person
         }
     }
 
-    // function getName() {
-    //     return $this->name;
-    // }
-
-    function __get($key) {
-        //kiểm tra xem trong class có tồn tại thuộc tính không
-        if (property_exists($this, $key)) {
-            //tiến hành lấy giá trị
+    function __get($key) {        
+        if (property_exists($this, $key)) {            
             return $this->$key;
         } else {
             die ('Không tồn tại thuộc tính');
