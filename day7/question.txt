@@ -1,0 +1,5 @@
+Tìm hiểu về closure trong javascript và PHP
+__autoload trong PHP là gì
+__call, __callStatic trong PHP là gì
+__sleep, __wakeup, __invoke trong PHP là gì
+__set_state, __clone, __debuginfo trong PHP là gì
