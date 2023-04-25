@@ -12,9 +12,13 @@ if (isset($_POST['submit'])) {
     $description = $_POST['description'];
     $price = $_POST['price'];
     $quantity = $_POST['quantity'];
-    $status = $_POST['status'];
+    $delete_flag = 1;
 
-    $isOK = ProductDAO::insert($conn, new Product('', $name, $description, $price, $quantity, $status));
+    $isOK = ProductDAO::insert($conn, new Product('', $name, $description, $price, $quantity, $delete_flag));
+
+    if ($isOK) {
+        header('Location: index.php?type=success&mess=Add%20Customer%20Successful%21');
+    }
 }
 
 ?>
@@ -38,17 +42,7 @@ if (isset($_POST['submit'])) {
         <div class="mb-3">
             <label for="quantity" class="form-label">Quantity</label>
             <input type="number" name="quantity" class="form-control" id="quantity" required>
-        </div>        
-        <div class="mb-3">
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="status" id="active" value="1" checked>
-                <label class="form-check-label" for="active">Active</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="status" id="inactive" value="0">
-                <label class="form-check-label" for="inactive">Inactive</label>
-            </div>
-        </div>
+        </div>                
         <input type="submit" name="submit" value="Add now" class="btn btn-primary">
     </form>
 </div>

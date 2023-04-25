@@ -6,7 +6,12 @@ $page = 'product';
 require '../components/header.php';
 include '../../dal/ProductDAO.php';
 
-$results = ProductDAO::getList($conn);      
+define('NUM_PER_PAGE', 10);
+
+$results = ProductDAO::getList($conn);    
+$count = ProductDAO::count($conn);  
+$pageSize = ceil($count/NUM_PER_PAGE);
+$page = $_GET['page'] ?? 1;
 
 ?>
 
@@ -41,11 +46,11 @@ $results = ProductDAO::getList($conn);
                                 <td>'.$row->description.'</td>
                                 <td>'.$row->price.'</td>
                                 <td>'.$row->quantity.'</td>                                                                
-                                <td>'.($row->status?'<span class="badge bg-success">Active</span>':'<span class="badge bg-danger">inactive</span>').'</td>                                                                
+                                <td>'.($row->delete_flag?'<span class="badge bg-success">Active</span>':'<span class="badge bg-danger">inactive</span>').'</td>                                                                
                                 <td>
                                     <a href="./edit.php?id='.$row->id.'"><button class="btn btn-primary">Edit</button></a>                                    
                                     <a href="./toggleStatus.php?id='.$row->id.'">
-                                        '.($row->status?'<button class="btn btn-danger">Deactivate</button>':'<button class="btn btn-success">Activate</button>').'
+                                        '.($row->delete_flag?'<button class="btn btn-danger">Deactivate</button>':'<button class="btn btn-success">Activate</button>').'
                                     </a>
                                 </td>
                             </tr>';
@@ -55,6 +60,36 @@ $results = ProductDAO::getList($conn);
                         
         </tbody>
     </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <?php
+            
+            for ($i = 1; $i <= $pageSize; $i++) { 
+                echo '<li class="page-item"><a class="page-link '.($i==$page?'active':'').' " href="#">'.$i.'</a></li>';
+            }
+
+            ?>            
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+    </nav>
 </div>
+
+<script>
+    <?php
+
+    $type = $_GET['type'];              
+    $mess = $_GET['mess'];                
+
+    if (isset($type)) {
+        if ($type == 'success') {
+            echo 'showSuccessToast("'.$mess.'")';
+        } else {
+            echo 'showErrorToast("'.$mess.'")';            
+        }
+    }
+
+    ?>
+</script>
 
 <?php require '../components/footer.php'; ?>

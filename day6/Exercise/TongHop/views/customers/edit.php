@@ -14,9 +14,9 @@ if (isset($_POST['submit'])) {
     $address = $_POST['address'];
     $phone = $_POST['phone'];
     $email = $_POST['email'];
-    $status = $_POST['status'];
+    $delete_flag = $_POST['delete_flag'];
 
-    $isOK = CustomerDAO::update($conn, new Customer($id, $name, $address, $phone, $email, $status));
+    $isOK = CustomerDAO::update($conn, new Customer($id, $name, $address, $phone, $email, $delete_flag));
 }
 
 $customer = CustomerDAO::getById($conn, $id);
@@ -44,11 +44,11 @@ $customer = CustomerDAO::getById($conn, $id);
         </div>
         <div class="mb-3">
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="status" id="active" value="1" <?php echo $customer->status===1?'checked':''; ?> >
+                <input class="form-check-input" type="radio" name="delete_flag" id="active" value="1" <?php echo $customer->delete_flag===1?'checked':''; ?> >
                 <label class="form-check-label" for="active">Active</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="status" id="inactive" value="0" <?php echo $customer->status===0?'checked':''; ?>>
+                <input class="form-check-input" type="radio" name="delete_flag" id="inactive" value="0" <?php echo $customer->delete_flag===0?'checked':''; ?>>
                 <label class="form-check-label" for="inactive">Inactive</label>
             </div>
         </div>

@@ -1,18 +1,18 @@
 <?php
 
-use DataAccessLayer\ShipDAO;
-use Model\ShipDetail;
+use DataAccessLayer\PaymentDAO;
+use Model\Payment;
 
-$page = 'ship';
+$page = 'pay';
 require '../components/header.php'; 
-include '../../dal/ShipDAO.php';
+include '../../dal/PaymentDAO.php';
 
 if (isset($_POST['submit'])) {
     $name = $_POST['name'];
     $description = $_POST['description'];    
-    $status = $_POST['status'];
+    $delete_flag = 1;
 
-    $isOK = ShipDAO::insert($conn, new ShipDetail('', $name, $description, $status));
+    $isOK = PaymentDAO::insert($conn, new Payment('', $name, $description, $delete_flag));
 }
 
 ?>
@@ -28,17 +28,7 @@ if (isset($_POST['submit'])) {
         <div class="mb-3">
             <label for="description" class="form-label">Description</label>
             <textarea class="form-control" name="description" id="description" rows="3"></textarea>
-        </div>              
-        <div class="mb-3">
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="status" id="active" value="1" checked>
-                <label class="form-check-label" for="active">Active</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="status" id="inactive" value="0">
-                <label class="form-check-label" for="inactive">Inactive</label>
-            </div>
-        </div>
+        </div>                      
         <input type="submit" name="submit" value="Add now" class="btn btn-primary">
     </form>
 </div>

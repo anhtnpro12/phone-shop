@@ -1,15 +1,15 @@
 <?php
 
-use DataAccessLayer\PayDAO;
+use DataAccessLayer\PaymentDAO;
 
 use function Database\getConnection;
 
 require '../../dal/database.php';
-include '../../dal/PayDAO.php';
+include '../../dal/PaymentDAO.php';
 
 $conn = getConnection();
 
-if (PayDAO::toggleStatus($conn, $_GET['id'])) {
+if (PaymentDAO::toggleStatus($conn, $_GET['id'])) {
     $conn->close();
     header('Location: index.php');
 } else {

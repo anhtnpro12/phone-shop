@@ -12,9 +12,14 @@ if (isset($_POST['submit'])) {
     $address = $_POST['address'];
     $phone = $_POST['phone'];
     $email = $_POST['email'];
-    $status = $_POST['status'];
+    $delete_flag = 1;
 
-    $isOK = CustomerDAO::insert($conn, new Customer('', $name, $address, $phone, $email, $status));
+    $isOK = CustomerDAO::insert($conn, new Customer('', $name, $address, $phone, $email, $delete_flag));
+
+    if ($isOK) {
+        header('Location: index.php?type=success&mess=Add%20Customer%20Successful%21');
+    }
+
 }
 
 ?>
@@ -38,17 +43,7 @@ if (isset($_POST['submit'])) {
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <input type="email" name="email" class="form-control" id="email" required>
-        </div>        
-        <div class="mb-3">
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="status" id="active" value="1" checked>
-                <label class="form-check-label" for="active">Active</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="status" id="inactive" value="0">
-                <label class="form-check-label" for="inactive">Inactive</label>
-            </div>
-        </div>
+        </div>                
         <input type="submit" name="submit" value="Add now" class="btn btn-primary">
     </form>
 </div>
@@ -58,7 +53,7 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['submit'])) {
         if ($isOK) {
-            echo 'showSuccessToast("Add Successful!")';
+            echo 'showSuccessToast("Add Customer Successful!")';
         } else {
             echo 'showErrorToast("Add Failed!")';            
         }

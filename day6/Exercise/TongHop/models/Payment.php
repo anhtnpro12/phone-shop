@@ -2,21 +2,21 @@
 
 namespace Model;
 
-class ShipDetail {
+class Payment {
     private $id;
     private $name;
     private $description;
-    private $status;
+    private $delete_flag;
     
     public function __construct($id = '',
                                 $name = '',
                                 $description = '',                                
-                                $status = '')
+                                $delete_flag = '')
     {
         $this->id = $id;
         $this->name = $name;        
         $this->description = $description;                
-        $this->status = $status;
+        $this->delete_flag = $delete_flag;
     }
 
     public function &__get($name)

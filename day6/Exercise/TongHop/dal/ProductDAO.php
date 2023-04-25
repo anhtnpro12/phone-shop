@@ -5,7 +5,7 @@ namespace DataAccessLayer;
 use Model\Product;
 use mysqli;
 
-include '../../models/Product.php';
+include_once '../../models/Product.php';
 
 class ProductDAO {
     public static function getList(mysqli $conn): array
@@ -20,7 +20,7 @@ class ProductDAO {
                 $row['description'],
                 $row['price'],
                 $row['quantity'],
-                $row['status']
+                $row['delete_flag']
             );
         }
         $result->free_result();
@@ -29,10 +29,10 @@ class ProductDAO {
 
     public static function insert(mysqli $conn, Product $c): bool
     {
-        $sql = 'INSERT INTO `products`(`name`, `description`, `price`, `quantity`, `status`) 
+        $sql = 'INSERT INTO `products`(`name`, `description`, `price`, `quantity`, `delete_flag`) 
                 VALUES (? ,? ,? ,? ,?);';
         $stm = $conn->prepare($sql);
-        $stm->bind_param('sssii', $c->name, $c->description, $c->price, $c->quantity, $c->status);
+        $stm->bind_param('sssii', $c->name, $c->description, $c->price, $c->quantity, $c->delete_flag);
                                              
         return $stm->execute();
     } 
@@ -52,7 +52,7 @@ class ProductDAO {
                 $row['description'],
                 $row['price'],
                 $row['quantity'],
-                $row['status']
+                $row['delete_flag']
             );
         }
         $result->free_result();
@@ -61,20 +61,28 @@ class ProductDAO {
 
     public static function update(mysqli $conn, Product $product): bool
     {
-        $sql = "UPDATE `products` SET `name`= ?,`description`= ?,`price`= ?,`quantity`= ?, `status`= ? WHERE `id` = ?;";
+        $sql = "UPDATE `products` SET `name`= ?,`description`= ?,`price`= ?,`quantity`= ?, `delete_flag`= ? WHERE `id` = ?;";
         $stm = $conn->prepare($sql);
         $stm->bind_param("sssiii", $product->name, $product->description
-                        , $product->price, $product->quantity, $product->status, $product->id);                
+                        , $product->price, $product->quantity, $product->delete_flag, $product->id);                
         
         return $stm->execute();
     }
 
     public static function toggleStatus(mysqli $conn, $id): bool
     {
-        $sql = "UPDATE `products` SET `status`= !`status` WHERE `id` = ?;";
+        $sql = "UPDATE `products` SET `delete_flag`= !`delete_flag` WHERE `id` = ?;";
         $stm = $conn->prepare($sql);
         $stm->bind_param("i", $id);                
         
         return $stm->execute();
-    }        
+    }   
+    
+    public static function count(mysqli $conn): int
+    {
+        $sql = "SELECT COUNT(*) AS count FROM `products`;";
+        $result = $conn->query($sql);                       
+        
+        return $result->fetch_row()[0];             
+    }    
 }

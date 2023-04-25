@@ -5,7 +5,7 @@ namespace DataAccessLayer;
 use Model\Customer;
 use mysqli;
 
-include '../../models/Customer.php';
+include_once '../../models/Customer.php';
 
 class CustomerDAO {
     public static function getList(mysqli $conn): array
@@ -20,7 +20,7 @@ class CustomerDAO {
                 $row['address'],
                 $row['phone'],
                 $row['email'],
-                $row['status']
+                $row['delete_flag']
             );
         }
         $result->free_result();
@@ -29,10 +29,10 @@ class CustomerDAO {
 
     public static function insert(mysqli $conn, Customer $c): bool
     {
-        $sql = 'INSERT INTO `customers`(`name`, `address`, `phone`, `email`, `status`) 
+        $sql = 'INSERT INTO `customers`(`name`, `address`, `phone`, `email`, `delete_flag`) 
                 VALUES (? ,? ,? ,?, ?);';
         $stm = $conn->prepare($sql);
-        $stm->bind_param('ssssi', $c->name, $c->address, $c->phone, $c->email, $c->status);
+        $stm->bind_param('ssssi', $c->name, $c->address, $c->phone, $c->email, $c->delete_flag);
                                              
         return $stm->execute();
     } 
@@ -52,7 +52,7 @@ class CustomerDAO {
                 $row['address'],
                 $row['phone'],
                 $row['email'],
-                $row['status']
+                $row['delete_flag']
             );
         }
         $result->free_result();
@@ -61,17 +61,17 @@ class CustomerDAO {
 
     public static function update(mysqli $conn, Customer $customer): bool
     {
-        $sql = "UPDATE `customers` SET `name`= ?,`address`= ?,`phone`= ?,`email`= ?, `status`= ? WHERE `id` = ?;";
+        $sql = "UPDATE `customers` SET `name`= ?,`address`= ?,`phone`= ?,`email`= ?, `delete_flag`= ? WHERE `id` = ?;";
         $stm = $conn->prepare($sql);
         $stm->bind_param("ssssii", $customer->name, $customer->address
-                        , $customer->phone, $customer->email, $customer->status, $customer->id);                
+                        , $customer->phone, $customer->email, $customer->delete_flag, $customer->id);                
         
         return $stm->execute();
     }
 
     public static function toggleStatus(mysqli $conn, $id): bool
     {
-        $sql = "UPDATE `customers` SET `status`= !`status` WHERE `id` = ?;";
+        $sql = "UPDATE `customers` SET `delete_flag`= !`delete_flag` WHERE `id` = ?;";
         $stm = $conn->prepare($sql);
         $stm->bind_param("i", $id);                
         

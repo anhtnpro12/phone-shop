@@ -1,23 +1,23 @@
 <?php
 
-use DataAccessLayer\PayDAO;
-use Model\PayDetail;
+use DataAccessLayer\PaymentDAO;
+use Model\Payment;
 
 $page = 'pay';
 require '../components/header.php'; 
-include '../../dal/PayDAO.php';
+include '../../dal/PaymentDAO.php';
 
 $id = $_GET['id'] ?? $_POST['id'];
  
 if (isset($_POST['submit'])) {
     $name = $_POST['name'];
     $description = $_POST['description'];    
-    $status = $_POST['status'];
+    $delete_flag = $_POST['delete_flag'];
 
-    $isOK = PayDAO::update($conn, new PayDetail($id, $name, $description, $status));
+    $isOK = PaymentDAO::update($conn, new Payment($id, $name, $description, $delete_flag));
 }
 
-$product = PayDAO::getById($conn, $id);
+$product = PaymentDAO::getById($conn, $id);
 ?>
 
 <div class="container mt-5 mb-5 d-flex justify-content-center">
@@ -34,11 +34,11 @@ $product = PayDAO::getById($conn, $id);
         </div>        
         <div class="mb-3">
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="status" id="active" value="1" <?php echo $product->status===1?'checked':''; ?> >
+                <input class="form-check-input" type="radio" name="delete_flag" id="active" value="1" <?php echo $product->delete_flag===1?'checked':''; ?> >
                 <label class="form-check-label" for="active">Active</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="status" id="inactive" value="0" <?php echo $product->status===0?'checked':''; ?>>
+                <input class="form-check-input" type="radio" name="delete_flag" id="inactive" value="0" <?php echo $product->delete_flag===0?'checked':''; ?>>
                 <label class="form-check-label" for="inactive">Inactive</label>
             </div>
         </div>

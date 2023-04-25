@@ -1,17 +1,17 @@
 <?php
 
-use DataAccessLayer\ShipDAO;
+use DataAccessLayer\PaymentDAO;
 
-$page = 'ship';
+$page = 'pay';
 require '../components/header.php';
-include '../../dal/ShipDAO.php';
+include '../../dal/PaymentDAO.php';
 
-$results = ShipDAO::getList($conn);    
+$results = PaymentDAO::getList($conn);    
 
 ?>
 
 <div class="container mb-5">
-    <a href="./create.php"><button class="btn btn-success mt-3 mb-3">Add Shipping Method</button></a>
+    <a href="./create.php"><button class="btn btn-success mt-3 mb-3">Add Payment Method</button></a>
     <table class="table">
         <thead>
             <tr class="table-secondary">
@@ -37,11 +37,11 @@ $results = ShipDAO::getList($conn);
                                 <th>'.$row->id.'</th>
                                 <td>'.$row->name.'</td>
                                 <td>'.$row->description.'</td>                                                                                                
-                                <td>'.($row->status?'<span class="badge bg-success">Active</span>':'<span class="badge bg-danger">inactive</span>').'</td>                                                                
+                                <td>'.($row->delete_flag?'<span class="badge bg-success">Active</span>':'<span class="badge bg-danger">inactive</span>').'</td>                                                                
                                 <td>
                                     <a href="./edit.php?id='.$row->id.'"><button class="btn btn-primary">Edit</button></a>                                    
                                     <a href="./toggleStatus.php?id='.$row->id.'">
-                                        '.($row->status?'<button class="btn btn-danger">Deactivate</button>':'<button class="btn btn-success">Activate</button>').'
+                                        '.($row->delete_flag?'<button class="btn btn-danger">Deactivate</button>':'<button class="btn btn-success">Activate</button>').'
                                     </a>
                                 </td>
                             </tr>';

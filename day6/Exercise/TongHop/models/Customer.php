@@ -8,21 +8,21 @@ class Customer {
     private $address;
     private $phone;
     private $email;
-    private $status;
+    private $delete_flag;
     
     public function __construct($id = '',
                                 $name = '',
                                 $address = '',
                                 $phone = '',
                                 $email = '',
-                                $status = '')
+                                $delete_flag = '')
     {
         $this->id = $id;
         $this->name = $name;        
         $this->address = $address;        
         $this->phone = $phone;
         $this->email = $email;
-        $this->status = $status;
+        $this->delete_flag = $delete_flag;
     }
 
     public function &__get($name)

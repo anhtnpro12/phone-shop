@@ -2,19 +2,19 @@
 
 namespace Model;
 
-class Ship {
+class OrderShipping {
     private $id;
-    private $ship_detail;
+    private $shipping;
     private $customer;
     private $shiped_at;
     
     public function __construct($id = '',
-                                $ship_detail = '',
+                                $shipping = '',
                                 $customer = '',
                                 $shiped_at = '')
     {
         $this->id = $id;
-        $this->ship_detail = $ship_detail;        
+        $this->shipping = $shipping;        
         $this->customer = $customer;                
         $this->shiped_at = $shiped_at;
     }

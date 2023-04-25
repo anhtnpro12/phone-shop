@@ -5,7 +5,7 @@ namespace DataAccessLayer;
 use Model\Order;
 use mysqli;
 
-include '../../models/Order.php';
+include_once '../../models/Order.php';
 
 class OrderDAO {
     public static function getList(mysqli $conn): array

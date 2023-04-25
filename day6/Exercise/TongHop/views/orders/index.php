@@ -12,6 +12,7 @@ include '../../dal/OrderDAO.php';
 include '../../dal/PayDAO.php';
 include '../../dal/ShipDAO.php';
 include '../../dal/OrderDetailDAO.php';
+include '../../dal/CustomerDAO.php';
 
 $results = OrderDAO::getList($conn);      
 

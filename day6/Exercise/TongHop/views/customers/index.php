@@ -41,11 +41,11 @@ $results = CustomerDAO::getList($conn);
                                 <td>'.$row->address.'</td>
                                 <td>'.$row->phone.'</td>
                                 <td>'.$row->email.'</td>                                                                
-                                <td>'.($row->status?'<span class="badge bg-success">Active</span>':'<span class="badge bg-danger">inactive</span>').'</td>                                                                
+                                <td>'.($row->delete_flag?'<span class="badge bg-success">Active</span>':'<span class="badge bg-danger">inactive</span>').'</td>                                                                
                                 <td>
                                     <a href="./edit.php?id='.$row->id.'"><button class="btn btn-primary">Edit</button></a>                                    
                                     <a href="./toggleStatus.php?id='.$row->id.'">
-                                        '.($row->status?'<button class="btn btn-danger">Deactivate</button>':'<button class="btn btn-success">Activate</button>').'
+                                        '.($row->delete_flag?'<button class="btn btn-danger">Deactivate</button>':'<button class="btn btn-success">Activate</button>').'
                                     </a>
                                 </td>
                             </tr>';
@@ -56,5 +56,22 @@ $results = CustomerDAO::getList($conn);
         </tbody>
     </table>
 </div>
+
+<script>
+    <?php
+
+    $type = $_GET['type'];              
+    $mess = $_GET['mess'];                
+
+    if (isset($type)) {
+        if ($type == 'success') {
+            echo 'showSuccessToast("'.$mess.'")';
+        } else {
+            echo 'showErrorToast("'.$mess.'")';            
+        }
+    }
+
+    ?>
+</script>
 
 <?php require '../components/footer.php'; ?>

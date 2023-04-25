@@ -14,9 +14,9 @@ if (isset($_POST['submit'])) {
     $description = $_POST['description'];
     $price = $_POST['price'];
     $quantity = $_POST['quantity'];
-    $status = $_POST['status'];
+    $delete_flag = $_POST['delete_flag'];
 
-    $isOK = ProductDAO::update($conn, new Product($id, $name, $description, $price, $quantity, $status));
+    $isOK = ProductDAO::update($conn, new Product($id, $name, $description, $price, $quantity, $delete_flag));
 }
 
 $product = ProductDAO::getById($conn, $id);
@@ -44,11 +44,11 @@ $product = ProductDAO::getById($conn, $id);
         </div>
         <div class="mb-3">
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="status" id="active" value="1" <?php echo $product->status===1?'checked':''; ?> >
+                <input class="form-check-input" type="radio" name="delete_flag" id="active" value="1" <?php echo $product->delete_flag===1?'checked':''; ?> >
                 <label class="form-check-label" for="active">Active</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="status" id="inactive" value="0" <?php echo $product->status===0?'checked':''; ?>>
+                <input class="form-check-input" type="radio" name="delete_flag" id="inactive" value="0" <?php echo $product->delete_flag===0?'checked':''; ?>>
                 <label class="form-check-label" for="inactive">Inactive</label>
             </div>
         </div>

@@ -6,8 +6,8 @@ use Model\OrderDetail;
 use mysqli;
 use Product;
 
-include '../../models/OrderDetail.php';
-include '../../models/Product.php';
+include_once '../../models/OrderDetail.php';
+include_once '../../models/Product.php';
 
 class OrderDetailDAO {
     public static function getListByOrderId(mysqli $conn, $order_id): array

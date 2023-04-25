@@ -7,7 +7,7 @@ class Order {
     private $customer_id;
     private $amount;
     private $state;
-    private $status;
+    private $delete_flag;
     private $ship_id;
     private $payment_id;
     private $created_at;        
@@ -16,7 +16,7 @@ class Order {
                                 $customer_id = '',
                                 $amount = '',
                                 $state = '',
-                                $status = '',
+                                $delete_flag = '',
                                 $ship_id = '',
                                 $payment_id = '',
                                 $created_at = '')
@@ -25,7 +25,7 @@ class Order {
         $this->customer_id = $customer_id;        
         $this->amount = $amount;        
         $this->state = $state;
-        $this->status = $status;
+        $this->delete_flag = $delete_flag;
         $this->ship_id = $ship_id;
         $this->payment_id = $payment_id;
         $this->created_at = $created_at;

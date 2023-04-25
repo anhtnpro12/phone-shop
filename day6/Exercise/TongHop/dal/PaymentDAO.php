@@ -3,88 +3,88 @@
 namespace DataAccessLayer;
 
 use Model\Customer;
-use Model\Pay;
-use Model\PayDetail;
+use Model\OrderPayment;
+use Model\Payment;
 use mysqli;
 
-include '../../models/PayDetail.php';
-include '../../models/Pay.php';
-include '../../models/Customer.php';
+include_once '../../models/Payment.php';
+include_once '../../models/OrderPayment.php';
+include_once '../../models/Customer.php';
 
-class PayDAO {
+class PaymentDAO {
     public static function getList(mysqli $conn): array
     {        
-        $sql = "SELECT * FROM `pay_detail`;";
+        $sql = "SELECT * FROM `payments`;";
         $result = $conn->query($sql);
         $list = [];
         while ($row = $result->fetch_array()) {
-            $list[] = new PayDetail(
+            $list[] = new Payment(
                 $row['id'],
                 $row['name'],
                 $row['description'],                
-                $row['status']
+                $row['delete_flag']
             );
         }
         $result->free_result();
         return $list;
     }
 
-    public static function insert(mysqli $conn, PayDetail $s): bool
+    public static function insert(mysqli $conn, Payment $s): bool
     {
-        $sql = 'INSERT INTO `pay_detail`(`name`, `description`, `status`) 
+        $sql = 'INSERT INTO `payments`(`name`, `description`, `delete_flag`) 
                 VALUES (? ,? ,?);';
         $stm = $conn->prepare($sql);
-        $stm->bind_param('ssi', $s->name, $s->description, $s->status);
+        $stm->bind_param('ssi', $s->name, $s->description, $s->delete_flag);
                                              
         return $stm->execute();
     } 
 
-    public static function getById(mysqli $conn, $id): ?PayDetail
+    public static function getById(mysqli $conn, $id): ?Payment
     {
-        $sql = "SELECT * FROM `pay_detail` WHERE `id` = ?;";
+        $sql = "SELECT * FROM `payments` WHERE `id` = ?;";
         $stm = $conn->prepare($sql);
         $stm->bind_param("i", $id);
         $stm->execute();
         $result = $stm->get_result();        
         while ($row = $result->fetch_array()) {
             $result->free_result();
-            return new PayDetail(
+            return new Payment(
                 $row['id'],
                 $row['name'],
                 $row['description'],                
-                $row['status']
+                $row['delete_flag']
             );
         }
         $result->free_result();
         return null;
     }
 
-    public static function update(mysqli $conn, PayDetail $product): bool
+    public static function update(mysqli $conn, Payment $product): bool
     {
-        $sql = "UPDATE `pay_detail` SET `name`= ?,`description`= ?, `status`= ? WHERE `id` = ?;";
+        $sql = "UPDATE `payments` SET `name`= ?,`description`= ?, `delete_flag`= ? WHERE `id` = ?;";
         $stm = $conn->prepare($sql);
         $stm->bind_param("ssii", $product->name, $product->description
-                        , $product->status, $product->id);                
+                        , $product->delete_flag, $product->id);                
         
         return $stm->execute();
     }
 
     public static function toggleStatus(mysqli $conn, $id): bool
     {
-        $sql = "UPDATE `pay_detail` SET `status`= !`status` WHERE `id` = ?;";
+        $sql = "UPDATE `payments` SET `delete_flag`= !`delete_flag` WHERE `id` = ?;";
         $stm = $conn->prepare($sql);
         $stm->bind_param("i", $id);                
         
         return $stm->execute();
     }
 
-    public static function getDetailById(mysqli $conn, $id): ?Pay
+    public static function getDetailById(mysqli $conn, $id): ?OrderPayment
     {
-        $sql = "SELECT p.`id`, p.`pay_detail_id`, p.`pay_amount`, p.`customer_id`, p.`paid_at` 
-                , pd.`name` as pay_detail_name, pd.`description`, pd.`status` as pay_detail_status
+        $sql = "SELECT p.`id`, p.`payment_id`, p.`pay_amount`, p.`customer_id`, p.`paid_at` 
+                , pd.`name` as payment_name, pd.`description`, pd.`status` as payment_status
                 , `c`.`name` as customer_name, `c`.`address`, `c`.`phone`, `c`.`email`, `c`.`status` as customer_status
-                FROM `pays` p
-                LEFT JOIN pay_detail pd ON p.`pay_detail_id` = pd.`id`
+                FROM `order_payments` p
+                LEFT JOIN payments pd ON p.`payment_id` = pd.`id`
                 LEFT JOIN customers c ON `p`.`customer_id` = c.`id`
                 WHERE p.`id` = ?;";
         $stm = $conn->prepare($sql);
@@ -93,11 +93,11 @@ class PayDAO {
         $result = $stm->get_result();        
         while ($row = $result->fetch_array()) {
             $result->free_result();
-            $pd = new PayDetail(
-                $row['pay_detail_id'], 
-                $row['pay_detail_name'], 
+            $pd = new Payment(
+                $row['payment_id'], 
+                $row['payment_name'], 
                 $row['description'], 
-                $row['pay_detail_status'],                 
+                $row['payment_status'],                 
             );
             $c = new Customer(
                 $row['customer_id'],
@@ -107,7 +107,7 @@ class PayDAO {
                 $row['email'],
                 $row['customer_status'],
             );
-            return new Pay(
+            return new OrderPayment(
                 $row['id'],
                 $pd,
                 $row['pay_amount'],

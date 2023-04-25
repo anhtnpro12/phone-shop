@@ -8,21 +8,21 @@ class Product {
     private $description;
     private $price;
     private $quantity;
-    private $status;
+    private $delete_flag;
     
     public function __construct($id = '',
                                 $name = '',
                                 $description = '',
                                 $price = '',
                                 $quantity = '',
-                                $status = '')
+                                $delete_flag = '')
     {
         $this->id = $id;
         $this->name = $name;        
         $this->description = $description;        
         $this->price = $price;
         $this->quantity = $quantity;
-        $this->status = $status;
+        $this->delete_flag = $delete_flag;
     }
 
     public function &__get($name)

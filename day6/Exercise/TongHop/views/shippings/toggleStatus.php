@@ -1,15 +1,14 @@
 <?php
 
-use DataAccessLayer\ShipDAO;
-
+use DataAccessLayer\ShippingDAO;
 use function Database\getConnection;
 
 require '../../dal/database.php';
-include '../../dal/ShipDAO.php';
+include '../../dal/ShippingDAO.php';
 
 $conn = getConnection();
 
-if (ShipDAO::toggleStatus($conn, $_GET['id'])) {
+if (ShippingDAO::toggleStatus($conn, $_GET['id'])) {
     $conn->close();
     header('Location: index.php');
 } else {
