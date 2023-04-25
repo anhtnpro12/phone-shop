@@ -29,7 +29,7 @@ $results = CustomerDAO::getList($conn);
             <?php
                 if (empty($results)) {
                     echo '<tr>
-                            <td colspan="6" style="text-align: center;">
+                            <td colspan="7" style="text-align: center;">
                                 <img src="../imgs/empty.png" alt="empty image">                
                             </td>
                         </tr>';

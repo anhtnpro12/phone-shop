@@ -1,26 +1,34 @@
 <?php
 
-use DataAccessLayer\ProductDAO;
+use DataAccessLayer\CustomerDAO;
+use DataAccessLayer\OrderDAO;
+use DataAccessLayer\OrderDetailDAO;
+use DataAccessLayer\PayDAO;
+use DataAccessLayer\ShipDAO;
 
 $page = 'order';
 require '../components/header.php';
-include '../../dal/ProductDAO.php';
+include '../../dal/OrderDAO.php';
+include '../../dal/PayDAO.php';
+include '../../dal/ShipDAO.php';
+include '../../dal/OrderDetailDAO.php';
 
-$results = ProductDAO::getList($conn);      
+$results = OrderDAO::getList($conn);      
 
 ?>
 
 <div class="container mb-5">
-    <a href="./create.php"><button class="btn btn-success mt-3 mb-3">Add Product</button></a>
+    <a href="./create.php"><button class="btn btn-success mt-3 mb-3">Add Order</button></a>
     <table class="table">
         <thead>
             <tr class="table-secondary">
                 <th scope="col">ID</th>
-                <th scope="col">Name</th>                                
-                <th scope="col">Description</th>
-                <th scope="col">Price</th>                
-                <th scope="col">Quantity</th>                
-                <th scope="col">Status</th>                
+                <th scope="col">Products</th>                                
+                <th scope="col">Creator</th>
+                <th scope="col">Amount</th>                
+                <th scope="col">State</th>                
+                <th scope="col">Payment</th>                
+                <th scope="col">Status</th>                                                
                 <th scope="col">Action</th>
             </tr>
         </thead>
@@ -29,18 +37,23 @@ $results = ProductDAO::getList($conn);
             <?php
                 if (empty($results)) {
                     echo '<tr>
-                            <td colspan="6" style="text-align: center;">
+                            <td colspan="8" style="text-align: center;">
                                 <img src="../imgs/empty.png" alt="empty image">                
                             </td>
                         </tr>';
                 } else {
                     foreach ($results as $row) {
+                        $cus = CustomerDAO::getByID($conn, $row->customer_id);
+                        $pay = PayDAO::getDetailById($conn, $row->payment_id);
+                        $ship = ShipDAO::getDetailById($conn, $row->ship_id);
+                        $od = OrderDetailDAO::getListByOrderId($conn, $row->id);
                         echo '<tr>
                                 <th>'.$row->id.'</th>
-                                <td>'.$row->name.'</td>
-                                <td>'.$row->description.'</td>
-                                <td>'.$row->price.'</td>
-                                <td>'.$row->quantity.'</td>                                                                
+                                <td>'.$od[0]->product->name.(count($od)>1?'...':'').'</td>
+                                <td>'.$cus->name.'</td>
+                                <td>'.$row->amount.'</td>
+                                <td>'.$row->state.'</td>                                                                
+                                <td>'.($pay->paid_at?'Paid':'Unpaid').'</td>                                                                
                                 <td>'.($row->status?'<span class="badge bg-success">Active</span>':'<span class="badge bg-danger">inactive</span>').'</td>                                                                
                                 <td>
                                     <a href="./edit.php?id='.$row->id.'"><button class="btn btn-primary">Edit</button></a>                                    

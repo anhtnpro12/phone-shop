@@ -76,5 +76,5 @@ class ProductDAO {
         $stm->bind_param("i", $id);                
         
         return $stm->execute();
-    }
+    }        
 }

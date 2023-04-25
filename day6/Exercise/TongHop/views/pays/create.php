@@ -1,18 +1,18 @@
 <?php
 
-use DataAccessLayer\ShipDAO;
-use Model\ShipDetail;
+use DataAccessLayer\PayDAO;
+use Model\PayDetail;
 
-$page = 'ship';
+$page = 'pay';
 require '../components/header.php'; 
-include '../../dal/ShipDAO.php';
+include '../../dal/PayDAO.php';
 
 if (isset($_POST['submit'])) {
     $name = $_POST['name'];
     $description = $_POST['description'];    
     $status = $_POST['status'];
 
-    $isOK = ShipDAO::insert($conn, new ShipDetail('', $name, $description, $status));
+    $isOK = PayDAO::insert($conn, new PayDetail('', $name, $description, $status));
 }
 
 ?>

@@ -1,17 +1,17 @@
 <?php
 
-use DataAccessLayer\ShipDAO;
+use DataAccessLayer\PayDAO;
 
-$page = 'ship';
+$page = 'pay';
 require '../components/header.php';
-include '../../dal/ShipDAO.php';
+include '../../dal/PayDAO.php';
 
-$results = ShipDAO::getList($conn);    
+$results = PayDAO::getList($conn);    
 
 ?>
 
 <div class="container mb-5">
-    <a href="./create.php"><button class="btn btn-success mt-3 mb-3">Add Shipping Method</button></a>
+    <a href="./create.php"><button class="btn btn-success mt-3 mb-3">Add Payment Method</button></a>
     <table class="table">
         <thead>
             <tr class="table-secondary">

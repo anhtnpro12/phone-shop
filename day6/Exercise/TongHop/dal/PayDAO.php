@@ -3,22 +3,22 @@
 namespace DataAccessLayer;
 
 use Model\Customer;
-use Model\Ship;
-use Model\ShipDetail;
+use Model\Pay;
+use Model\PayDetail;
 use mysqli;
 
-include '../../models/ShipDetail.php';
-include '../../models/Ship.php';
+include '../../models/PayDetail.php';
+include '../../models/Pay.php';
 include '../../models/Customer.php';
 
-class ShipDAO {
+class PayDAO {
     public static function getList(mysqli $conn): array
     {        
-        $sql = "SELECT * FROM `ship_detail`;";
+        $sql = "SELECT * FROM `pay_detail`;";
         $result = $conn->query($sql);
         $list = [];
         while ($row = $result->fetch_array()) {
-            $list[] = new ShipDetail(
+            $list[] = new PayDetail(
                 $row['id'],
                 $row['name'],
                 $row['description'],                
@@ -29,9 +29,9 @@ class ShipDAO {
         return $list;
     }
 
-    public static function insert(mysqli $conn, ShipDetail $s): bool
+    public static function insert(mysqli $conn, PayDetail $s): bool
     {
-        $sql = 'INSERT INTO `ship_detail`(`name`, `description`, `status`) 
+        $sql = 'INSERT INTO `pay_detail`(`name`, `description`, `status`) 
                 VALUES (? ,? ,?);';
         $stm = $conn->prepare($sql);
         $stm->bind_param('ssi', $s->name, $s->description, $s->status);
@@ -39,16 +39,16 @@ class ShipDAO {
         return $stm->execute();
     } 
 
-    public static function getById(mysqli $conn, $id): ?ShipDetail
+    public static function getById(mysqli $conn, $id): ?PayDetail
     {
-        $sql = "SELECT * FROM `ship_detail` WHERE `id` = ?;";
+        $sql = "SELECT * FROM `pay_detail` WHERE `id` = ?;";
         $stm = $conn->prepare($sql);
         $stm->bind_param("i", $id);
         $stm->execute();
         $result = $stm->get_result();        
         while ($row = $result->fetch_array()) {
             $result->free_result();
-            return new ShipDetail(
+            return new PayDetail(
                 $row['id'],
                 $row['name'],
                 $row['description'],                
@@ -59,9 +59,9 @@ class ShipDAO {
         return null;
     }
 
-    public static function update(mysqli $conn, ShipDetail $product): bool
+    public static function update(mysqli $conn, PayDetail $product): bool
     {
-        $sql = "UPDATE `ship_detail` SET `name`= ?,`description`= ?, `status`= ? WHERE `id` = ?;";
+        $sql = "UPDATE `pay_detail` SET `name`= ?,`description`= ?, `status`= ? WHERE `id` = ?;";
         $stm = $conn->prepare($sql);
         $stm->bind_param("ssii", $product->name, $product->description
                         , $product->status, $product->id);                
@@ -71,33 +71,33 @@ class ShipDAO {
 
     public static function toggleStatus(mysqli $conn, $id): bool
     {
-        $sql = "UPDATE `ship_detail` SET `status`= !`status` WHERE `id` = ?;";
+        $sql = "UPDATE `pay_detail` SET `status`= !`status` WHERE `id` = ?;";
         $stm = $conn->prepare($sql);
         $stm->bind_param("i", $id);                
         
         return $stm->execute();
     }
 
-    public static function getDetailById(mysqli $conn, $id): ?Ship
+    public static function getDetailById(mysqli $conn, $id): ?Pay
     {
-        $sql = "SELECT s.`id`, s.`ship_detail_id`, s.`customer_id`, s.`shiped_at` 
-                , sd.`name` as ship_detail_name, sd.`description`, sd.`status` as ship_detail_status
+        $sql = "SELECT p.`id`, p.`pay_detail_id`, p.`pay_amount`, p.`customer_id`, p.`paid_at` 
+                , pd.`name` as pay_detail_name, pd.`description`, pd.`status` as pay_detail_status
                 , `c`.`name` as customer_name, `c`.`address`, `c`.`phone`, `c`.`email`, `c`.`status` as customer_status
-                FROM `ships` s
-                LEFT JOIN ship_detail sd ON s.`ship_detail_id` = sd.`id`
-                LEFT JOIN customers c ON `s`.`customer_id` = c.`id`
-                WHERE s.`id` = 1;";
+                FROM `pays` p
+                LEFT JOIN pay_detail pd ON p.`pay_detail_id` = pd.`id`
+                LEFT JOIN customers c ON `p`.`customer_id` = c.`id`
+                WHERE p.`id` = ?;";
         $stm = $conn->prepare($sql);
         $stm->bind_param("i", $id);
         $stm->execute();
         $result = $stm->get_result();        
         while ($row = $result->fetch_array()) {
             $result->free_result();
-            $pd = new ShipDetail(
-                $row['ship_detail_id'],                 
-                $row['ship_detail_name'],                 
+            $pd = new PayDetail(
+                $row['pay_detail_id'], 
+                $row['pay_detail_name'], 
                 $row['description'], 
-                $row['ship_detail_status'],                 
+                $row['pay_detail_status'],                 
             );
             $c = new Customer(
                 $row['customer_id'],
@@ -107,11 +107,12 @@ class ShipDAO {
                 $row['email'],
                 $row['customer_status'],
             );
-            return new Ship(
+            return new Pay(
                 $row['id'],
-                $pd,                
+                $pd,
+                $row['pay_amount'],
                 $c,                
-                $row['shiped_at']
+                $row['paid_at']
             );
         }
         $result->free_result();

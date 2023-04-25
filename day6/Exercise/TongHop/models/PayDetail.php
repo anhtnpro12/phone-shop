@@ -2,21 +2,21 @@
 
 namespace Model;
 
-class Ship {
+class PayDetail {
     private $id;
-    private $ship_detail;
-    private $customer;
-    private $shiped_at;
+    private $name;
+    private $description;
+    private $status;
     
     public function __construct($id = '',
-                                $ship_detail = '',
-                                $customer = '',
-                                $shiped_at = '')
+                                $name = '',
+                                $description = '',                                
+                                $status = '')
     {
         $this->id = $id;
-        $this->ship_detail = $ship_detail;        
-        $this->customer = $customer;                
-        $this->shiped_at = $shiped_at;
+        $this->name = $name;        
+        $this->description = $description;                
+        $this->status = $status;
     }
 
     public function &__get($name)
