@@ -27,6 +27,28 @@ class ProductDAO {
         return $list;
     }
 
+    public static function getListInRange(mysqli $conn, $from, $length): array
+    {        
+        $sql = "SELECT * FROM `products` LIMIT ?, ?;";
+        $stm = $conn->prepare($sql);
+        $stm->bind_param('ii', $from, $length);
+        $stm->execute();
+        $result = $stm->get_result();
+        $list = [];
+        while ($row = $result->fetch_array()) {
+            $list[] = new Product(
+                $row['id'],
+                $row['name'],
+                $row['description'],
+                $row['price'],
+                $row['quantity'],
+                $row['delete_flag']
+            );
+        }
+        $result->free_result();
+        return $list;
+    }
+
     public static function insert(mysqli $conn, Product $c): bool
     {
         $sql = 'INSERT INTO `products`(`name`, `description`, `price`, `quantity`, `delete_flag`) 

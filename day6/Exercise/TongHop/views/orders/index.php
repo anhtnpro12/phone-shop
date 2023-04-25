@@ -3,14 +3,14 @@
 use DataAccessLayer\CustomerDAO;
 use DataAccessLayer\OrderDAO;
 use DataAccessLayer\OrderDetailDAO;
-use DataAccessLayer\PayDAO;
-use DataAccessLayer\ShipDAO;
+use DataAccessLayer\PaymentDAO;
+use DataAccessLayer\ShippingDAO;
 
 $page = 'order';
 require '../components/header.php';
 include '../../dal/OrderDAO.php';
-include '../../dal/PayDAO.php';
-include '../../dal/ShipDAO.php';
+include '../../dal/PaymentDAO.php';
+include '../../dal/ShippingDAO.php';
 include '../../dal/OrderDetailDAO.php';
 include '../../dal/CustomerDAO.php';
 
@@ -45,8 +45,8 @@ $results = OrderDAO::getList($conn);
                 } else {
                     foreach ($results as $row) {
                         $cus = CustomerDAO::getByID($conn, $row->customer_id);
-                        $pay = PayDAO::getDetailById($conn, $row->payment_id);
-                        $ship = ShipDAO::getDetailById($conn, $row->ship_id);
+                        $pay = PaymentDAO::getDetailById($conn, $row->payment_id);
+                        $ship = ShippingDAO::getDetailById($conn, $row->ship_id);
                         $od = OrderDetailDAO::getListByOrderId($conn, $row->id);
                         echo '<tr>
                                 <th>'.$row->id.'</th>

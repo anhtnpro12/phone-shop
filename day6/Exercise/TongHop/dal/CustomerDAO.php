@@ -27,6 +27,36 @@ class CustomerDAO {
         return $list;
     }
 
+    public static function count(mysqli $conn): int
+    {
+        $sql = "SELECT COUNT(*) AS count FROM `customers`;";
+        $result = $conn->query($sql);                       
+        
+        return $result->fetch_row()[0];             
+    }  
+
+    public static function getListInRange(mysqli $conn, $from, $length): array
+    {        
+        $sql = "SELECT * FROM `customers` LIMIT ?, ?;";
+        $stm = $conn->prepare($sql);
+        $stm->bind_param('ii', $from, $length);
+        $stm->execute();
+        $result = $stm->get_result();
+        $list = [];
+        while ($row = $result->fetch_array()) {
+            $list[] = new Customer(
+                $row['id'],
+                $row['name'],
+                $row['address'],
+                $row['phone'],
+                $row['email'],
+                $row['delete_flag']
+            );
+        }
+        $result->free_result();
+        return $list;
+    }
+
     public static function insert(mysqli $conn, Customer $c): bool
     {
         $sql = 'INSERT INTO `customers`(`name`, `address`, `phone`, `email`, `delete_flag`) 

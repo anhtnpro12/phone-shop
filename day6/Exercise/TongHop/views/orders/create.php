@@ -38,13 +38,14 @@ if (isset($_POST['submit'])) {
             <select id="state" name="state" class="selectpicker" 
                     data-live-search="true" data-width="100%" 
                     data-style="border" data-size="5">
-                <option value="1" data-content='<span class="badge badge-secondary">Unconfirmed</span>'>Unconfirmed</option>                                                                
-                <option value="2" data-content='<span class="badge badge-primary">Confirmed</span>' selected>Confirmed</option>                                                                
-                <option value="3" data-content='<span class="badge badge-warning">Delivery</span>'>Delivery</option>                                                                
-                <option value="4" data-content='<span class="badge badge-success">Complete</span>'>Complete</option>                                                                
+                <option value="1" data-content='<span class="badge bg-secondary">Unconfirmed</span>'>Unconfirmed</option>                                                                
+                <option value="2" data-content='<span class="badge bg-primary">Confirmed</span>' selected>Confirmed</option>                                                                
+                <option value="3" data-content='<span class="badge bg-warning">Delivery</span>'>Delivery</option>                                                                
+                <option value="4" data-content='<span class="badge bg-success">Complete</span>'>Complete</option>                                                                                                                                       
             </select>
 
-        </div>                
+        </div>    
+        <span class="badge badge-secondary">Unconfirmed</span>            
         <div class="mb-3">
             <label for="description" class="form-label">Description</label>
             <textarea class="form-control" name="description" id="description" rows="3"></textarea>

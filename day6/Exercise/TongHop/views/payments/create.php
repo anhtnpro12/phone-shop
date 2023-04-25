@@ -13,6 +13,10 @@ if (isset($_POST['submit'])) {
     $delete_flag = 1;
 
     $isOK = PaymentDAO::insert($conn, new Payment('', $name, $description, $delete_flag));
+
+    if ($isOK) {
+        header('Location: index.php?type=success&mess=Add%20Customer%20Successful%21');
+    }
 }
 
 ?>

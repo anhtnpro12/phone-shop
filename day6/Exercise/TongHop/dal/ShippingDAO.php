@@ -29,6 +29,34 @@ class ShippingDAO {
         return $list;
     }
 
+    public static function count(mysqli $conn): int
+    {
+        $sql = "SELECT COUNT(*) AS count FROM `shippings`;";
+        $result = $conn->query($sql);                       
+        
+        return $result->fetch_row()[0];             
+    }  
+
+    public static function getListInRange(mysqli $conn, $from, $length): array
+    {        
+        $sql = "SELECT * FROM `shippings` LIMIT ?, ?;";
+        $stm = $conn->prepare($sql);
+        $stm->bind_param('ii', $from, $length);
+        $stm->execute();
+        $result = $stm->get_result();
+        $list = [];
+        while ($row = $result->fetch_array()) {
+            $list[] = new Shipping(
+                $row['id'],
+                $row['name'],
+                $row['description'],                
+                $row['delete_flag']
+            );
+        }
+        $result->free_result();
+        return $list;
+    }
+
     public static function insert(mysqli $conn, Shipping $s): bool
     {
         $sql = 'INSERT INTO `shippings`(`name`, `description`, `delete_flag`) 
