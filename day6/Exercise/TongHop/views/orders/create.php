@@ -18,7 +18,7 @@ $amountError = false;
 if (isset($_POST['submit'])) {    
     if (isset($_POST['quantity'])) {
         foreach ($_POST['quantity'] as $key => $value) {
-            if (empty($value) || !is_numeric($value)) {
+            if (empty($value) || !is_numeric($value) || $value < 1) {
                 $quantityError = true;
             }
         }
@@ -27,13 +27,15 @@ if (isset($_POST['submit'])) {
     if (empty($_POST['amount']) || !is_numeric($_POST['amount'])) {
         $amountError = true;
     }
+
+    
 }
 
 $products = ProductDAO::getList($conn);
 $customers = CustomerDAO::getList($conn);
 $shippings = ShippingDAO::getList($conn);
 $payments = PaymentDAO::getList($conn);
-$isOK = true;
+$isOK = false;
 
 ?>
 
@@ -47,16 +49,16 @@ $isOK = true;
                 <div class="mb-3">
                     <label for="product_id1" class="form-label">Product Name</label>
                     <select id="product_id1" name="product_id[]" class="selectpicker" 
-                            data-live-search="true" data-width="100%" 
+                            data-live-search="true" data-width="100%" onchange="changeAmount();" 
                             data-style="border" data-size="5">
                             <?php
 
                             foreach ($products as $key => $value) {
-                                echo "<option value='$value->id' 
-                                        data-content='<div>
+                                echo "<option data-price='$value->price' value='$value->id' ".($value->delete_flag?'':'disabled')."
+                                        data-content='<div> 
                                                         <h6>$value->name</h6>
                                                         <small>$ $value->price</small>
-                                                    </div>' >$value->name</option>";
+                                                    </div>' >$value->price</option>";
                             }                    
     
                             ?>                                                                                                                                        
@@ -64,7 +66,7 @@ $isOK = true;
                 </div>                                 
                 <div class="mb-3">
                     <label for="quantity1" class="form-label">Quantity</label>
-                    <input type="number" min="1" value="1" name="quantity[]" class="form-control" id="quantity1">
+                    <input onchange="changeAmount();" type="number" min="1" value="1" name="quantity[]" class="form-control" id="quantity1">
                     <small class="text-danger <?php echo ($quantityError?'':'d-none'); ?>">Quantity must be an integer greater than 1</small>
                 </div>                 
             </div>
@@ -73,12 +75,21 @@ $isOK = true;
             </div>
         </div>
         <div id="add-product-container" class="container mb-3 d-flex">
-            <button id="add-product-btn" class="btn btn-success" type="button" onclick="addProduct();">Add Product</button>
+            <button id="add-product-btn" class="btn btn-success" type="button" onclick="addProduct(); changeAmount();">Add Product</button>
         </div>
         <hr>
         <div class="mb-3">
             <label for="amount" class="form-label">Amount</label>
-            <input type="text" name="amount" class="form-control" id="amount">
+            <input type="text" name="amount" value="<?php
+
+                foreach ($products as $key => $value) {
+                    if ($value->delete_flag) {
+                        echo $value->price;
+                        break;
+                    }
+                }                            
+                
+                ?>" class="form-control" id="amount" readonly>
             <small class="text-danger <?php echo ($amountError?'':'d-none'); ?>">Amount must be an number</small>
         </div> 
         <div class="mb-3">
@@ -89,7 +100,7 @@ $isOK = true;
                 <?php
                 
                 foreach ($customers as $key => $value) {
-                    echo "<option value='$value->id' 
+                    echo "<option value='$value->id' ".($value->delete_flag?'':'disabled')." 
                         data-content='<div>
                                         <h6>$value->name</h6>
                                         <small>$value->address</small>
@@ -118,7 +129,7 @@ $isOK = true;
                 <?php
             
                 foreach ($shippings as $key => $value) {
-                    echo "<option value='$value->id' >$value->name</option>";
+                    echo "<option value='$value->id' ".($value->delete_flag?'':'disabled')."  >$value->name</option>";
                 }                    
 
                 ?>                                                                                                                                    
@@ -132,7 +143,7 @@ $isOK = true;
                 <?php
             
                 foreach ($payments as $key => $value) {
-                    echo "<option value='$value->id' >$value->name</option>";
+                    echo "<option value='$value->id' ".($value->delete_flag?'':'disabled')."  >$value->name</option>";
                 }                    
 
                 ?>                                                                                                                                    
@@ -148,6 +159,7 @@ $isOK = true;
 <script>
 
     let addProductContainer = $('#add-product-container')[0]; 
+    let amountInput = $('#amount')[0];
     let count = 1;               
 
     function addProduct() {
@@ -159,12 +171,12 @@ $isOK = true;
                 <div class="mb-3">
                     <label for="product_id${count}" class="form-label">Product Name</label>
                     <select id="product_id${count}" name="product_id[]" class="selectpicker" 
-                            data-live-search="true" data-width="100%" 
+                            data-live-search="true" data-width="100%" onchange="changeAmount();" 
                             data-style="border" data-size="5">
                             <?php
 
                             foreach ($products as $key => $value) {
-                                echo "<option value='$value->id' 
+                                echo "<option data-price='$value->price' value='$value->id' ".($value->delete_flag?'':'disabled')." 
                                         data-content='<div>
                                                         <h6>$value->name</h6>
                                                         <small>$ $value->price</small>
@@ -176,7 +188,7 @@ $isOK = true;
                 </div>                                 
                 <div class="mb-3">
                     <label for="quantity${count}" class="form-label">Quantity</label>
-                    <input type="number" value="1" name="quantity[]" class="form-control" id="quantity${count}">
+                    <input onchange="changeAmount();" type="number" value="1" name="quantity[]" class="form-control" id="quantity${count}">
                 </div>                 
             </div>
             <div class="flex-fill d-flex justify-content-end align-items-center">
@@ -185,7 +197,17 @@ $isOK = true;
         </div>`                
         );
         $(".selectpicker").selectpicker();
-    }               
+    }  
+    
+    function changeAmount() {
+        productSelects = $('select[name="product_id[]"]');
+        quantities = $('input[name="quantity[]"]');
+        sum = 0;
+        for (let i = 0; i < productSelects.length; i++) {
+            sum += (+productSelects[i].selectedOptions[0].dataset.price) * (+quantities[i].value);
+        }              
+        amountInput.value = sum;
+    }
 
     <?php
 
