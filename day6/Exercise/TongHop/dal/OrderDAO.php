@@ -22,7 +22,9 @@ class OrderDAO {
                 $row['status'],
                 $row['ship_id'],
                 $row['payment_id'],
-                $row['created_at']
+                $row['created_at'],
+                $row['paid_at'],
+                $row['shipped_at']
             );
         }
         $result->free_result();

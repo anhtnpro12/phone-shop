@@ -3,8 +3,6 @@
 use DataAccessLayer\CustomerDAO;
 use DataAccessLayer\OrderDAO;
 use DataAccessLayer\OrderDetailDAO;
-use DataAccessLayer\PaymentDAO;
-use DataAccessLayer\ShippingDAO;
 
 $page = 'order';
 require '../components/header.php';
@@ -44,9 +42,7 @@ $results = OrderDAO::getList($conn);
                         </tr>';
                 } else {
                     foreach ($results as $row) {
-                        $cus = CustomerDAO::getByID($conn, $row->customer_id);
-                        $pay = PaymentDAO::getDetailById($conn, $row->payment_id);
-                        $ship = ShippingDAO::getDetailById($conn, $row->ship_id);
+                        $cus = CustomerDAO::getByID($conn, $row->customer_id);                        
                         $od = OrderDetailDAO::getListByOrderId($conn, $row->id);
                         echo '<tr>
                                 <th>'.$row->id.'</th>
@@ -54,7 +50,7 @@ $results = OrderDAO::getList($conn);
                                 <td>'.$cus->name.'</td>
                                 <td>'.$row->amount.'</td>
                                 <td>'.$row->state.'</td>                                                                
-                                <td>'.($pay->paid_at?'Paid':'Unpaid').'</td>                                                                
+                                <td>'.($row->paid_at?'Paid':'Unpaid').'</td>                                                                
                                 <td>'.($row->status?'<span class="badge bg-success">Active</span>':'<span class="badge bg-danger">inactive</span>').'</td>                                                                
                                 <td>
                                     <a href="./edit.php?id='.$row->id.'"><button class="btn btn-primary">Edit</button></a>                                    

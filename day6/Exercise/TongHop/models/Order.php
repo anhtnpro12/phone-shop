@@ -11,6 +11,8 @@ class Order {
     private $ship_id;
     private $payment_id;
     private $created_at;        
+    private $paid_at;        
+    private $shipped_at;        
 
     public function __construct($id = '',
                                 $customer_id = '',
@@ -19,7 +21,9 @@ class Order {
                                 $delete_flag = '',
                                 $ship_id = '',
                                 $payment_id = '',
-                                $created_at = '')
+                                $created_at = '',
+                                $paid_at = '',
+                                $shipped_at = '')
     {
         $this->id = $id;
         $this->customer_id = $customer_id;        
@@ -29,6 +33,8 @@ class Order {
         $this->ship_id = $ship_id;
         $this->payment_id = $payment_id;
         $this->created_at = $created_at;
+        $this->paid_at = $paid_at;
+        $this->shipped_at = $shipped_at;
     }
 
     public function &__get($name)

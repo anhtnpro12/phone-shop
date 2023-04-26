@@ -8,7 +8,6 @@ use Model\Payment;
 use mysqli;
 
 include_once '../../models/Payment.php';
-include_once '../../models/OrderPayment.php';
 include_once '../../models/Customer.php';
 
 class PaymentDAO {
@@ -106,44 +105,5 @@ class PaymentDAO {
         return $stm->execute();
     }
 
-    public static function getDetailById(mysqli $conn, $id): ?OrderPayment
-    {
-        $sql = "SELECT p.`id`, p.`payment_id`, p.`pay_amount`, p.`customer_id`, p.`paid_at` 
-                , pd.`name` as payment_name, pd.`description`, pd.`status` as payment_status
-                , `c`.`name` as customer_name, `c`.`address`, `c`.`phone`, `c`.`email`, `c`.`status` as customer_status
-                FROM `order_payments` p
-                LEFT JOIN payments pd ON p.`payment_id` = pd.`id`
-                LEFT JOIN customers c ON `p`.`customer_id` = c.`id`
-                WHERE p.`id` = ?;";
-        $stm = $conn->prepare($sql);
-        $stm->bind_param("i", $id);
-        $stm->execute();
-        $result = $stm->get_result();        
-        while ($row = $result->fetch_array()) {
-            $result->free_result();
-            $pd = new Payment(
-                $row['payment_id'], 
-                $row['payment_name'], 
-                $row['description'], 
-                $row['payment_status'],                 
-            );
-            $c = new Customer(
-                $row['customer_id'],
-                $row['customer_name'],
-                $row['address'],
-                $row['phone'],
-                $row['email'],
-                $row['customer_status'],
-            );
-            return new OrderPayment(
-                $row['id'],
-                $pd,
-                $row['pay_amount'],
-                $c,                
-                $row['paid_at']
-            );
-        }
-        $result->free_result();
-        return null;
-    }
+    
 }
