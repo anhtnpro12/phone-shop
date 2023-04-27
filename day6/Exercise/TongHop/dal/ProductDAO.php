@@ -89,7 +89,7 @@ class ProductDAO {
                         , $product->price, $product->quantity, $product->delete_flag, $product->id);                
         
         return $stm->execute();
-    }
+    }    
 
     public static function toggleStatus(mysqli $conn, $id): bool
     {

@@ -42,7 +42,7 @@ class Order {
         if (property_exists($this, $name)) {
             return $this->$name;
         } else {
-            die('Property not exist');
+            die('Property '.$name.' not exist');
         }
     }    
 
@@ -51,7 +51,7 @@ class Order {
         if (property_exists($this, $name)) {
             $this->$name = $value;
         } else {
-            die('Property not exist');
+            die('Property '.$name.' not exist');
         }
     }
 }

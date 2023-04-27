@@ -3,8 +3,8 @@
 namespace DataAccessLayer;
 
 use Model\OrderDetail;
+use Model\Product;
 use mysqli;
-use Product;
 
 include_once '../../models/OrderDetail.php';
 include_once '../../models/Product.php';
@@ -13,7 +13,7 @@ class OrderDetailDAO {
     public static function getListByOrderId(mysqli $conn, $order_id): array
     {        
         $sql = "SELECT od.`id`, od.`order_id`, od.`product_id`, od.`quantity` AS order_quantity
-                , `p`.`name`, `p`.`description`, `p`.`price`, `p`.`quantity` AS product_quantity, `p`.`status`
+                , `p`.`name`, `p`.`description`, `p`.`price`, `p`.`quantity` AS product_quantity, `p`.`delete_flag`
                 FROM `order_detail` od
                 INNER JOIN products p ON od.`product_id` = p.`id`
                 WHERE od.`order_id` = ?;";
@@ -29,7 +29,7 @@ class OrderDetailDAO {
                 $row['description'],
                 $row['price'],
                 $row['product_quantity'],
-                $row['status'],
+                $row['delete_flag'],
             );
             $list[] = new OrderDetail(
                 $row['id'],
@@ -41,5 +41,15 @@ class OrderDetailDAO {
         $result->free_result();
         return $list;
     }
+
+    public static function insert(mysqli $conn, OrderDetail $o): bool
+    {
+        $sql = 'INSERT INTO `order_detail`(`order_id`, `product_id`, `quantity`) 
+                VALUES (? ,? ,?);';
+        $stm = $conn->prepare($sql);
+        $stm->bind_param('iii', $o->order_id, $o->product->id, $o->quantity);
+                                             
+        return $stm->execute();
+    } 
          
 }

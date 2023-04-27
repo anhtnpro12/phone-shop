@@ -12,7 +12,16 @@ include '../../dal/ShippingDAO.php';
 include '../../dal/OrderDetailDAO.php';
 include '../../dal/CustomerDAO.php';
 
-$results = OrderDAO::getList($conn);      
+$results = OrderDAO::getList($conn);
+
+define('NUM_PER_PAGE', 5);
+
+// pagination
+$count = OrderDAO::count($conn);  
+$pageSize = ceil($count/NUM_PER_PAGE);
+$page = $_GET['page'] ?? 1;
+
+$results = OrderDAO::getListInRange($conn, ($page-1)*NUM_PER_PAGE, NUM_PER_PAGE);   
 
 ?>
 
@@ -46,16 +55,16 @@ $results = OrderDAO::getList($conn);
                         $od = OrderDetailDAO::getListByOrderId($conn, $row->id);
                         echo '<tr>
                                 <th>'.$row->id.'</th>
-                                <td>'.$od[0]->product->name.(count($od)>1?'...':'').'</td>
+                                <td>'.(count($od)>0?$od[0]->product->name.(count($od)>1?'...':''):'').'</td>
                                 <td>'.$cus->name.'</td>
                                 <td>'.$row->amount.'</td>
                                 <td>'.$row->state.'</td>                                                                
                                 <td>'.($row->paid_at?'Paid':'Unpaid').'</td>                                                                
-                                <td>'.($row->status?'<span class="badge bg-success">Active</span>':'<span class="badge bg-danger">inactive</span>').'</td>                                                                
+                                <td>'.($row->delete_flag?'<span class="badge bg-success">Active</span>':'<span class="badge bg-danger">inactive</span>').'</td>                                                                
                                 <td>
                                     <a href="./edit.php?id='.$row->id.'"><button class="btn btn-primary">Edit</button></a>                                    
-                                    <a href="./toggleStatus.php?id='.$row->id.'">
-                                        '.($row->status?'<button class="btn btn-danger">Deactivate</button>':'<button class="btn btn-success">Activate</button>').'
+                                    <a href="./toggleStatus.php?id='.$row->id.'&page='.$page.'">
+                                        '.($row->delete_flag?'<button class="btn btn-danger">Deactivate</button>':'<button class="btn btn-success">Activate</button>').'
                                     </a>
                                 </td>
                             </tr>';
@@ -65,6 +74,39 @@ $results = OrderDAO::getList($conn);
                         
         </tbody>
     </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item"><a class="page-link <?php echo ($page==1?'disabled':''); ?>" 
+                                    href="<?php echo $_SERVER['PHP_SELF'].'?page='.($page-1); ?>">Previous</a></li>
+            <?php
+            
+            for ($i = 1; $i <= $pageSize; $i++) { 
+                echo '<li class="page-item"><a class="page-link '.($i==$page?'active':'')
+                    .' " href="'.$_SERVER['PHP_SELF'].'?page='.$i.'">'.$i.'</a></li>';
+            }
+
+            ?>            
+            <li class="page-item"><a class="page-link <?php echo ($page==$pageSize?'disabled':''); ?>" 
+                                    href="<?php echo $_SERVER['PHP_SELF'].'?page='.($page+1); ?>">Next</a></li>
+        </ul>
+    </nav>
 </div>
+
+<script>
+    <?php
+
+    $type = $_GET['type'];              
+    $mess = $_GET['mess'];                
+
+    if (isset($type)) {
+        if ($type == 'success') {
+            echo 'showSuccessToast("'.$mess.'")';
+        } else {
+            echo 'showErrorToast("'.$mess.'")';            
+        }
+    }
+
+    ?>
+</script>
 
 <?php require '../components/footer.php'; ?>

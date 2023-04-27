@@ -22,6 +22,7 @@ include '../../dal/OrderDetailDAO.php';
 $quantityError = false;
 $amountError = false;
 $isOK = false;
+$order_id = $_GET['id'];
 
 if (isset($_POST['submit'])) {    
     if (isset($_POST['quantity'])) {
@@ -48,7 +49,7 @@ if (isset($_POST['submit'])) {
 
         OrderDAO::insert($conn, new Order('', $customer_id, $amount, $state
                     , $delete_flag, $ship_id, $payment_id, date('Y-m-d h:i:s'), '', ''));
-        $order_id = OrderDAO::count($conn);
+        
                             
         foreach ($product_ids as $key => $value) {
             $pid = $product_ids[$key];
@@ -71,6 +72,8 @@ $products = ProductDAO::getList($conn);
 $customers = CustomerDAO::getList($conn);
 $shippings = ShippingDAO::getList($conn);
 $payments = PaymentDAO::getList($conn);
+$order = OrderDAO::getById($conn, $order_id); 
+$orderDetails = OrderDetailDAO::getListByOrderId($conn, $order_id);
 
 ?>
 
@@ -78,63 +81,55 @@ $payments = PaymentDAO::getList($conn);
     <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post" style="width: 50%;">
         <h3 class="text-center">Add Order</h3>    
         
-        <div class="container mb-3 d-flex flex-wrap">
-            <hr style="width: 100%;"/>
-            <div class="wrapper flex-fill">
-                <div class="mb-3">
-                    <label for="product_id1" class="form-label">Product Name</label>
-                    <select id="product_id1" name="product_id[]" class="selectpicker" 
-                            data-live-search="true" data-width="100%" 
-                            onchange="changeAmount(); changeMaxQuantity(this.id.substr(10), this.selectedOptions[0].dataset.quantity);" 
-                            data-style="border" data-size="5">
-                            <?php
+        <?php
+        
+        foreach ($orderDetails as $index => $orderDetail) {
+        
+            echo '<div class="container mb-3 d-flex flex-wrap">
+                    <hr style="width: 100%;"/>
+        
+                    <div class="wrapper flex-fill">
+                            <div class="mb-3">
+                                <label for="product_id'.$index.'" class="form-label">Product Name</label>
+                                <select id="product_id'.$index.'" name="product_id[]" class="selectpicker" 
+                                        data-live-search="true" data-width="100%" 
+                                        onchange="changeAmount(); changeMaxQuantity(this.id.substr(10), this.selectedOptions[0].dataset.quantity);" 
+                                        data-style="border" data-size="5">';
 
-                            foreach ($products as $key => $value) {
-                                echo "<option data-price='$value->price' data-quantity='$value->quantity' 
-                                        value='$value->id' ".($value->delete_flag?'':'disabled')."
-                                        data-content='<div> 
-                                                        <h6>$value->name</h6>
-                                                        <small>$ $value->price</small>
-                                                        <small>Remaining: $value->quantity</small>
-                                                    </div>' >$value->price</option>";
-                            }                    
-    
-                            ?>                                                                                                                                        
-                    </select>
-                </div>                                 
-                <div class="mb-3">
-                    <label for="quantity1" class="form-label">Quantity</label>
-                    <input onchange="changeAmount();" type="number" min="1" max="<?php
-                        foreach ($products as $key => $value) {
-                            if ($value->delete_flag) {
-                                echo $value->quantity;
-                                break;
-                            }
-                        }
-                    ?>" value="1" name="quantity[]" class="form-control" id="quantity1">
-                    <small class="text-danger <?php echo ($quantityError?'':'d-none'); ?>">Quantity must be an integer greater than 0 and less than the remainder</small>
-                </div>                 
-            </div>
-            <div class="flex-fill d-flex justify-content-end align-items-center">
-                <button class="btn btn-danger" onclick="this.parentNode.parentNode.remove(); changeAmount();">Remove</button>
-            </div>
-        </div>
+                                    
+            foreach ($products as $value) {
+                echo "<option data-price='$value->price' data-quantity='$value->quantity' 
+                        value='$value->id' ".($value->delete_flag?'':'disabled')."
+                        data-content='<div> 
+                                        <h6>$value->name</h6>
+                                        <small>$ $value->price</small>
+                                        <small>Remaining: $value->quantity</small>
+                                    </div>' ".($value->id==$orderDetail->product->id?"selected":"").">$value->price</option>";
+            }
+                                    
+            echo '      </select>
+                    </div>                                 
+                    <div class="mb-3">
+                        <label for="quantity'.$index.'" class="form-label">Quantity</label>
+                        <input onchange="changeAmount();" type="number" min="1" max="'.$orderDetail->product->quantity.'" 
+                            value="'.$orderDetail->quantity.'" name="quantity[]" class="form-control" id="quantity'.$index.'">
+                        <small class="text-danger '.($quantityError?"":"d-none").'">Quantity must be an integer greater than 0 and less than the remainder</small>
+                    </div>                 
+                </div>
+                <div class="flex-fill d-flex justify-content-end align-items-center">
+                    <button class="btn btn-danger" onclick="this.parentNode.parentNode.remove(); changeAmount();">Remove</button>
+                </div>
+            </div>';
+        }
+                
+        ?>
         <div id="add-product-container" class="container mb-3 d-flex">
             <button id="add-product-btn" class="btn btn-success" type="button" onclick="addProduct(); changeAmount();">Add Product</button>
         </div>
         <hr>
         <div class="mb-3">
             <label for="amount" class="form-label">Amount</label>
-            <input type="text" name="amount" value="<?php
-
-                foreach ($products as $key => $value) {
-                    if ($value->delete_flag) {
-                        echo $value->price;
-                        break;
-                    }
-                }                            
-                
-                ?>" class="form-control" id="amount" readonly>
+            <input type="text" name="amount" value="<?php echo $order->amount; ?>" class="form-control" id="amount" readonly>
             <small class="text-danger <?php echo ($amountError?'':'d-none'); ?>">Amount must be an number</small>
         </div> 
         <div class="mb-3">
@@ -149,7 +144,7 @@ $payments = PaymentDAO::getList($conn);
                         data-content='<div>
                                         <h6>$value->name</h6>
                                         <small>$value->address</small>
-                                    </div>' >$value->name</option>";
+                                    </div>' ".($value->id==$order->customer_id?"selected":"").">$value->name</option>";
                 }                    
 
                 ?>                                                                                                                                                      
@@ -160,10 +155,10 @@ $payments = PaymentDAO::getList($conn);
             <select id="state" name="state" class="selectpicker" 
                     data-live-search="true" data-width="100%" 
                     data-style="border" data-size="5">
-                <option value="1" data-content='<span class="badge bg-secondary">Unconfirmed</span>'>Unconfirmed</option>                                                                
-                <option value="2" data-content='<span class="badge bg-primary">Confirmed</span>' selected>Confirmed</option>                                                                
-                <option value="3" data-content='<span class="badge bg-warning">Delivery</span>'>Delivery</option>                                                                
-                <option value="4" data-content='<span class="badge bg-success">Complete</span>'>Complete</option>                                                                                                                                       
+                <option value="1" <?php echo ($order->state==1?'selected':''); ?> data-content='<span class="badge bg-secondary">Unconfirmed</span>'>Unconfirmed</option>                                                                
+                <option value="2" <?php echo ($order->state==2?'selected':''); ?> data-content='<span class="badge bg-primary">Confirmed</span>'>Confirmed</option>                                                                
+                <option value="3" <?php echo ($order->state==3?'selected':''); ?> data-content='<span class="badge bg-warning">Delivery</span>'>Delivery</option>                                                                
+                <option value="4" <?php echo ($order->state==4?'selected':''); ?> data-content='<span class="badge bg-success">Complete</span>'>Complete</option>                                                                                                                                       
             </select>
         </div>    
         <div class="mb-3">
@@ -174,7 +169,7 @@ $payments = PaymentDAO::getList($conn);
                 <?php
             
                 foreach ($shippings as $key => $value) {
-                    echo "<option value='$value->id' ".($value->delete_flag?'':'disabled')."  >$value->name</option>";
+                    echo "<option ".($order->ship_id==$value->id?"selected":'')." value='$value->id' ".($value->delete_flag?'':'disabled')."  >$value->name</option>";
                 }                    
 
                 ?>                                                                                                                                    
@@ -188,7 +183,7 @@ $payments = PaymentDAO::getList($conn);
                 <?php
             
                 foreach ($payments as $key => $value) {
-                    echo "<option value='$value->id' ".($value->delete_flag?'':'disabled')."  >$value->name</option>";
+                    echo "<option ".($order->payment_id==$value->id?"selected":'')." value='$value->id' ".($value->delete_flag?'':'disabled')."  >$value->name</option>";
                 }                    
 
                 ?>                                                                                                                                    
@@ -205,7 +200,7 @@ $payments = PaymentDAO::getList($conn);
 
     let addProductContainer = $('#add-product-container')[0]; 
     let amountInput = $('#amount')[0];
-    let count = 1;               
+    let count = <?php echo count($orderDetails); ?>;               
 
     function addProduct() {
         count++;
