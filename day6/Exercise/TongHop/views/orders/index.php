@@ -36,6 +36,7 @@ $results = OrderDAO::getListInRange($conn, ($page-1)*NUM_PER_PAGE, NUM_PER_PAGE)
                 <th scope="col">Amount</th>                
                 <th scope="col">State</th>                
                 <th scope="col">Payment</th>                
+                <th scope="col">Date</th>                
                 <th scope="col">Status</th>                                                
                 <th scope="col">Action</th>
             </tr>
@@ -53,13 +54,29 @@ $results = OrderDAO::getListInRange($conn, ($page-1)*NUM_PER_PAGE, NUM_PER_PAGE)
                     foreach ($results as $row) {
                         $cus = CustomerDAO::getByID($conn, $row->customer_id);                        
                         $od = OrderDetailDAO::getListByOrderId($conn, $row->id);
+                        $state = '';
+                        switch ($row->state) {
+                            case 1:
+                                $state = '<span class="badge bg-secondary">Unconfirmed</span>';
+                                break;
+                            case 2:
+                                $state = '<span class="badge bg-primary">Confirmed</span>';
+                                break;
+                            case 3:
+                                $state = '<span class="badge bg-warning">Delivery</span>';
+                                break;
+                            case 4:
+                                $state = '<span class="badge bg-success">Complete</span>';
+                                break;                                                                                        
+                        }
                         echo '<tr>
                                 <th>'.$row->id.'</th>
                                 <td>'.(count($od)>0?$od[0]->product->name.(count($od)>1?'...':''):'').'</td>
                                 <td>'.$cus->name.'</td>
                                 <td>'.$row->amount.'</td>
-                                <td>'.$row->state.'</td>                                                                
+                                <td>'.$state.'</td>                                                                
                                 <td>'.($row->paid_at?'Paid':'Unpaid').'</td>                                                                
+                                <td>'.$row->created_at.'</td>                                                                
                                 <td>'.($row->delete_flag?'<span class="badge bg-success">Active</span>':'<span class="badge bg-danger">inactive</span>').'</td>                                                                
                                 <td>
                                     <a href="./edit.php?id='.$row->id.'"><button class="btn btn-primary">Edit</button></a>                                    

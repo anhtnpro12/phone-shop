@@ -51,5 +51,14 @@ class OrderDetailDAO {
                                              
         return $stm->execute();
     } 
-         
+      
+    public static function deleteByOrderId(mysqli $conn, $order_id): bool
+    {
+        $sql = 'DELETE FROM `order_detail`
+                WHERE `order_id`=?;';
+        $stm = $conn->prepare($sql);
+        $stm->bind_param('i', $order_id);
+                                             
+        return $stm->execute();
+    }
 }

@@ -48,7 +48,7 @@ if (isset($_POST['submit'])) {
 
         OrderDAO::insert($conn, new Order('', $customer_id, $amount, $state
                     , $delete_flag, $ship_id, $payment_id, date('Y-m-d h:i:s'), '', ''));
-        $order_id = OrderDAO::count($conn);
+        $order_id = OrderDAO::getMaxId($conn);
                             
         foreach ($product_ids as $key => $value) {
             $pid = $product_ids[$key];
@@ -111,7 +111,7 @@ $payments = PaymentDAO::getList($conn);
                                 break;
                             }
                         }
-                    ?>" value="1" name="quantity[]" class="form-control" id="quantity1">
+                    ?>" value="1" name="quantity[]" class="form-control <?php echo ($quantityError?'is-invalid':''); ?>" id="quantity1">
                     <small class="text-danger <?php echo ($quantityError?'':'d-none'); ?>">Quantity must be an integer greater than 0 and less than the remainder</small>
                 </div>                 
             </div>
@@ -227,6 +227,7 @@ $payments = PaymentDAO::getList($conn);
                                         data-content='<div>
                                                         <h6>$value->name</h6>
                                                         <small>$ $value->price</small>
+                                                        <small>Remaining: $value->quantity</small>
                                                     </div>' >$value->name</option>";
                             }                    
     

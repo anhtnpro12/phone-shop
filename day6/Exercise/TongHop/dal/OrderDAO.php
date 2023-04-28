@@ -101,15 +101,15 @@ class OrderDAO {
         return null;
     }
 
-    // public static function update(mysqli $conn, PayDetail $product): bool
-    // {
-    //     $sql = "UPDATE `pay_detail` SET `name`= ?,`description`= ?, `status`= ? WHERE `id` = ?;";
-    //     $stm = $conn->prepare($sql);
-    //     $stm->bind_param("ssii", $product->name, $product->description
-    //                     , $product->status, $product->id);                
+    public static function update(mysqli $conn, Order $o): bool
+    {
+        $sql = "UPDATE `orders` SET `customer_id`= ?,`amount`= ?,`state`= ?, `delete_flag`= ?, `ship_id`= ?, `payment_id`= ? WHERE `id` = ?;";
+        $stm = $conn->prepare($sql);
+        $stm->bind_param("idiiiii", $o->customer_id, $o->amount, $o->state
+                        , $o->delete_flag, $o->ship_id, $o->payment_id, $o->id);                
         
-    //     return $stm->execute();
-    // }
+        return $stm->execute();
+    }
 
     public static function toggleStatus(mysqli $conn, $id): bool
     {
@@ -119,4 +119,12 @@ class OrderDAO {
         
         return $stm->execute();
     }
+
+    public static function getMaxId(mysqli $conn): int
+    {
+        $sql = "SELECT MAX(`id`) AS max FROM `orders`;";
+        $result = $conn->query($sql);                       
+        
+        return $result->fetch_row()[0];             
+    } 
 }

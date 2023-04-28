@@ -107,4 +107,34 @@ class CustomerDAO {
         
         return $stm->execute();
     }
+
+    public static function emailExists(mysqli $conn, $email): bool
+    {
+        $sql = "SELECT * FROM `customers` WHERE `email` = ?;";
+        $stm = $conn->prepare($sql);
+        $stm->bind_param("s", $email);
+        $stm->execute();
+        $result = $stm->get_result();        
+        while ($row = $result->fetch_array()) {
+            $result->free_result();
+            return true;
+        }
+        $result->free_result();
+        return false;
+    }
+
+    public static function phoneExists(mysqli $conn, $phone): bool
+    {
+        $sql = "SELECT * FROM `customers` WHERE `phone` = ?;";
+        $stm = $conn->prepare($sql);
+        $stm->bind_param("s", $phone);
+        $stm->execute();
+        $result = $stm->get_result();        
+        while ($row = $result->fetch_array()) {
+            $result->free_result();
+            return true;
+        }
+        $result->free_result();
+        return false;
+    }
 }

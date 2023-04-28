@@ -22,7 +22,8 @@ include '../../dal/OrderDetailDAO.php';
 $quantityError = false;
 $amountError = false;
 $isOK = false;
-$order_id = $_GET['id'];
+$order_id = $_GET['id'] ?? $_POST['id']; 
+$orderDetails = OrderDetailDAO::getListByOrderId($conn, $order_id);
 
 if (isset($_POST['submit'])) {    
     if (isset($_POST['quantity'])) {
@@ -44,13 +45,18 @@ if (isset($_POST['submit'])) {
         $delete_flag = 1;        
         $ship_id = $_POST['shipping_id'];        
         $payment_id = $_POST['payment_id'];
-        $product_ids = $_POST['product_id'];
-        $quantities = $_POST['quantity'];  
+        $product_ids = $_POST['product_id'] ?? [];
+        $quantities = $_POST['quantity'] ?? [];
+        // var_dump($amount); die();
 
-        OrderDAO::insert($conn, new Order('', $customer_id, $amount, $state
+        OrderDAO::update($conn, new Order($order_id, $customer_id, $amount, $state
                     , $delete_flag, $ship_id, $payment_id, date('Y-m-d h:i:s'), '', ''));
         
-                            
+        foreach ($orderDetails as $key => $value) {
+            $value->product->quantity += $value->quantity;
+            ProductDAO::update($conn, $value->product);
+        }
+        OrderDetailDAO::deleteByOrderId($conn, $order_id);                    
         foreach ($product_ids as $key => $value) {
             $pid = $product_ids[$key];
             $quan = $quantities[$key];
@@ -63,8 +69,7 @@ if (isset($_POST['submit'])) {
             }
             ProductDAO::update($conn, $pro);            
         }  
-        $isOK = true; 
-        header('Location: index.php?type=success&mess=Add%20Order%20Successful%21');
+        $isOK = true;         
     }
 }
 
@@ -72,14 +77,14 @@ $products = ProductDAO::getList($conn);
 $customers = CustomerDAO::getList($conn);
 $shippings = ShippingDAO::getList($conn);
 $payments = PaymentDAO::getList($conn);
-$order = OrderDAO::getById($conn, $order_id); 
+$order = OrderDAO::getById($conn, $order_id);
 $orderDetails = OrderDetailDAO::getListByOrderId($conn, $order_id);
 
 ?>
 
 <div class="container mt-5 mb-5 d-flex justify-content-center">    
     <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post" style="width: 50%;">
-        <h3 class="text-center">Add Order</h3>    
+        <h3 class="text-center">Edit Order</h3>    
         
         <?php
         
@@ -190,9 +195,9 @@ $orderDetails = OrderDetailDAO::getListByOrderId($conn, $order_id);
             </select>
         </div>    
               
-                                     
+        <input type="hidden" name="id" value="<?php echo $order_id; ?>">                                     
         
-        <input type="submit" name="submit" value="Add now" class="btn btn-primary">
+        <input onclick="return cancelSubmit();" type="submit" name="submit" value="Update now" class="btn btn-primary">
     </form>
 </div>
 
@@ -222,6 +227,7 @@ $orderDetails = OrderDetailDAO::getListByOrderId($conn, $order_id);
                                         data-content='<div>
                                                         <h6>$value->name</h6>
                                                         <small>$ $value->price</small>
+                                                        <small>Remaining: $value->quantity</small>
                                                     </div>' >$value->name</option>";
                             }                    
     
@@ -261,6 +267,15 @@ $orderDetails = OrderDetailDAO::getListByOrderId($conn, $order_id);
 
     function changeMaxQuantity(count, value) {
         $('#quantity'+count)[0].max = value;
+    }
+
+    function cancelSubmit() {
+        if (<?php echo ($order->state > 2); ?>) {
+            showErrorToast("You cannot modify the order!!<br>The product is being shipped or you have already received it");
+            return false;
+        }
+
+        return true;
     }
 
     <?php
