@@ -46,7 +46,7 @@ $results = OrderDAO::getListInRange($conn, ($page-1)*NUM_PER_PAGE, NUM_PER_PAGE)
             <?php
                 if (empty($results)) {
                     echo '<tr>
-                            <td colspan="8" style="text-align: center;">
+                            <td colspan="9" style="text-align: center;">
                                 <img src="../imgs/empty.png" alt="empty image">                
                             </td>
                         </tr>';
@@ -92,7 +92,7 @@ $results = OrderDAO::getListInRange($conn, ($page-1)*NUM_PER_PAGE, NUM_PER_PAGE)
         </tbody>
     </table>
     <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
+        <ul class="pagination justify-content-center <?php echo ($pageSize==0?'d-none':''); ?>">
             <li class="page-item"><a class="page-link <?php echo ($page==1?'disabled':''); ?>" 
                                     href="<?php echo $_SERVER['PHP_SELF'].'?page='.($page-1); ?>">Previous</a></li>
             <?php

@@ -61,4 +61,12 @@ class OrderDetailDAO {
                                              
         return $stm->execute();
     }
+
+    public static function getQuantitySum(mysqli $conn): ?int
+    {
+        $sql = "SELECT SUM(`quantity`) AS quantity_sum FROM `order_detail`;";
+        $result = $conn->query($sql);                       
+        
+        return $result->fetch_row()[0];             
+    } 
 }

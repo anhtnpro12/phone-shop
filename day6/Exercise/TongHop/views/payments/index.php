@@ -59,7 +59,7 @@ $results = PaymentDAO::getListInRange($conn, ($page-1)*NUM_PER_PAGE, NUM_PER_PAG
         </tbody>
     </table>
     <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
+        <ul class="pagination justify-content-center <?php echo ($pageSize==0?'d-none':''); ?>">
             <li class="page-item"><a class="page-link <?php echo ($page==1?'disabled':''); ?>" 
                                     href="<?php echo $_SERVER['PHP_SELF'].'?page='.($page-1); ?>">Previous</a></li>
             <?php

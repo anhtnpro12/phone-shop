@@ -127,4 +127,24 @@ class OrderDAO {
         
         return $result->fetch_row()[0];             
     } 
+
+    public static function getAmountSum(mysqli $conn): ?int
+    {
+        $sql = "SELECT SUM(`amount`) AS amount_sum FROM `orders`;";
+        $result = $conn->query($sql);                       
+        
+        return $result->fetch_row()[0];             
+    } 
+
+    public static function getAmountSumInMonth(mysqli $conn, $from, $to): ?int
+    {
+        $sql = "SELECT SUM(`amount`) AS amount_sum FROM `orders`
+                WHERE `created_at` >= ? and `created_at` < ?;";
+        $stm = $conn->prepare($sql);
+        $stm->bind_param('ss', $from, $to);
+        $stm->execute();
+        $result = $stm->get_result();                       
+        
+        return $result->fetch_row()[0];             
+    }
 }
