@@ -14,15 +14,23 @@ include '../../dal/CustomerDAO.php';
 $orders = OrderDAO::count($conn);
 $revenue = OrderDAO::getAmountSum($conn) ?? 0;
 $products = OrderDetailDAO::getQuantitySum($conn) ?? 0;
-$stat = '';
 
+$revenueStat = '';
 for ($i=1; $i <= 12; $i++) { 
-    $stat .= OrderDAO::getAmountSumInMonth($conn
+    $revenueStat .= OrderDAO::getAmountSumInMonth($conn
             , date('Y-m-d H:i:s', mktime(0,0,0,$i, 1, date('Y')))
             , date('Y-m-d H:i:s', mktime(0,0,0,$i+1, 1, date('Y')))) ?? '0';
-    $stat .= $i==12?'':',';            
+    $revenueStat .= $i==12?'':',';            
     // echo date('Y-m-d H:i:s', mktime(0,0,0,$i, 1, date('Y'))) . ' - ';
     // echo date('Y-m-d H:i:s', mktime(0,0,0,$i+1, 1, date('Y'))) . '<br>';          
+}
+
+$orderStat = '';
+for ($i=1; $i <= 12; $i++) { 
+    $orderStat .= OrderDAO::countInMonth($conn
+            , date('Y-m-d H:i:s', mktime(0,0,0,$i, 1, date('Y')))
+            , date('Y-m-d H:i:s', mktime(0,0,0,$i+1, 1, date('Y')))) ?? '0';
+    $orderStat .= $i==12?'':',';                    
 }
 
 ?>
@@ -91,7 +99,7 @@ for ($i=1; $i <= 12; $i++) {
                     </div>
                 </div>
             </div>
-            <h1 class="mt-1 mb-3"><?php echo number_format($products); ?></h1>
+            <h1 class="mt-1 mb-3"><?php echo number_format($products); ?> <small>Products</small></h1>
             <div class="mb-0">
                 <!-- <span class="badge text-primary bg-primary bg-opacity-10"> <i class="mdi mdi-arrow-bottom-right"></i> -3.65% </span>
                 <span class="text-muted">Since last week</span> -->
@@ -117,8 +125,14 @@ for ($i=1; $i <= 12; $i++) {
         data: {
             labels: xValues,
             datasets: [{
+                    label: "Order",
+                    data: [<?php echo $orderStat;?>],
+                    backgroundColor: "rgba(255,0,0,1)",
+                    borderColor: "rgba(255,0,0,0.3)",
+                    fill: false
+                }, {
                     label: "Revenue",
-                    data: [<?php echo $stat;?>],
+                    data: [<?php echo $revenueStat;?>],
                     backgroundColor: "rgba(0,0,255,1)",
                     borderColor: "rgba(0,0,255,0.3)",
                     fill: false
