@@ -1,0 +1,7 @@
+prefix root
+
+group root
+
+extend layout blade laravel
+
+include blade laravel

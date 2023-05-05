@@ -159,4 +159,13 @@ class OrderDAO {
         
         return $result->fetch_row()[0];             
     }
+
+    public static function pay(mysqli $conn, $id): bool
+    {
+        $sql = "UPDATE `orders` SET `paid_at`= NOW() WHERE `id` = ?;";
+        $stm = $conn->prepare($sql);
+        $stm->bind_param("i", $id);                
+        
+        return $stm->execute();
+    }
 }

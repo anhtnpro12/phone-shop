@@ -80,8 +80,11 @@ $results = OrderDAO::getListInRange($conn, ($page-1)*NUM_PER_PAGE, NUM_PER_PAGE)
                                 <td>'.($row->delete_flag?'<span class="badge bg-success">Active</span>':'<span class="badge bg-danger">inactive</span>').'</td>                                                                
                                 <td>
                                     <a href="./edit.php?id='.$row->id.'"><button class="btn btn-primary">Edit</button></a>                                    
-                                    <a href="./toggleStatus.php?id='.$row->id.'&page='.$page.'">
+                                    <a style="text-decoration: none;" href="./toggleStatus.php?id='.$row->id.'&page='.$page.'">
                                         '.($row->delete_flag?'<button class="btn btn-danger">Deactivate</button>':'<button class="btn btn-success">Activate</button>').'
+                                    </a>
+                                    <a href="./pay.php?id='.$row->id.'&page='.$page.'">
+                                        '.($row->paid_at?'':'<button class="btn btn-success">Pay</button>').'
                                     </a>
                                 </td>
                             </tr>';
