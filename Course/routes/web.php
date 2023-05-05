@@ -13,6 +13,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::prefix('customer')->group(function () {
+    Route::get('/list', function () {
+        return view('customers.index');
+    });
+    Route::get('/post', function () {
+        return view('customers.index');
+    });
+    Route::get('/list', function () {
+        return view('customers.index');
+    });
+    Route::get('/list', function () {
+        return view('customers.index');
+    });    
 });

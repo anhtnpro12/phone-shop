@@ -1,6 +1,6 @@
-prefix root
+prefix route
 
-group root
+group route
 
 extend layout blade laravel
 
