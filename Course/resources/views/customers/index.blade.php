@@ -1,9 +1,11 @@
 @extends('layouts.default')
 
+@section('customer', 'active')
+
 @section('content')
     
     <div class="container mb-5">
-        <a href="./create.php"><button class="btn btn-success mt-3 mb-3">Add Customer</button></a>
+        <a href="{{ route('customer.create') }}"><button class="btn btn-success mt-3 mb-3">Add Customer</button></a>
         <table class="table">
             <thead>
                 <tr class="table-secondary">
@@ -25,7 +27,7 @@
                     <td>aothat@aothat.com</td>                                                                
                     <td><span class="badge bg-success">Active</span></td>                                                                
                     <td>
-                        <a href="#"><button class="btn btn-primary">Edit</button></a>                                    
+                        <a href="{{ route('customer.edit') }}"><button class="btn btn-primary">Edit</button></a>                                    
                         <a href="#">
                             <button class="btn btn-danger">Deactivate</button>
                         </a>
@@ -39,7 +41,7 @@
                     <td>aothat@aothat.com</td>                                                                
                     <td><span class="badge bg-success">Active</span></td>                                                                
                     <td>
-                        <a href="#"><button class="btn btn-primary">Edit</button></a>                                    
+                        <a href="{{ route('customer.edit') }}"><button class="btn btn-primary">Edit</button></a>                                    
                         <a href="#">
                             <button class="btn btn-danger">Deactivate</button>
                         </a>
@@ -53,7 +55,7 @@
                     <td>aothat@aothat.com</td>                                                                
                     <td><span class="badge bg-success">Active</span></td>                                                                
                     <td>
-                        <a href="#"><button class="btn btn-primary">Edit</button></a>                                    
+                        <a href="{{ route('customer.edit') }}"><button class="btn btn-primary">Edit</button></a>                                    
                         <a href="#">
                             <button class="btn btn-danger">Deactivate</button>
                         </a>
@@ -67,7 +69,7 @@
                     <td>aothat@aothat.com</td>                                                                
                     <td><span class="badge bg-success">Active</span></td>                                                                
                     <td>
-                        <a href="#"><button class="btn btn-primary">Edit</button></a>                                    
+                        <a href="{{ route('customer.edit') }}"><button class="btn btn-primary">Edit</button></a>                                    
                         <a href="#">
                             <button class="btn btn-danger">Deactivate</button>
                         </a>

@@ -47,7 +47,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="../home/index.php">TNA</a>
+            <a class="navbar-brand" href="{{ route('home') }}">TNA</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -56,29 +56,29 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Home</a>
+                        <a class="nav-link @yield('home')" href="{{ route('home') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Customer</a>
+                        <a class="nav-link @yield('customer')" href="{{ route('customer.list') }}">Customer</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Product</a>
+                        <a class="nav-link @yield('product')" href="#">Product</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Order</a>
+                        <a class="nav-link @yield('order')" href="{{ route('order.list') }}">Order</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Shipping</a>
+                        <a class="nav-link @yield('shipping')" href="#">Shipping</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Payment</a>
+                        <a class="nav-link @yield('payment')" href="#">Payment</a>
                     </li>
                 </ul>
 
             </div>
         </div>
-    </nav>
-    @yield('content')
+    </nav>    
+    @yield('content')   
     <footer class="bg-light text-center text-lg-start">
         <div class="text-center p-3" style="background-color: #ccc;">
             ©️ 2023 - TNA
