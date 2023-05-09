@@ -5,21 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class CustomerController extends Controller
+class PaymentController extends Controller
 {
     public function list(): View
     {
-        return view('customers.index');
+        return view('payments.index');
     }
 
     public function create(): View
     {
-        return view('customers.create');
+        return view('payments.create');
     }
 
     public function edit(): View
     {
-        return view('customers.edit');
+        return view('payments.edit');
     }
 }
-?>

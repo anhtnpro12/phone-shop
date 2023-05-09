@@ -1,8 +1,6 @@
 @extends('layouts.default')
 
-@section('order', 'active')
-
-@section('content')
+@section('contents')
 
     <div class="container mb-5">
         <a href="{{ route('order.create') }}"><button class="btn btn-success mt-3 mb-3">Add Order</button></a>
