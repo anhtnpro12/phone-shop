@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,9 +19,7 @@ Route::get('/', function () {
 })->name('home'); 
 
 Route::prefix('customer')->group(function () {
-    Route::get('/list', function () {
-        return view('customers.index');
-    })->name('customer.list');
+    Route::get('/list', [CustomerController::class, 'list'])->name('customer.list');
 
     Route::get('/create', function () {
         return view('customers.create');
