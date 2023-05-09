@@ -86,3 +86,4 @@ Route::prefix('shipping')->group(function () {
         return view('shippings.edit');
     })->name('shipping.edit');            
 });
+
