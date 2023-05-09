@@ -1,6 +1,0 @@
-tru so luong di
-validate 
-
-
-Khi tao mot project laravel luu y:
-phai tao artisan key
