@@ -1,7 +1,0 @@
-prefix route
-
-group route
-
-extend layout blade laravel
-
-include blade laravel

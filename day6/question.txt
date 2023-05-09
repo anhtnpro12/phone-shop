@@ -1,1 +1,0 @@
-tại sao define __set lại không chạy được
