@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/home', function () {
+Route::get('/', function () {
     return view('home.index');
 })->name('home'); 
 
@@ -43,4 +43,46 @@ Route::prefix('order')->group(function () {
     Route::get('/edit', function () {
         return view('orders.edit');
     })->name('order.edit');            
+});
+
+Route::prefix('payment')->group(function () {
+    Route::get('/list', function () {
+        return view('payments.index');
+    })->name('payment.list');
+
+    Route::get('/create', function () {
+        return view('payments.create');
+    })->name('payment.create');            
+    
+    Route::get('/edit', function () {
+        return view('payments.edit');
+    })->name('payment.edit');            
+});
+
+Route::prefix('product')->group(function () {
+    Route::get('/list', function () {
+        return view('products.index');
+    })->name('product.list');
+
+    Route::get('/create', function () {
+        return view('products.create');
+    })->name('product.create');            
+    
+    Route::get('/edit', function () {
+        return view('products.edit');
+    })->name('product.edit');            
+});
+
+Route::prefix('shipping')->group(function () {
+    Route::get('/list', function () {
+        return view('shippings.index');
+    })->name('shipping.list');
+
+    Route::get('/create', function () {
+        return view('shippings.create');
+    })->name('shipping.create');            
+    
+    Route::get('/edit', function () {
+        return view('shippings.edit');
+    })->name('shipping.edit');            
 });

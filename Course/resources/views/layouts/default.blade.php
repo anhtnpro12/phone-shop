@@ -65,16 +65,16 @@
                         <a class="nav-link @yield('customer')" href="{{ route('customer.list') }}">Customer</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @yield('product')" href="#">Product</a>
+                        <a class="nav-link @yield('product')" href="{{ route('product.list') }}">Product</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link @yield('order')" href="{{ route('order.list') }}">Order</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @yield('shipping')" href="#">Shipping</a>
+                        <a class="nav-link @yield('shipping')" href="{{ route('shipping.list') }}">Shipping</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @yield('payment')" href="#">Payment</a>
+                        <a class="nav-link @yield('payment')" href="{{ route('payment.list') }}">Payment</a>
                     </li>
                 </ul>
 
