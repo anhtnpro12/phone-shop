@@ -18,6 +18,10 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->tinyInteger('status')->nullable();
             $table->tinyInteger('popular')->nullable();
+            $table->tinyInteger('image')->nullable()->charset('utf8mb4')->collation('utf8mb4_vietnamese_ci');
+            $table->string('meta_title', 191)->nullable()->charset('utf8mb4')->collation('utf8mb4_vietnamese_ci');
+            $table->text('meta_description')->nullable()->charset('utf8mb4')->collation('utf8mb4_vietnamese_ci');
+            $table->text('meta_keywords')->nullable()->charset('utf8mb4')->collation('utf8mb4_vietnamese_ci');    
             $table->timestamps();
         });
     }
