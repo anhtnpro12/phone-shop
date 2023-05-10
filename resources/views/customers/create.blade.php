@@ -16,7 +16,7 @@
             </div>
             <div class="mb-3">
                 <label for="address" class="form-label">Address</label>
-                <input type="text" value="" min='0' name="address" class="form-control" id="address" required>
+                <input type="text" value="" name="address" class="form-control" id="address" required>
             </div>
             <div class="mb-3">
                 <label for="phone" class="form-label">Phone</label>

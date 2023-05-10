@@ -11,14 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('products', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('category_id')->nullable();
             $table->string('name', 191)->nullable()->charset('utf8mb4')->collation('utf8mb4_vietnamese_ci');
             $table->string('slug', 191)->nullable();
-            $table->text('description')->nullable();
-            $table->tinyInteger('status')->nullable();
-            $table->tinyInteger('popular')->nullable();
+            $table->text('small_description')->nullable()->charset('utf8mb4')->collation('utf8mb4_vietnamese_ci');
+            $table->text('description')->nullable()->charset('utf8mb4')->collation('utf8mb4_vietnamese_ci');
+            $table->decimal('original_price', 20, 2)->nullable();
+            $table->decimal('selling_price', 20, 2)->nullable();
             $table->string('image', 191)->nullable()->charset('utf8mb4')->collation('utf8mb4_vietnamese_ci');
+            $table->integer('qty')->nullable();
+            $table->tinyInteger('status')->nullable();
+            $table->tinyInteger('trending')->nullable();
             $table->string('meta_title', 191)->nullable()->charset('utf8mb4')->collation('utf8mb4_vietnamese_ci');
             $table->text('meta_description')->nullable()->charset('utf8mb4')->collation('utf8mb4_vietnamese_ci');
             $table->text('meta_keywords')->nullable()->charset('utf8mb4')->collation('utf8mb4_vietnamese_ci');
@@ -31,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('products');
     }
 };

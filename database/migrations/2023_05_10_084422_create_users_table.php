@@ -15,7 +15,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('name', 191)->nullable()->charset('utf8mb4')->collation('utf8mb4_vietnamese_ci');
             $table->string('email', 191)->nullable();
-            $table->integer('phone')->nullable();
+            $table->string('phone', 30)->nullable();
             $table->string('address', 191)->nullable()->charset('utf8mb4')->collation('utf8mb4_vietnamese_ci');
             $table->string('password', 191)->nullable();
             $table->tinyInteger('role_as')->nullable();
