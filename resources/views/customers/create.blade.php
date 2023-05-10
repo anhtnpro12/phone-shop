@@ -1,8 +1,6 @@
 @extends('layouts.default')
 
-@section('customer', 'active')
-
-@section('content')
+@section('contents')
     <div class="container mt-5 mb-5 d-flex justify-content-center">    
         <form action="#" method="post" style="width: 50%;">
             <h3 class="text-center">Add Customer</h3>        

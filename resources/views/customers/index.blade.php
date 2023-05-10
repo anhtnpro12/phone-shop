@@ -1,9 +1,6 @@
 @extends('layouts.default')
 
-@section('customer', 'active')
-
-@section('content')
-    
+@section('contents')    
     <div class="container mb-5">
         <a href="{{ route('customer.create') }}"><button class="btn btn-success mt-3 mb-3">Add Customer</button></a>
         <table class="table">
