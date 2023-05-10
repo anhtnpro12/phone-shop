@@ -24,7 +24,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::prefix('customer')->group(function () {
     Route::get('/list', [CustomerController::class, 'list'])->name('customer.list');
     Route::get('/create', [CustomerController::class, 'create'])->name('customer.create');
-    Route::get('/edit', [CustomerController::class, 'edit'])->name('customer.edit');              
+    Route::get('/edit', [CustomerController::class, 'edit'])->name('customer.edit');    
+    
+    Route::post('/create', [CustomerController::class, 'store'])->name('customer.store');          
 });
 
 Route::prefix('order')->group(function () {
