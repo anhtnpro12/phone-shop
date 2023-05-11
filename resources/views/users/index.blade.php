@@ -56,7 +56,8 @@
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
                                     <form action="{{ route('users.destroy', ['user' => $user->id]) }}" method="post">
                                         @method('DELETE')
-                                        @csrf
+                                        @csrf                                        
+                                        <input type="hidden" name="page" value="{{ $users->currentPage() }}">
                                         <button class="btn btn-danger">Yes</button>
                                     </form>
                                 </div>
@@ -66,7 +67,10 @@
                 @endforeach
             </tbody>
         </table>
-        {{ $users->links() }}
+        {{ $users->links() }}   
+        {{-- @php
+            dd($users)
+        @endphp      --}}
     </div>
 @endsection
 

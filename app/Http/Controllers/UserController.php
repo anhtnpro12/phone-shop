@@ -20,7 +20,7 @@ class UserController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
+    {        
         return view('users.create');
     }
 
@@ -46,7 +46,9 @@ class UserController extends Controller
             'password' => $request->password,
             'role_as' => $request->role_as
         ]);
-        return to_route('users.index');
+
+        $users = User::paginate(10);
+        return to_route('users.index', ['page' => $users->lastPage()]);
     }
 
     /**
@@ -62,23 +64,43 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        return view('users.edit', ['user' => $user]);        
     }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        //
+    {        
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,'.$id,
+            'phone' => 'required|digits_between:9,11|unique:users,phone,'.$id,
+            'address' => 'required',
+            'password' => 'required',
+            'role_as' => 'required|numeric'
+        ]);
+                 
+        $user = User::findOrFail($id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->address = $request->address;
+        $user->password = $request->password;
+        $user->role_as = $request->role_as;   
+        $user->save();
+
+        return to_route('users.edit', ['user' => $id]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
         $user = User::findOrFail($id);
-
+        $user->delete();              
+        return to_route('users.index', ['page' => $request->page]);
     }
 }

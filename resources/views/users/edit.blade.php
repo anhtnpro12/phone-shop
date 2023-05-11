@@ -1,39 +1,66 @@
 @extends('layouts.default')
 
-@section('contents')
+@section('styles')
 
+@endsection
+
+@section('contents')
+    @php
+        // dd($user);
+    @endphp    
     <div class="container mt-5 mb-5 d-flex justify-content-center">
-        <form action="#" method="post" style="width: 50%;">
-            <h3 class="text-center">Update Customer</h3>        
+        <form action="{{ route('users.update', ['user' => $user->id]) }}" method="post" style="width: 50%;">
+            @method('PUT')
+            @csrf
+            <h3 class="text-center">Update User</h3>
 
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
-                <input type="text" value="" name="name" class="form-control" id="name" required>
-            </div>                
+                <input type="text" value="{{ $user->name }}" name="name" class="form-control @if ($errors->has('name')) is-invalid @endif" id="name">
+                @foreach ($errors->get('name') as $message)
+                    <span class="d-block small text-danger">{{ $message }}</span>
+                @endforeach
+            </div>
             <div class="mb-3">
                 <label for="address" class="form-label">Address</label>
-                <input type="text" value="" min='0' name="address" class="form-control" id="address" required>
+                <input type="text" value="{{ $user->address }}" name="address" class="form-control @if ($errors->has('address')) is-invalid @endif" id="address" >
+                @foreach ($errors->get('address') as $message)
+                    <span class="d-block small text-danger">{{ $message }}</span>
+                @endforeach
             </div>
             <div class="mb-3">
                 <label for="phone" class="form-label">Phone</label>
-                <input type="text" value="" name="phone" class="form-control" id="phone" required>
-            </div>        
+                <input type="text" value="{{ $user->phone }}" name="phone" class="form-control @if ($errors->has('phone')) is-invalid @endif" id="phone" >
+                @foreach ($errors->get('phone') as $message)
+                    <span class="d-block small text-danger">{{ $message }}</span>
+                @endforeach
+            </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" value="" name="email" class="form-control" id="email" required>
+                <input type="email" value="{{ $user->email }}" name="email" class="form-control @if ($errors->has('email')) is-invalid @endif" id="email" >
+                @foreach ($errors->get('email') as $message)
+                    <span class="d-block small text-danger">{{ $message }}</span>
+                @endforeach
             </div>
             <div class="mb-3">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="delete_flag" id="active" value="1"  >
-                    <label class="form-check-label" for="active">Active</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="delete_flag" id="inactive" value="0" >
-                    <label class="form-check-label" for="inactive">Inactive</label>
-                </div>
+                <label for="password" class="form-label">Password</label>
+                <input type="text" value="{{ $user->password }}" name="password" class="form-control @if ($errors->has('password')) is-invalid @endif" id="password" >
+                @foreach ($errors->get('password') as $message)
+                    <span class="d-block small text-danger">{{ $message }}</span>
+                @endforeach
             </div>
-            <input type="hidden" name="id" value="">
+            <div class="mb-3">
+                <label for="role_as" class="form-label">Role</label>
+                <input type="number" value="{{ $user->role_as }}" name="role_as" class="form-control @if ($errors->has('role_as')) is-invalid @endif" id="role_as" >
+                @foreach ($errors->get('role_as') as $message)
+                    <span class="d-block small text-danger">{{ $message }}</span>
+                @endforeach
+            </div>
             <input type="submit" name="submit" value="Update now" class="btn btn-primary">
         </form>
     </div>
+@endsection
+
+@section('scripts')
+
 @endsection
