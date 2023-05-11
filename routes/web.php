@@ -6,6 +6,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShippingController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,13 +22,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::prefix('customer')->group(function () {
-    Route::get('/list', [CustomerController::class, 'list'])->name('customer.list');
-    Route::get('/create', [CustomerController::class, 'create'])->name('customer.create');
-    Route::get('/edit', [CustomerController::class, 'edit'])->name('customer.edit');
-
-    Route::post('/create', [CustomerController::class, 'store'])->name('customer.store');
-});
+Route::resources([
+    'users' => UserController::class
+]);
 
 Route::prefix('order')->group(function () {
     Route::get('/list', [OrderController::class, 'list'])->name('order.list');
