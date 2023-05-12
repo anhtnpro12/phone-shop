@@ -5,9 +5,6 @@
 @endsection
 
 @section('contents')
-    @php
-        // dd($user);
-    @endphp    
     <div class="container mt-5 mb-5 d-flex justify-content-center">
         <form action="{{ route('users.update', ['user' => $user->id]) }}" method="post" style="width: 50%;">
             @method('PUT')
@@ -62,5 +59,14 @@
 @endsection
 
 @section('scripts')
-
+    @if(app('request')->input('success'))
+        <script>
+            showSuccessToast('{{ app('request')->input('success') }}');
+        </script>
+    @endif
+    @if ($errors->any())
+        <script>
+            showErrorToast('Update Failed!');
+        </script>
+    @endif
 @endsection

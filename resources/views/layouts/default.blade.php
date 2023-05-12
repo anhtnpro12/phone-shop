@@ -41,7 +41,7 @@
     <script>
         function showSuccessToast(mess) {
             toastr.options.progressBar = true;
-            toastr.options.positionClass = 'toast-bottom-right';
+            toastr.options.positionClass = 'toast-top-right';
             toastr.success(mess, 'Congratulations', {
                 timeOut: 3000
             });
@@ -49,7 +49,7 @@
 
         function showErrorToast(mess) {
             toastr.options.progressBar = true;
-            toastr.options.positionClass = 'toast-bottom-right';
+            toastr.options.positionClass = 'toast-top-right';
             toastr.error(mess, 'Oops!', {
                 timeOut: 3000
             });
