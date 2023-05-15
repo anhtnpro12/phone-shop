@@ -135,6 +135,9 @@ class UserController extends Controller
             abort(404);
         }
         $user->delete();
-        return to_route('users.index', ['page' => $request->page]);
+        return to_route('users.index', [
+            'page' => $request->page,
+            'success' => 'Delete Successful'
+        ]);
     }
 }

@@ -64,7 +64,7 @@
             </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
-                <input type="text" value="{{ old('name') }}" name="name" class="form-control" id="name">
+                <input type="text" value="{{ old('name') }}" name="name" class="form-control @if ($errors->has('name')) is-invalid @endif" id="name">
                 @foreach ($errors->get('name') as $message)
                     <span class="d-block small text-danger">{{ $message }}</span>
                 @endforeach
@@ -75,7 +75,7 @@
             </div>
             <div class="mb-3">
                 <label for="popular" class="form-label">Popular Priority</label>
-                <input type="number" value="{{ old('popular') }}" name="popular" class="form-control" id="popular">
+                <input type="number" value="{{ old('popular') }}" name="popular" class="form-control @if ($errors->has('popular')) is-invalid @endif" id="popular">
                 @foreach ($errors->get('popular') as $message)
                     <span class="d-block small text-danger">{{ $message }}</span>
                 @endforeach

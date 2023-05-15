@@ -61,10 +61,13 @@
                 <label for="image" class="form-label">Image</label>
                 <input type="file" name="image" id="image"
                         data-style-item-panel-aspect-ratio="0.5625" accept="image/png, image/jpeg, image/gif">
+                @foreach ($errors->get('image') as $message)
+                    <span class="d-block small text-danger">{{ $message }}</span>
+                @endforeach
             </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
-                <input type="text" value="{{ old('name', $category->name) }}" name="name" class="form-control" id="name">
+                <input type="text" value="{{ old('name', $category->name) }}" name="name" class="form-control @if ($errors->has('name')) is-invalid @endif" id="name">
                 @foreach ($errors->get('name') as $message)
                     <span class="d-block small text-danger">{{ $message }}</span>
                 @endforeach
@@ -75,7 +78,7 @@
             </div>
             <div class="mb-3">
                 <label for="popular" class="form-label">Popular Priority</label>
-                <input type="number" value="{{ old('popular', $category->popular) }}" name="popular" class="form-control" id="popular">
+                <input type="number" value="{{ old('popular', $category->popular) }}" name="popular" class="form-control @if ($errors->has('popular')) is-invalid @endif" id="popular">
                 @foreach ($errors->get('popular') as $message)
                     <span class="d-block small text-danger">{{ $message }}</span>
                 @endforeach
@@ -121,17 +124,17 @@
             @if ($category->image)
                 files: [
                     {
-                        source: "Product image",
+                        source: "Category image",
                         options: {
-                            type: "",
+                            type: "local",
 
                             file: {
                                 name: "{{ $category->image }}",
-                                type: "image/jpeg"
+                                type: "image/*"
                             },
                             // pass poster property
                             metadata: {
-                                poster: "{{ asset('storage/imgs/'.$category->id.'/'.$category->image) }}"
+                                poster: "{{ asset('storage/imgs/categories/'.$category->id.'/'.$category->image) }}"
                             }
                         }
                     },
@@ -139,10 +142,9 @@
             @endif
         });
     </script>
-    @if($errors->any())
-        {{ dd($errors) }}
+    @if($errors->any())        
         <script>
-            showErrorToast('Create Category failed!!');
+            showErrorToast('Update Category failed!!');
         </script>
     @endif
     @if(request()->success && !$errors->any())

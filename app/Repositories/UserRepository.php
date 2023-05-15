@@ -1,12 +1,4 @@
 <?php
-<<<<<<< HEAD
- 
-namespace app\Repositories;
-
-class ClassName 
-{
-        
-=======
 
 namespace App\Repositories;
 
@@ -25,5 +17,4 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     {
         return $this->model::all();
     }
->>>>>>> 3a6376576839e3134e58ce26039e3eb40c58bdd5
 }

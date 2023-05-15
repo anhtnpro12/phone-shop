@@ -44,11 +44,12 @@ class CategoryController extends Controller
         $category = Category::create([
             'image' => $imageName,
             'name' => $request->name,
+            'slug' => self::UrlNormal($request->name),
             'description' => $request->description,
             'popular' => $request->popular
         ]);
 
-        $request->image->move(public_path('storage/imgs/'.$category->id), $imageName);
+        $request->image->move(public_path('storage/imgs/categories/'.$category->id), $imageName);
 
         $categories = Category::paginate(10);
         return to_route('categories.index', [
@@ -81,35 +82,44 @@ class CategoryController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        dd($request->image->extension());
-        $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+    {                     
+        if (gettype($request->image) === 'object' || !isset($request->image)) {
+            $request->validate([
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            ]);
+        }
+        $request->validate([            
             'name' => 'required',
             'popular' => 'required'
         ]);
 
-        $imageName = time() . '.' . $request->image->extension();
-
         $category = Category::findOrFail($id);
         if (!isset($category)) {
             abort(404);
-        }
-        $imageOldPath = public_path('storage/imgs/'.$category->id.'/'.$category->image);
-        if (File::exists($imageOldPath)) {
-            File::delete();
-        }
-        $category->update([
-            'image' => $imageName,
+        }        
+        $category->update([            
             'name' => $request->name,
+            'slug' => self::UrlNormal($request->name),
             'description' => $request->description,
             'popular' => $request->popular
         ]);
 
-        $request->image->move(public_path('storage/imgs/'.$category->id), $imageName);
+        if (gettype($request->image) === 'object') {
+            $imageName = time() . '.' . $request->image->extension();            
+            $imageOldPath = public_path('storage/imgs/categories/'.$category->id.'/'.$category->image);
+            if (File::exists($imageOldPath)) {
+                File::delete($imageOldPath);
+            }
+            $category->update([
+                'image' => $imageName
+            ]);
+
+            $request->image->move(public_path('storage/imgs/categories/'.$category->id), $imageName);
+        }
+
 
         return to_route('categories.edit', [
-            'user' => $id,
+            'category' => $id,
             'success' => 'Update Category successful!'
         ]);
     }
@@ -117,8 +127,16 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        //
+        $category = Category::findOrFail($id);
+        if (!isset($category)) {
+            abort(404);
+        }
+        $category->delete();
+        return to_route('categories.index', [
+            'page' => $request->page,
+            'success' => 'Delete Successful'
+        ]);
     }
 }
