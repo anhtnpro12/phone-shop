@@ -3,7 +3,7 @@
 @section('contents')
 
     <div class="container mb-5">
-        <a href="{{ route('product.create') }}"><button class="btn btn-success mt-3 mb-3">Add Product</button></a>
+        <a href="{{ route('products.create') }}"><button class="btn btn-success mt-3 mb-3">Add Product</button></a>
         <table class="table">
             <thead>
                 <tr class="table-secondary">
@@ -25,7 +25,7 @@
                     <td>12</td>
                     <td><span class="badge bg-success">Active</span></td>
                     <td>
-                        <a href="{{ route('product.edit') }}"><button class="btn btn-primary">Edit</button></a>
+                        <a href="{{ route('products.edit', ['product' => '1']) }}"><button class="btn btn-primary">Edit</button></a>
                         <a href="#">
                             <button class="btn btn-danger">Deactivate</button>
                         </a>

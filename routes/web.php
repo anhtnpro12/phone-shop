@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
@@ -24,7 +25,8 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::resources([
     'users' => UserController::class,
-    'products' => ProductController::class
+    'products' => ProductController::class,
+    'categories' => CategoryController::class
 ]);
 
 Route::prefix('order')->group(function () {
@@ -37,12 +39,6 @@ Route::prefix('payment')->group(function () {
     Route::get('/list', [PaymentController::class, 'list'])->name('payment.list');
     Route::get('/create', [PaymentController::class, 'create'])->name('payment.create');
     Route::get('/edit', [PaymentController::class, 'edit'])->name('payment.edit');
-});
-
-Route::prefix('product')->group(function () {
-    Route::get('/list', [ProductController::class, 'list'])->name('product.list');
-    Route::get('/create', [ProductController::class, 'create'])->name('product.create');
-    Route::get('/edit', [ProductController::class, 'edit'])->name('product.edit');
 });
 
 Route::prefix('shipping')->group(function () {
