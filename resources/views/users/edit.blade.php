@@ -61,7 +61,7 @@
 @section('scripts')
     @if($errors->any())
         <script>
-            showErrorToast('Update failed!!');
+            showErrorToast('Update User failed!!');
         </script>
     @endif
     @if(request()->success && !$errors->any())
