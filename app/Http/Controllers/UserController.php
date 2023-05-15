@@ -4,15 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use \Validator;
 
 class UserController extends Controller
 {
+    protected $user;
+
+    public function __construct(User $user) {
+        $this->user = $user;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $users = User::paginate(10);
+        $users = $this->user::paginate(10);
         return view('users.index', ['users' => $users]);
     }
 
@@ -20,7 +27,7 @@ class UserController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {        
+    {
         return view('users.create');
     }
 
@@ -57,6 +64,7 @@ class UserController extends Controller
     public function show(string $id)
     {
         //
+
     }
 
     /**
@@ -65,15 +73,27 @@ class UserController extends Controller
     public function edit(string $id)
     {
         $user = User::findOrFail($id);
-        return view('users.edit', ['user' => $user]);        
+        if (!isset($user)) {
+            abort(404);
+        }
+        return view('users.edit', ['user' => $user]);
     }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {        
+    {
         $validatedData = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,'.$id,
+            'phone' => 'required|digits_between:9,11|unique:users,phone,'.$id,
+            'address' => 'required',
+            'password' => 'required',
+            'role_as' => 'required|numeric|min:1'
+        ]);
+
+        /*$validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$id,
             'phone' => 'required|digits_between:9,11|unique:users,phone,'.$id,
@@ -81,17 +101,24 @@ class UserController extends Controller
             'password' => 'required',
             'role_as' => 'required|numeric'
         ]);
-                 
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }*/
+
         $user = User::findOrFail($id);
         $user->name = $request->name;
         $user->email = $request->email;
         $user->phone = $request->phone;
         $user->address = $request->address;
         $user->password = $request->password;
-        $user->role_as = $request->role_as;   
+        $user->role_as = $request->role_as;
         $user->save();
 
-        return to_route('users.edit', ['user' => $id]);
+        return to_route('users.edit', [
+            'user' => $id,
+            'success' => 'Update successful!'
+        ]);
     }
 
     /**
@@ -100,7 +127,10 @@ class UserController extends Controller
     public function destroy(Request $request, string $id)
     {
         $user = User::findOrFail($id);
-        $user->delete();              
+        if (!isset($user)) {
+            abort(404);
+        }
+        $user->delete();
         return to_route('users.index', ['page' => $request->page]);
     }
 }
