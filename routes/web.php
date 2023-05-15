@@ -23,7 +23,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::resources([
-    'users' => UserController::class
+    'users' => UserController::class,
+    'products' => ProductController::class
 ]);
 
 Route::prefix('order')->group(function () {

@@ -36,6 +36,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+
         $validatedData = $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
@@ -55,7 +56,10 @@ class UserController extends Controller
         ]);
 
         $users = User::paginate(10);
-        return to_route('users.index', ['page' => $users->lastPage()]);
+        return to_route('users.index', [
+            'page' => $users->lastPage(),
+            'success' => 'Create User Successful'
+        ]);
     }
 
     /**
@@ -117,7 +121,7 @@ class UserController extends Controller
 
         return to_route('users.edit', [
             'user' => $id,
-            'success' => 'Update successful!'
+            'success' => 'Update User Successful'
         ]);
     }
 

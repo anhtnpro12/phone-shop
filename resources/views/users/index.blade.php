@@ -75,4 +75,9 @@
 @endsection
 
 @section('scripts')
+    @if(app('request')->input('success'))
+        <script>
+            showSuccessToast('{{ app('request')->input('success') }}');
+        </script>
+    @endif
 @endsection
