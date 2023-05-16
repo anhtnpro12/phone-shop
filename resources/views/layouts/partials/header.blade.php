@@ -24,10 +24,10 @@
                     <a class="nav-link {{ str_contains(Route::currentRouteName(), 'order')?'active':'' }}" href="{{ route('order.list') }}">Order</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ str_contains(Route::currentRouteName(), 'shipping')?'active':'' }}" href="{{ route('shipping.list') }}">Shipping</a>
+                    <a class="nav-link {{ str_contains(Route::currentRouteName(), 'ships')?'active':'' }}" href="{{ route('ships.index') }}">Shipping</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ str_contains(Route::currentRouteName(), 'payment')?'active':'' }}" href="{{ route('payment.list') }}">Payment</a>
+                    <a class="nav-link {{ str_contains(Route::currentRouteName(), 'payments')?'active':'' }}" href="{{ route('payments.index') }}">Payment</a>
                 </li>
             </ul>
 

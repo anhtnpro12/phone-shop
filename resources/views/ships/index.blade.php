@@ -1,53 +1,38 @@
 @extends('layouts.default')
 
 @section('styles')
-
 @endsection
 
 @section('contents')
-
     <div class="container mb-5">
-        <a href="{{ route('products.create') }}"><button class="btn btn-success mt-3 mb-3">Add Product</button></a>
+        <a href="{{ route('ships.create') }}"><button class="btn btn-success mt-3 mb-3">Add Shipping Method</button></a>
         <table class="table">
             <thead>
                 <tr class="table-secondary">
                     <th scope="col">ID</th>
                     <th scope="col">Name</th>
-                    <th scope="col">Image</th>
                     <th scope="col">Description</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Trending</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($products as $p)
+                @foreach ($ships as $s)
                     <tr>
-                        <th>{{ $p->id }}</th>
-                        <td>{{ $p->name }}</td>
-                        <td>
-                            <img src="{{ asset('storage/imgs/products/'.$p->id.'/'.$p->image) }}" alt="image" style="max-height: 15vh; max-width: 20vh;">
-                        </td>
-                        <td>{{ $p->description }}</td>
-                        <td>{{ $p->category->name }}</td>
-                        <td>{{ $p->original_price }}</td>
-                        <td>{{ $p->qty }}</td>
-                        <td>{{ $p->status }}</td>
-                        <td>{{ $p->trending }}</td>
+                        <th>{{ $s->id }}</th>
+                        <td>{{ $s->name }}</td>
+                        <td>{{ $s->description }}</td>
 
                         <td>
-                            <a href="{{ route('products.edit', ['product' => $p->id]) }}"><button class="btn btn-primary">Edit</button></a>
+                            <a href="{{ route('ships.edit', ['ship' => $s->id]) }}"><button
+                                    class="btn btn-primary">Edit</button></a>
                             <button type="button" class="btn btn-danger"
-                                data-bs-toggle="modal" data-bs-target="#deleteModal{{ $p->id }}">
+                                data-bs-toggle="modal" data-bs-target="#deleteModal{{ $s->id }}">
                                 Delete
                             </button>
                         </td>
                     </tr>
 
-                    <div class="modal fade" id="deleteModal{{ $p->id }}" data-bs-backdrop="static" data-bs-keyboard="false"
+                    <div class="modal fade" id="deleteModal{{ $s->id }}" data-bs-backdrop="static" data-bs-keyboard="false"
                         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
@@ -58,14 +43,14 @@
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    Are you sure you want to delete <span class="text-danger">{{ $p->name }}</span>?
+                                    Are you sure you want to delete <span class="text-danger">{{ $s->name }}</span>?
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                                    <form action="{{ route('products.destroy', ['product' => $p->id]) }}" method="post">
+                                    <form action="{{ route('ships.destroy', ['ship' => $s->id]) }}" method="post">
                                         @method('DELETE')
                                         @csrf
-                                        <input type="hidden" name="page" value="{{ $products->currentPage() }}">
+                                        <input type="hidden" name="page" value="{{ $ships->currentPage() }}">
                                         <button class="btn btn-danger">Yes</button>
                                     </form>
                                 </div>
@@ -73,12 +58,13 @@
                         </div>
                     </div>
                 @endforeach
-
             </tbody>
         </table>
-        {{ $products->links() }}
+        {{ $ships->links() }}
     </div>
+@endsection
 
+@section('modals')
 @endsection
 
 @section('scripts')

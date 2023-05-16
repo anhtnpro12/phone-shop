@@ -26,14 +26,6 @@ class BaseRepository extends PrettusBaseRepository implements RepositoryInterfac
     }
 
     /**
-     * Store
-     */
-    public function create($attributes = [])
-    {
-        return $this->model->create($attributes);
-    }
-
-    /**
      * Update record(s) satisfy conditions
      */
     public function updateWhere($attributes = [], $conditions = [])

@@ -20,7 +20,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = $this->userRepository->getList(10);
+        $users = $this->userRepository->paginate(10);
         return view('users.index', ['users' => $users]);
     }
 
@@ -56,7 +56,7 @@ class UserController extends Controller
             'role_as' => $request->role_as
         ]);
 
-        $users = $this->userRepository->getList(10);
+        $users = $this->userRepository->paginate(10);
         return to_route('users.index', [
             'page' => $users->lastPage(),
             'success' => 'Create User Successful'

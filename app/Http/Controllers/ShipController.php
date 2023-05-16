@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\Contracts\PaymentRepositoryInterface;
+use App\Repositories\Contracts\ShipRepositoryInterface;
 use Illuminate\Http\Request;
 
-class PaymentController extends Controller
+class ShipController extends Controller
 {
-    private $paymentRepository;
+    private $shipRepository;
 
-    public function __construct(PaymentRepositoryInterface $paymentRepository) {
-        $this->paymentRepository = $paymentRepository;
+    public function __construct(ShipRepositoryInterface $shipRepository) {
+        $this->shipRepository = $shipRepository;
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $payments = $this->paymentRepository->paginate(10);
-        return view('payments.index', [
-            'payments' => $payments
+        $ships = $this->shipRepository->paginate(10);
+        return view('ships.index', [
+            'ships' => $ships
         ]);
     }
 
@@ -28,7 +28,7 @@ class PaymentController extends Controller
      */
     public function create()
     {
-        return view('payments.create');
+        return view('ships.create');
     }
 
     /**
@@ -40,15 +40,15 @@ class PaymentController extends Controller
             'name' => 'required'
         ]);
 
-        $this->paymentRepository->create([
+        $this->shipRepository->create([
             'name' => $request->name,
             'description' => $request->description,
         ]);
 
-        $payments = $this->paymentRepository->paginate(10);
-        return to_route('payments.index', [
-            'page' => $payments->lastPage(),
-            'success' => 'Create Payment Method Successful'
+        $ships = $this->shipRepository->paginate(10);
+        return to_route('ships.index', [
+            'page' => $ships->lastPage(),
+            'success' => 'Create Shipping Method Successful'
         ]);
     }
 
@@ -65,8 +65,8 @@ class PaymentController extends Controller
      */
     public function edit(string $id)
     {
-        $payment = $this->paymentRepository->find($id);
-        return view('payments.edit', ['payment' => $payment]);
+        $ship = $this->shipRepository->find($id);
+        return view('ships.edit', ['ship' => $ship]);
     }
 
     /**
@@ -78,14 +78,14 @@ class PaymentController extends Controller
             'name' => 'required',
         ]);
 
-        $this->paymentRepository->update([
+        $this->shipRepository->update([
             'name' => $request->name,
             'description' => $request->description,
         ], $id);
 
-        return to_route('payments.edit', [
-            'payment' => $id,
-            'success' => 'Update Payment Method Successful'
+        return to_route('ships.edit', [
+            'ship' => $id,
+            'success' => 'Update Shipping Method Successful'
         ]);
     }
 
@@ -94,9 +94,9 @@ class PaymentController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
-        $this->paymentRepository->delete($id);
+        $this->shipRepository->delete($id);
 
-        return to_route('payments.index', [
+        return to_route('ships.index', [
             'page' => $request->page,
             'success' => 'Delete Successful'
         ]);

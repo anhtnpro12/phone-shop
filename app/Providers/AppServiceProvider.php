@@ -15,7 +15,11 @@ class AppServiceProvider extends ServiceProvider
         //
         $repositories = [
             'UserRepositoryInterface' => 'UserRepository',
-            'CategoryRepositoryInterface' => 'CategoryRepository'
+            'CategoryRepositoryInterface' => 'CategoryRepository',
+            'ProductRepositoryInterface' => 'ProductRepository',
+            'ShipRepositoryInterface' => 'ShipRepository',
+            'PaymentRepositoryInterface' => 'PaymentRepository',
+            'OrderRepositoryInterface' => 'OrderRepository',
         ];
 
         foreach ($repositories as $key => $value) {
