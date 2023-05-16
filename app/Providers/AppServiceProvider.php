@@ -20,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
             'ShipRepositoryInterface' => 'ShipRepository',
             'PaymentRepositoryInterface' => 'PaymentRepository',
             'OrderRepositoryInterface' => 'OrderRepository',
+            'OrderItemsRepositoryInterface' => 'OrderItemsRepository',
         ];
 
         foreach ($repositories as $key => $value) {

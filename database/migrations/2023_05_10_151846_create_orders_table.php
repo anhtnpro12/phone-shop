@@ -22,9 +22,9 @@ return new class extends Migration
             $table->integer('pin_code')->nullable();
             $table->decimal('total_price', 20, 2)->nullable();
             $table->tinyInteger('payment_mode')->nullable();
-            $table->string('payment_id', 191)->nullable();
+            $table->tinyInteger('payment_id')->nullable();
             $table->tinyInteger('ship_mode')->nullable();
-            $table->string('ship_id', 191)->nullable();
+            $table->tinyInteger('ship_id')->nullable();
             $table->tinyInteger('status')->nullable();
             $table->string('comments', 255)->nullable();
             $table->timestamps();

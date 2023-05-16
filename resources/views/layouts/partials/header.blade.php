@@ -21,7 +21,7 @@
                     <a class="nav-link {{ str_contains(Route::currentRouteName(), 'products')?'active':'' }}" href="{{ route('products.index') }}">Products</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ str_contains(Route::currentRouteName(), 'order')?'active':'' }}" href="{{ route('order.list') }}">Order</a>
+                    <a class="nav-link {{ str_contains(Route::currentRouteName(), 'orders')?'active':'' }}" href="{{ route('orders.index') }}">Order</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ str_contains(Route::currentRouteName(), 'ships')?'active':'' }}" href="{{ route('ships.index') }}">Shipping</a>

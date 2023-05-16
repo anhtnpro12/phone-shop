@@ -28,10 +28,5 @@ Route::resources([
     'categories' => CategoryController::class,
     'ships' => ShipController::class,
     'payments' => PaymentController::class,
+    'orders' => OrderController::class,
 ]);
-
-Route::prefix('order')->group(function () {
-    Route::get('/list', [OrderController::class, 'list'])->name('order.list');
-    Route::get('/create', [OrderController::class, 'create'])->name('order.create');
-    Route::get('/edit', [OrderController::class, 'edit'])->name('order.edit');
-});

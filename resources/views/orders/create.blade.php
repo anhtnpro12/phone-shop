@@ -1,11 +1,17 @@
 @extends('layouts.default')
 
+@section('styles')
+    
+@endsection
+
 @section('contents')
 
     <div class="container mt-5 mb-5 d-flex justify-content-center">    
-        <form action="#" method="post" style="width: 50%;">
+        <form action="{{ route('orders.store') }}" method="post" style="width: 50%;">
             <h3 class="text-center">Add Order</h3>    
             
+            @method('post')
+            @csrf
             <div class="container mb-3 d-flex flex-wrap">
                 <hr style="width: 100%;"/>
                 <div class="wrapper flex-fill">
@@ -15,34 +21,27 @@
                                 data-live-search="true" data-width="100%" 
                                 onchange="changeAmount(); changeMaxQuantity(this.id.substr(10), this.selectedOptions[0].dataset.quantity);" 
                                 data-style="border" data-size="5">
-                                
-                                <option data-price='1234' data-quantity='12' 
-                                    value='1'
-                                    data-content='<div> 
-                                                    <h6>Máy Tính</h6>
-                                                    <small>$ 1200</small>
-                                                    <small>Remaining: 12</small>
-                                                </div>' ></option>
-                                <option data-price='1300' data-quantity='12' 
-                                    value='2'
-                                    data-content='<div> 
-                                                    <h6>Macbook</h6>
-                                                    <small>$ 1300</small>
-                                                    <small>Remaining: 12</small>
-                                                </div>' ></option>
-                                <option data-price='1400' data-quantity='$value->quantity' 
-                                    value='3'
-                                    data-content='<div> 
-                                                    <h6>Laptop Razer</h6>
-                                                    <small>$ 1400</small>
-                                                    <small>Remaining: 12</small>
-                                                </div>' ></option>
-                                
+                                @foreach ($products as $p)
+                                    <option data-price='{{ $p->original_price }}' data-quantity='{{ $p->qty }}' 
+                                    value='{{ $p->id }}'
+                                    data-content='<div class="d-flex">
+                                                    <div class="">
+                                                        <img src="{{ asset('storage/imgs/products/'.$p->id.'/'.$p->image) }}" 
+                                                                class="img-fluid" alt="image" style="max-height: 15vh; max-width: 20vh;">
+                                                    </div>
+                                                    <div class="ps-2">
+                                                        <h6>{{ $p->name }}</h6>
+                                                        <div>{{ $p->category->name }}</div>
+                                                        <small>${{ $p->original_price }}</small>
+                                                        <small>Remaining: {{ $p->qty }}</small>                                        
+                                                    </div>
+                                                </div>' {{ $p->qty<=0?'disabled':'' }}></option>
+                                @endforeach                                                            
                         </select>
                     </div>                                 
                     <div class="mb-3">
-                        <label for="quantity1" class="form-label">Quantity</label>
-                        <input onchange="changeAmount();" type="number" min="1" max="12" value="1" name="quantity[]" class="form-control " id="quantity1">
+                        <label for="qty1" class="form-label">Quantity</label>
+                        <input onchange="changeAmount();" type="number" min="1" max="{{ $products[0]->qty }}" value="1" name="qty[]" class="form-control " id="qty1">
                         <small class="text-danger d-none">Quantity must be an integer greater than 0 and less than the remainder</small>
                     </div>                 
                 </div>
@@ -55,41 +54,31 @@
             </div>
             <hr>
             <div class="mb-3">
-                <label for="amount" class="form-label">Amount</label>
-                <input type="text" name="amount" value="1200" class="form-control" id="amount" readonly>
-                <small class="text-danger d-none">Amount must be an number</small>
+                <label for="total_price" class="form-label"></label>
+                <input type="text" name="total_price" value="{{ $products[0]->original_price }}" 
+                        class="form-control @if ($errors->has('total_price')) is-invalid @endif" id="total_price">                
+                @foreach ($errors->get('total_price') as $message)
+                    <span class="d-block small text-danger">{{ $message }}</span>
+                @endforeach
             </div> 
             <div class="mb-3">
-                <label for="customer_id" class="form-label">Customer</label>
-                <select id="customer_id" name="customer_id" class="selectpicker" 
+                <label for="user_id" class="form-label">Customer</label>
+                <select id="user_id" name="user_id" class="selectpicker" 
                         data-live-search="true" data-width="100%" 
                         data-style="border" data-size="5">
                         
-                    <option value='1'
-                        data-content='<div>
-                                        <h6>Nam Anh</h6>
-                                        <small>Ha Noi</small>
-                                    </div>' ></option>                                                                                                                                                                      
-                    <option value='2'
-                        data-content='<div>
-                                        <h6>Thanh</h6>
-                                        <small>Ha Noi</small>
-                                    </div>' ></option>                                                                                                                                                                      
-                    <option value='3'
-                        data-content='<div>
-                                        <h6>Quyen</h6>
-                                        <small>Ha Noi</small>
-                                    </div>' ></option>                                                                                                                                                                      
-                    <option value='4'
-                        data-content='<div>
-                                        <h6>Trong</h6>
-                                        <small>Ha Noi</small>
-                                    </div>' ></option>                                                                                                                                                                      
+                    @foreach ($users as $u)
+                        <option value='{{ $u->id }}'
+                            data-content='<div>
+                                            <h6>{{ $u->name }}</h6>
+                                            <small>{{ $u->address }}</small>
+                                        </div>' ></option>
+                    @endforeach
                     </select>
                 </div>    
             <div class="mb-3">
-                <label for="name" class="form-label">State</label>
-                <select id="state" name="state" class="selectpicker" 
+                <label for="status" class="form-label">Status</label>
+                <select id="status" name="status" class="selectpicker" 
                         data-live-search="true" data-width="100%" 
                         data-style="border" data-size="5">
                     <option value="1" data-content='<span class="badge bg-secondary">Unconfirmed</span>'>Unconfirmed</option>                                                                
@@ -97,16 +86,43 @@
                     <option value="3" data-content='<span class="badge bg-warning">Delivery</span>'>Delivery</option>                                                                
                     <option value="4" data-content='<span class="badge bg-success">Complete</span>'>Complete</option>                                                                                                                                       
                 </select>
+            </div>
+            {{-- <div class="mb-3">
+                <label for="name" class="form-label">Recipient's name</label>
+                <input type="text" value="{{ old('name') }}" name="name" class="form-control @if ($errors->has('name')) is-invalid @endif" id="name">
+                @foreach ($errors->get('name') as $message)
+                    <span class="d-block small text-danger">{{ $message }}</span>
+                @endforeach
             </div>    
             <div class="mb-3">
-                <label for="shipping_id" class="form-label">Shipping Method</label>
-                <select id="shipping_id" name="shipping_id" class="selectpicker" 
+                <label for="email" class="form-label">Recipient's email</label>
+                <input type="text" value="{{ old('email') }}" name="email" class="form-control @if ($errors->has('email')) is-invalid @endif" id="email">
+                @foreach ($errors->get('email') as $message)
+                    <span class="d-block small text-danger">{{ $message }}</span>
+                @endforeach
+            </div>  
+            <div class="mb-3">
+                <label for="address" class="form-label">Recipient's Address</label>
+                <input type="text" value="{{ old('address') }}" name="address" class="form-control @if ($errors->has('address')) is-invalid @endif" id="address" >
+                @foreach ($errors->get('address') as $message)
+                    <span class="d-block small text-danger">{{ $message }}</span>
+                @endforeach
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">Recipient's Phone</label>
+                <input type="text" value="{{ old('phone') }}" name="phone" class="form-control @if ($errors->has('phone')) is-invalid @endif" id="phone" >
+                @foreach ($errors->get('phone') as $message)
+                    <span class="d-block small text-danger">{{ $message }}</span>
+                @endforeach
+            </div>   --}}
+            <div class="mb-3">
+                <label for="ship_id" class="form-label">Shipping Method</label>
+                <select id="ship_id" name="ship_id" class="selectpicker" 
                         data-live-search="true" data-width="100%" 
                         data-style="border" data-size="5">
-
-                    <option value='1'  >COD</option>
-                    <option value='2'  >Tự Lấy</option>
-                                                                                                                                                        
+                    @foreach ($ships as $s)
+                        <option value='{{ $s->id }}'>{{ $s->name }}</option>                        
+                    @endforeach                                                                                                                                                                                                                            
                 </select>
             </div>              
             <div class="mb-3">
@@ -114,10 +130,10 @@
                 <select id="payment_id" name="payment_id" class="selectpicker" 
                         data-live-search="true" data-width="100%" 
                         data-style="border" data-size="5">
-
-                    <option value='1'  >Ngân hàng</option>                                                                                                                                                    
-                    <option value='2'  >TNA Pay</option>                                                                                                                                                    
-                    <option value='3'  >Khi nhận hàng</option>                                                                                                                                                    
+                         
+                    @foreach ($payments as $p)
+                        <option value='{{ $p->id }}'>{{ $p->name }}</option>                        
+                    @endforeach                                                                                                                                                                     
                 </select>
             </div>    
                 
@@ -132,7 +148,7 @@
     <script>
 
         let addProductContainer = $('#add-product-container')[0]; 
-        let amountInput = $('#amount')[0];
+        let amountInput = $('#total_price')[0];
         let count = 1;               
 
         function addProduct() {
@@ -147,32 +163,27 @@
                                 data-live-search="true" data-width="100%" 
                                 onchange="changeAmount(); changeMaxQuantity(this.id.substr(10), this.selectedOptions[0].dataset.quantity);" 
                                 data-style="border" data-size="5">
-                                <option data-price='1234' data-quantity='12' 
-                                    value='1'
-                                    data-content='<div> 
-                                                    <h6>Máy Tính</h6>
-                                                    <small>$ 1200</small>
-                                                    <small>Remaining: 12</small>
+                                @foreach ($products as $p)
+                                    <option data-price='{{ $p->original_price }}' data-quantity='{{ $p->qty }}' 
+                                    value='{{ $p->id }}'
+                                    data-content='<div class="d-flex">
+                                                    <div class="">
+                                                        <img src="{{ asset('storage/imgs/products/'.$p->id.'/'.$p->image) }}" 
+                                                                class="img-fluid" alt="image" style="max-height: 15vh; max-width: 20vh;">
+                                                    </div>
+                                                    <div class="ps-2">
+                                                        <h6>{{ $p->name }}</h6>
+                                                        <div>{{ $p->category->name }}</div>
+                                                        <small>${{ $p->original_price }}</small>
+                                                        <small>Remaining: {{ $p->qty }}</small>                                        
+                                                    </div>
                                                 </div>' ></option>
-                                <option data-price='1300' data-quantity='12' 
-                                    value='2'
-                                    data-content='<div> 
-                                                    <h6>Macbook</h6>
-                                                    <small>$ 1300</small>
-                                                    <small>Remaining: 12</small>
-                                                </div>' ></option>
-                                <option data-price='1400' data-quantity='$value->quantity' 
-                                    value='3'
-                                    data-content='<div> 
-                                                    <h6>Laptop Razer</h6>
-                                                    <small>$ 1400</small>
-                                                    <small>Remaining: 12</small>
-                                                </div>' ></option>                                                                                                                                        
+                                @endforeach                                                                                                                                        
                         </select>
                     </div>                                 
                     <div class="mb-3">
-                        <label for="quantity${count}" class="form-label">Quantity</label>
-                        <input onchange="changeAmount();" type="number" min="1" max="12" value="1"  name="quantity[]" class="form-control" id="quantity${count}">
+                        <label for="qty${count}" class="form-label">Quantity</label>
+                        <input onchange="changeAmount();" type="number" min="1" max="{{ $products[0]->qty }}" value="1"  name="qty[]" class="form-control" id="qty${count}">
                     </div>                 
                 </div>
                 <div class="flex-fill d-flex justify-content-end align-items-center">
@@ -185,7 +196,7 @@
         
         function changeAmount() {
             productSelects = $('select[name="product_id[]"]');
-            quantities = $('input[name="quantity[]"]');
+            quantities = $('input[name="qty[]"]');
             sum = 0;
             for (let i = 0; i < productSelects.length; i++) {
                 sum += (+productSelects[i].selectedOptions[0].dataset.price) * (+quantities[i].value);
@@ -195,8 +206,18 @@
         }
 
         function changeMaxQuantity(count, value) {
-            $('#quantity'+count)[0].max = value;
+            $('#qty'+count)[0].max = value;
         }        
 
     </script>
+    @if($errors->any())
+        <script>
+            showErrorToast('Create Product failed!!');
+        </script>
+    @endif
+    @if(request()->success && !$errors->any())
+        <script>
+            showSuccessToast('{{ request()->success }}');
+        </script>
+    @endif
 @endsection

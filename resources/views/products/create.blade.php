@@ -114,10 +114,10 @@
                 <select id="status" name="status" class="selectpicker"
                         data-live-search="true" data-width="100%"
                         data-style="border" data-size="5">
-                    <option value="1" data-content='<span class="badge bg-secondary">Unconfirmed</span>'>Unconfirmed</option>
-                    <option value="2" data-content='<span class="badge bg-primary">Confirmed</span>' selected>Confirmed</option>
-                    <option value="3" data-content='<span class="badge bg-warning">Delivery</span>'>Delivery</option>
-                    <option value="4" data-content='<span class="badge bg-success">Complete</span>'>Complete</option>
+                    <option value="1" data-content='<span class="badge bg-secondary">4hand</span>'>4hand</option>
+                    <option value="2" data-content='<span class="badge bg-primary">3hand</span>'>3hand</option>
+                    <option value="3" data-content='<span class="badge bg-warning">2hand</span>'>2hand</option>
+                    <option value="4" data-content='<span class="badge bg-success">New</span>' selected>New</option>
                 </select>
             </div>
             <div class="mb-3">

@@ -49,7 +49,7 @@ class ProductController extends Controller
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'name' => 'required',
-            'original_price' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'original_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/'],
             'qty' => 'required|numeric|min:1',
             'trending' => 'required|numeric|min:1'
         ], [
@@ -110,7 +110,7 @@ class ProductController extends Controller
         }
         $request->validate([
             'name' => 'required',
-            'original_price' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'original_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/'],
             'qty' => 'required|numeric|min:1',
             'trending' => 'required|numeric|min:1'
         ], [
