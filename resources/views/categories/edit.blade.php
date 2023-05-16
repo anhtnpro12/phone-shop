@@ -142,7 +142,7 @@
             @endif
         });
     </script>
-    @if($errors->any())        
+    @if($errors->any())
         <script>
             showErrorToast('Update Category failed!!');
         </script>

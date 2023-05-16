@@ -28,7 +28,7 @@ class BaseRepository extends PrettusBaseRepository implements RepositoryInterfac
     /**
      * Store
      */
-    public function store($attributes = [])
+    public function create($attributes = [])
     {
         return $this->model->create($attributes);
     }

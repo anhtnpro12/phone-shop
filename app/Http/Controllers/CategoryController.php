@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Traits\UrlTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -11,12 +12,18 @@ class CategoryController extends Controller
 {
     use UrlTrait;
 
+    private $categoryRepository;
+
+    public function __construct(CategoryRepositoryInterface $categoryRepository) {
+        $this->categoryRepository = $categoryRepository;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $categories = Category::paginate(10);
+        $categories = $this->categoryRepository->getList(10);
         return view('categories.index', ['categories' => $categories]);
     }
 
@@ -41,7 +48,7 @@ class CategoryController extends Controller
 
         $imageName = time() . '.' . $request->image->extension();
 
-        $category = Category::create([
+        $category = $this->categoryRepository->create([
             'image' => $imageName,
             'name' => $request->name,
             'slug' => self::UrlNormal($request->name),
@@ -51,7 +58,7 @@ class CategoryController extends Controller
 
         $request->image->move(public_path('storage/imgs/categories/'.$category->id), $imageName);
 
-        $categories = Category::paginate(10);
+        $categories = $this->categoryRepository->getList(10);
         return to_route('categories.index', [
             'success' => 'Add Category successful!',
             'page' => $categories->lastPage()
@@ -71,10 +78,7 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        $category = Category::findOrFail($id);
-        if (!isset($category)) {
-            abort(404);
-        }
+        $category = $this->categoryRepository->find($id);
         return view('categories.edit', ['category' => $category]);
     }
 
@@ -82,30 +86,26 @@ class CategoryController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {                     
+    {
         if (gettype($request->image) === 'object' || !isset($request->image)) {
             $request->validate([
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);
         }
-        $request->validate([            
+        $request->validate([
             'name' => 'required',
             'popular' => 'required'
         ]);
 
-        $category = Category::findOrFail($id);
-        if (!isset($category)) {
-            abort(404);
-        }        
-        $category->update([            
+        $category = $this->categoryRepository->update([
             'name' => $request->name,
             'slug' => self::UrlNormal($request->name),
             'description' => $request->description,
             'popular' => $request->popular
-        ]);
+        ], $id);
 
         if (gettype($request->image) === 'object') {
-            $imageName = time() . '.' . $request->image->extension();            
+            $imageName = time() . '.' . $request->image->extension();
             $imageOldPath = public_path('storage/imgs/categories/'.$category->id.'/'.$category->image);
             if (File::exists($imageOldPath)) {
                 File::delete($imageOldPath);
@@ -129,11 +129,7 @@ class CategoryController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
-        $category = Category::findOrFail($id);
-        if (!isset($category)) {
-            abort(404);
-        }
-        $category->delete();
+        $this->categoryRepository->delete($id);
         return to_route('categories.index', [
             'page' => $request->page,
             'success' => 'Delete Successful'

@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Repositories\Contracts\UserRepositoryInterface;
 use Illuminate\Http\Request;
 use \Validator;
 
 class UserController extends Controller
 {
-    protected $user;
+    private $userRepository;
 
-    public function __construct(User $user) {
-        $this->user = $user;
+    public function __construct(UserRepositoryInterface $userRepository) {
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -19,7 +20,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = $this->user::paginate(10);
+        $users = $this->userRepository->getList(10);
         return view('users.index', ['users' => $users]);
     }
 
@@ -46,7 +47,7 @@ class UserController extends Controller
             'role_as' => 'required|numeric'
         ]);
 
-        $user = User::create([
+        $user = $this->userRepository->create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
@@ -55,7 +56,7 @@ class UserController extends Controller
             'role_as' => $request->role_as
         ]);
 
-        $users = User::paginate(10);
+        $users = $this->userRepository->getList(10);
         return to_route('users.index', [
             'page' => $users->lastPage(),
             'success' => 'Create User Successful'
@@ -76,10 +77,7 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        $user = User::findOrFail($id);
-        if (!isset($user)) {
-            abort(404);
-        }
+        $user = $this->userRepository->find($id);
         return view('users.edit', ['user' => $user]);
     }
 
@@ -110,14 +108,14 @@ class UserController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }*/
 
-        $user = User::findOrFail($id);
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->phone = $request->phone;
-        $user->address = $request->address;
-        $user->password = $request->password;
-        $user->role_as = $request->role_as;
-        $user->save();
+        $this->userRepository->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'password' => $request->password,
+            'role_as' => $request->role_as
+        ], $id);
 
         return to_route('users.edit', [
             'user' => $id,
@@ -130,11 +128,8 @@ class UserController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
-        $user = User::findOrFail($id);
-        if (!isset($user)) {
-            abort(404);
-        }
-        $user->delete();
+        $this->userRepository->delete($id);
+
         return to_route('users.index', [
             'page' => $request->page,
             'success' => 'Delete Successful'

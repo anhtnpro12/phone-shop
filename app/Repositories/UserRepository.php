@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Models\Role;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
 
@@ -13,8 +12,10 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return User::class;
     }
 
-    public function getListUser()
+    public function getList($perPage)
     {
-        return $this->model::paginate(10);
+        return $this->model::paginate($perPage);
     }
+
+
 }

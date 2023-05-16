@@ -71,23 +71,23 @@
             @foreach ($errors->get('name') as $message)
                 <span class="d-block small text-danger">{{ $message }}</span>
             @endforeach
-        </div>            
+        </div>
         <div class="mb-3">
             <label for="category_id" class="form-label">Category</label>
-            <select id="category_id" name="category_id" class="selectpicker" 
-                    data-live-search="true" data-width="100%" 
+            <select id="category_id" name="category_id" class="selectpicker"
+                    data-live-search="true" data-width="100%"
                     data-style="border" data-size="5">
                 @foreach ($categories as $c)
                     <option {{ $c->id==$product->category_id ? ' selected="selected"' : '' }} value="{{ $c->id }}" data-content='
                         <div class="d-flex">
                             <div class="d-flex justify-content-center" style="max-width: 30%; max-height: 50px">
-                                <img style="max-height: 100%;" class="img-fluid" src="{{ asset('storage/imgs/categories/'.$c->id.'/'.$c->image) }}" alt="image">                                                              
+                                <img style="max-height: 100%;" class="img-fluid" src="{{ asset('storage/imgs/categories/'.$c->id.'/'.$c->image) }}" alt="image">
                             </div>
                             <div class="d-flex align-items-center ps-1" style="width: 70%">
-                                <p>{{ $c->name }}</p>                                                        
+                                <p>{{ $c->name }}</p>
                             </div>
                         </div>'>
-                    </option>                                                                                                                                                                                                                                                 
+                    </option>
                 @endforeach
             </select>
         </div>
@@ -101,25 +101,25 @@
             @foreach ($errors->get('original_price') as $message)
                 <span class="d-block small text-danger">{{ $message }}</span>
             @endforeach
-        </div>  
+        </div>
         <div class="mb-3">
             <label for="qty" class="form-label">Quantity</label>
             <input type="number" value="{{ old('qty', $product->qty) }}" name="qty" class="form-control @if ($errors->has('qty')) is-invalid @endif" id="qty">
             @foreach ($errors->get('qty') as $message)
                 <span class="d-block small text-danger">{{ $message }}</span>
             @endforeach
-        </div> 
+        </div>
         <div class="mb-3">
             <label for="status" class="form-label">Status</label>
-            <select id="status" name="status" class="selectpicker" 
-                    data-live-search="true" data-width="100%" 
+            <select id="status" name="status" class="selectpicker"
+                    data-live-search="true" data-width="100%"
                     data-style="border" data-size="5">
-                <option value="1" {{ $product->status==1 ? 'selected' : '' }} data-content='<span class="badge bg-secondary">Unconfirmed</span>'>Unconfirmed</option>                                                                
-                <option value="2" {{ $product->status==2 ? 'selected' : '' }} data-content='<span class="badge bg-primary">Confirmed</span>' selected>Confirmed</option>                                                                
-                <option value="3" {{ $product->status==3 ? 'selected' : '' }} data-content='<span class="badge bg-warning">Delivery</span>'>Delivery</option>                                                                
-                <option value="4" {{ $product->status==4 ? 'selected' : '' }} data-content='<span class="badge bg-success">Complete</span>'>Complete</option>                                                                                                                                       
+                <option value="1" {{ $product->status==1 ? 'selected' : '' }} data-content='<span class="badge bg-secondary">Unconfirmed</span>'>Unconfirmed</option>
+                <option value="2" {{ $product->status==2 ? 'selected' : '' }} data-content='<span class="badge bg-primary">Confirmed</span>' selected>Confirmed</option>
+                <option value="3" {{ $product->status==3 ? 'selected' : '' }} data-content='<span class="badge bg-warning">Delivery</span>'>Delivery</option>
+                <option value="4" {{ $product->status==4 ? 'selected' : '' }} data-content='<span class="badge bg-success">Complete</span>'>Complete</option>
             </select>
-        </div>            
+        </div>
         <div class="mb-3">
             <label for="trending" class="form-label">Trending Priority</label>
             <input type="number" value="{{ old('trending', $product->trending) }}" name="trending" class="form-control @if ($errors->has('trending')) is-invalid @endif" id="trending">
@@ -186,7 +186,7 @@
             @endif
         });
     </script>
-    @if($errors->any())        
+    @if($errors->any())
         <script>
             showErrorToast('Update Product failed!!');
         </script>
