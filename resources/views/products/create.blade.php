@@ -61,6 +61,9 @@
                 <label for="image" class="form-label">Image</label>
                 <input type="file" name="image" id="image"
                         data-style-item-panel-aspect-ratio="0.5625" accept="image/png, image/jpeg, image/gif">
+                @foreach ($errors->get('image') as $message)
+                    <span class="d-block small text-danger">{{ $message }}</span>
+                @endforeach
             </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>

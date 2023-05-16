@@ -15,6 +15,6 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
     public function getListUser()
     {
-        return $this->model::all();
+        return $this->model::paginate(10);
     }
 }
