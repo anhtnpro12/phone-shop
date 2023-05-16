@@ -11,11 +11,4 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
     {
         return Category::class;
     }
-
-    public function getList($perPage)
-    {
-        return $this->model::paginate($perPage);
-    }
-
-
 }

@@ -167,7 +167,7 @@
     </script>
     @if($errors->any())
         <script>
-            showErrorToast('Create Category failed!!');
+            showErrorToast('Create Product failed!!');
         </script>
     @endif
     @if(request()->success && !$errors->any())

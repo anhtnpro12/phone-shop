@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Traits\UrlTrait;
 use Illuminate\Http\Request;
@@ -23,7 +22,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = $this->categoryRepository->getList(10);
+        $categories = $this->categoryRepository->paginate(10);
         return view('categories.index', ['categories' => $categories]);
     }
 
@@ -58,7 +57,7 @@ class CategoryController extends Controller
 
         $request->image->move(public_path('storage/imgs/categories/'.$category->id), $imageName);
 
-        $categories = $this->categoryRepository->getList(10);
+        $categories = $this->categoryRepository->paginate(10);
         return to_route('categories.index', [
             'success' => 'Add Category successful!',
             'page' => $categories->lastPage()

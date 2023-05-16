@@ -25,7 +25,7 @@
                         <th>{{ $c->id }}</th>
                         <td>{{ $c->name }}</td>
                         <td>
-                            <img src="{{ asset('storage/imgs/categories/'.$c->id.'/'.$c->image) }}" alt="image" style="height: 80px;">
+                            <img src="{{ asset('storage/imgs/categories/'.$c->id.'/'.$c->image) }}" alt="image" style="max-height: 15vh; max-width: 20vh;">
                         </td>
                         <td>{{ $c->description }}</td>
                         <td>{{ $c->popular }}</td>

@@ -6,10 +6,10 @@
 
 @section('contents')
     <div class="container mt-5 mb-5 d-flex justify-content-center">
-        <form action="{{ route('payments.store') }}" method="post" style="width: 50%;">
+        <form action="{{ route('ships.store') }}" method="post" style="width: 50%;">
             @method('post')
             @csrf
-            <h3 class="text-center">Add Payment Method</h3>
+            <h3 class="text-center">Add Shipping Method</h3>
 
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
@@ -34,7 +34,7 @@
 @section('scripts')
     @if($errors->any())
         <script>
-            showErrorToast('Create Payment Method failed!!');
+            showErrorToast('Create Shipping Method Failed!!');
         </script>
     @endif
 @endsection
