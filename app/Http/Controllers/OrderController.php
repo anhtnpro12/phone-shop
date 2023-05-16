@@ -72,7 +72,9 @@ class OrderController extends Controller
             'user_id' => $request->user_id,
             'status' => $request->status,
             'ship_id' => $request->ship_id,
-            'payment_id' => $request->payment_id
+            'ship_mode' => 1,
+            'payment_id' => $request->payment_id,
+            'payment_mode' => 1,
         ]);
 
         $product_ids = $request->product_id;

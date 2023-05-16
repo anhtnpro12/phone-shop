@@ -177,7 +177,7 @@
                                                         <small>${{ $p->original_price }}</small>
                                                         <small>Remaining: {{ $p->qty }}</small>                                        
                                                     </div>
-                                                </div>' ></option>
+                                                </div>' {{ $p->qty<=0?'disabled':'' }}></option>
                                 @endforeach                                                                                                                                        
                         </select>
                     </div>                                 

@@ -26,17 +26,19 @@
                     <tr>
                         <th>{{ $o->id }}</th>                        
                         <td>
-                            <div class="d-flex">
-                                <div class="">
-                                    <img src="{{ asset('storage/imgs/products/'.$o->products[0]->id.'/'.$o->products[0]->image) }}" 
-                                            class="img-fluid" alt="image" style="max-height: 15vh; max-width: 20vh;">
-                                </div>
-                                <div class="ps-2">
-                                    <h5>{{ $o->products[0]->name }}</h6>
-                                    <div class="small">{{ $o->products[0]->category->name }}</div>                                        
-                                    <div class="small">${{ $o->products[0]->original_price }}</div>                                        
-                                </div>
-                            </div>
+                            @if ($o->products->count() > 0)
+                                <div class="d-flex">
+                                    <div class="">
+                                        <img src="{{ asset('storage/imgs/products/'.$o->products[0]->id.'/'.$o->products[0]->image) }}" 
+                                                class="img-fluid" alt="image" style="max-height: 15vh; max-width: 20vh;">
+                                    </div>
+                                    <div class="ps-2">
+                                        <h5>{{ $o->products[0]->name }}</h6>
+                                        <div class="small">{{ $o->products[0]->category->name }}</div>                                        
+                                        <div class="small">${{ $o->products[0]->original_price }}</div>                                        
+                                    </div>
+                                </div>                                
+                            @endif
                         </td>
                         <td>{{ $o->user->name }}</td>
                         <td>{{ $o->total_price }}</td>
