@@ -33,8 +33,7 @@ class ProductStorePostRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'original_price.regex' => 'The price field format is invalid. Must be decimal.',
-            'name.required' => 'Trường :attribute là bắt buộc'
+            'original_price.regex' => 'The price field format is invalid. Must be decimal.'            
         ];
     }
 }

@@ -41,7 +41,13 @@
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
-                <input type="text" value="{{ old('password', $user->password) }}" name="password" class="form-control @if ($errors->has('password')) is-invalid @endif" id="password" >
+                <div class="input-group">
+                    <input type="password" value="{{ old('password', $user->password) }}" name="password" 
+                            class="form-control @if ($errors->has('password')) is-invalid @endif" id="password" style="display: inline-block" >
+                    <div class="input-group-text">
+                        <i class="bi bi-eye-fill" id="togglePassword" style="cursor: pointer;"></i>
+                    </div>   
+                </div>
                 @foreach ($errors->get('password') as $message)
                     <span class="d-block small text-danger">{{ $message }}</span>
                 @endforeach
@@ -59,6 +65,17 @@
 @endsection
 
 @section('scripts')
+    <script>
+        const togglePassword = document
+            .querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+        togglePassword.addEventListener('click', (e) => {            
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);                      
+            e.target.classList.toggle('bi-eye-fill');
+            e.target.classList.toggle('bi-eye-slash-fill');
+        });
+    </script>
     @if($errors->any())
         <script>
             showErrorToast('Update User failed!!');
