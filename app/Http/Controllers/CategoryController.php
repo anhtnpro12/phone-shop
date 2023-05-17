@@ -58,8 +58,8 @@ class CategoryController extends Controller
         $request->image->move(public_path('storage/imgs/categories/'.$category->id), $imageName);
 
         $categories = $this->categoryRepository->paginate(10);
+        $request->flash('success', 'Add Category successful!');
         return to_route('categories.index', [
-            'success' => 'Add Category successful!',
             'page' => $categories->lastPage()
         ]);
     }
@@ -119,8 +119,7 @@ class CategoryController extends Controller
 
         return to_route('categories.edit', [
             'category' => $id,
-            'success' => 'Update Category successful!'
-        ]);
+        ])->with('success', 'Update Category successful!');
     }
 
     /**
@@ -131,7 +130,6 @@ class CategoryController extends Controller
         $this->categoryRepository->delete($id);
         return to_route('categories.index', [
             'page' => $request->page,
-            'success' => 'Delete Successful'
-        ]);
+        ])->with('success', 'Delete Successful');
     }
 }
