@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductStorePostRequest;
 use App\Models\Category;
 use App\Models\Product;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
@@ -44,17 +45,9 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProductStorePostRequest $request)
     {
-        $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'name' => 'required',
-            'original_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/'],
-            'qty' => 'required|numeric|min:1',
-            'trending' => 'required|numeric|min:1'
-        ], [
-            'original_price.regex' => 'The price field format is invalid. Must be decimal.'
-        ]);
+        $request->validated();
 
         $imageName = time() . '.' . $request->image->extension();
 

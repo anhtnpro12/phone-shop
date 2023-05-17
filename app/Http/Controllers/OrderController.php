@@ -8,6 +8,7 @@ use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\ShipRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\OrderItemsRepository;
+use DB;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -66,39 +67,44 @@ class OrderController extends Controller
         $request->validate([
             'total_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/']
         ]);
-
-        $order = $this->orderRepository->create([
-            'total_price' => $request->total_price,
-            'user_id' => $request->user_id,
-            'status' => $request->status,
-            'ship_id' => $request->ship_id,
-            'ship_mode' => 1,
-            'payment_id' => $request->payment_id,
-            'payment_mode' => 1,
-        ]);
-
-        $product_ids = $request->product_id;
-        $qtys = $request->qty;
-        foreach ($product_ids as $key => $product_id) {
-            $this->orderItemsRepository->create([
-                'order_id' => $order->id,
-                'product_id' => $product_id,
-                'qty' => $qtys[$key]
+        DB::beginTransaction();
+        try {
+            $order = $this->orderRepository->create([
+                'total_price' => $request->total_price,
+                'user_id' => $request->user_id,
+                'status' => $request->status,
+                'ship_id' => $request->ship_id,
+                'ship_mode' => 1,
+                'payment_id' => $request->payment_id,
+                'payment_mode' => 1,
             ]);
-
-            if ($request->status >= 3) {
-                $pro = $this->productRepository->find($product_id);
-                $this->productRepository->update([
-                    'qty' => $pro->qty - $qtys[$key]
-                ], $product_id);
+    
+            $product_ids = $request->product_id;
+            $qtys = $request->qty;
+            foreach ($product_ids as $key => $product_id) {
+                $this->orderItemsRepository->create([
+                    'order_id' => $order->id,
+                    'product_id' => $product_id,
+                    'qty' => $qtys[$key]
+                ]);
+    
+                if ($request->status >= 3) {
+                    $pro = $this->productRepository->find($product_id);
+                    $this->productRepository->update([
+                        'qty' => $pro->qty - $qtys[$key]
+                    ], $product_id);
+                }
             }
-        }
-
-        $orders = $this->orderItemsRepository->paginate(10);
-        return to_route('orders.index', [
-            'success' => 'Add Order successful!',
-            'page' => $orders->lastPage()
-        ]);
+            DB::commit();
+            $orders = $this->orderItemsRepository->paginate(10);
+            return to_route('orders.index', [
+                'success' => 'Add Order successful!',
+                'page' => $orders->lastPage()
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            abort(404);
+        }                
     }
 
     /**
@@ -136,13 +142,59 @@ class OrderController extends Controller
         if ($request->status >= 3) {
             return redirect()->back()->with('error', 'Can\'t update!!');
         }
+
+        $request->validate([
+            'total_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/']
+        ]);
+
+        $order = $this->orderRepository->update([
+            'total_price' => $request->total_price,
+            'user_id' => $request->user_id,
+            'status' => $request->status,
+            'ship_id' => $request->ship_id,
+            'ship_mode' => 1,
+            'payment_id' => $request->payment_id,
+            'payment_mode' => 1,
+        ], $id);
+
+
+        $old_order_items = $this->orderItemsRepository->where('order_id','=', $order->id);
+        $old_order_items->delete();
+
+        $product_ids = $request->product_id;
+        $qtys = $request->qty;
+        foreach ($product_ids as $key => $product_id) {
+            $this->orderItemsRepository->create([
+                'order_id' => $order->id,
+                'product_id' => $product_id,
+                'qty' => $qtys[$key]
+            ]);
+
+            if ($request->status >= 3) {
+                $pro = $this->productRepository->find($product_id);
+                $this->productRepository->update([
+                    'qty' => $pro->qty - $qtys[$key]
+                ], $product_id);
+            }
+        }
+        
+        return to_route('orders.edit', [
+            'success' => 'Update Order successful!',
+            'order' => $order->id
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        //
+        $old_order_items = $this->orderItemsRepository->where('order_id','=', $id);
+        $old_order_items->delete();
+        $this->orderRepository->delete($id);
+        return to_route('orders.index', [
+            'page' => $request->page,
+            'success' => 'Delete Successful'
+        ]);
     }
 }
