@@ -12,39 +12,39 @@
             <thead>
                 <tr class="table-secondary">
                     <th scope="col">ID</th>
-                    <th scope="col">Products</th>                                
+                    <th scope="col">Products</th>
                     <th scope="col">Creator</th>
-                    <th scope="col">Total</th>                
-                    <th scope="col">Status</th>                
-                    <th scope="col">Payment</th>                                                    
-                    <th scope="col">Date</th>                                                                                    
+                    <th scope="col">Total</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Payment</th>
+                    <th scope="col">Date</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($orders as $o)
                     <tr>
-                        <th>{{ $o->id }}</th>                        
+                        <th>{{ $o->id }}</th>
                         <td>
                             @if ($o->products->count() > 0)
                                 <div class="d-flex">
                                     <div class="">
-                                        <img src="{{ asset('storage/imgs/products/'.$o->products[0]->id.'/'.$o->products[0]->image) }}" 
+                                        <img src="{{ asset('storage/imgs/products/'.$o->products[0]->id.'/'.$o->products[0]->image) }}"
                                                 class="img-fluid" alt="image" style="max-height: 15vh; max-width: 20vh;">
                                     </div>
                                     <div class="ps-2">
                                         <h5>{{ $o->products[0]->name }}</h6>
-                                        <div class="small">{{ $o->products[0]->category->name }}</div>                                        
-                                        <div class="small">${{ $o->products[0]->original_price }}</div>                                        
+                                        <div class="small">{{ $o->products[0]->category->name }}</div>
+                                        <div class="small">${{ $o->products[0]->original_price }}</div>
                                     </div>
-                                </div>                                
+                                </div>
                             @endif
                         </td>
                         <td>{{ $o->user->name }}</td>
                         <td>{{ $o->total_price }}</td>
                         <td>{{ $o->status }}</td>
                         <td>{{ $o->payment_mode }}</td>
-                        <td>{{ $o->created_at }}</td>                        
+                        <td>{{ $o->created_at }}</td>
 
                         <td>
                             <a href="{{ route('orders.edit', ['order' => $o->id]) }}"><button class="btn btn-primary">Edit</button></a>

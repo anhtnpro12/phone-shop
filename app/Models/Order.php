@@ -24,7 +24,7 @@ class Order extends Model
         'comments'
     ];
 
-    public function products() 
+    public function products()
     {
         return $this->belongsToMany(Product::class, 'order_items', 'order_id', 'product_id');
     }
@@ -39,5 +39,9 @@ class Order extends Model
 
     public function ship() {
         return $this->belongsTo(Ship::class, 'ship_id');
+    }
+
+    public function order_items() {
+        return $this->hasMany(OrderItems::class, 'order_id');
     }
 }

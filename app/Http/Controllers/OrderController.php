@@ -86,10 +86,12 @@ class OrderController extends Controller
                 'qty' => $qtys[$key]
             ]);
 
-            $pro = $this->productRepository->find($product_id);
-            $this->productRepository->update([
-                'qty' => $pro->qty - $qtys[$key]
-            ], $product_id);
+            if ($request->status >= 3) {
+                $pro = $this->productRepository->find($product_id);
+                $this->productRepository->update([
+                    'qty' => $pro->qty - $qtys[$key]
+                ], $product_id);
+            }
         }
 
         $orders = $this->orderItemsRepository->paginate(10);
@@ -112,7 +114,18 @@ class OrderController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $products = $this->productRepository->all();
+        $order = $this->orderRepository->find($id);
+        $users = $this->userRepository->all();
+        $payments = $this->paymentRepository->all();
+        $ships = $this->shipRepository->all();
+        return view('orders.edit', [
+            'products' => $products,
+            'order' => $order,
+            'users' => $users,
+            'payments' => $payments,
+            'ships' => $ships,
+        ]);
     }
 
     /**
@@ -120,7 +133,9 @@ class OrderController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        if ($request->status >= 3) {
+            return redirect()->back()->with('error', 'Can\'t update!!');
+        }
     }
 
     /**
