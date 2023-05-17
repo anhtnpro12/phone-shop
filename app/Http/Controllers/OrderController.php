@@ -8,8 +8,8 @@ use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\ShipRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\OrderItemsRepository;
-use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -78,7 +78,7 @@ class OrderController extends Controller
                 'payment_id' => $request->payment_id,
                 'payment_mode' => 1,
             ]);
-    
+
             $product_ids = $request->product_id;
             $qtys = $request->qty;
             foreach ($product_ids as $key => $product_id) {
@@ -87,7 +87,7 @@ class OrderController extends Controller
                     'product_id' => $product_id,
                     'qty' => $qtys[$key]
                 ]);
-    
+
                 if ($request->status >= 3) {
                     $pro = $this->productRepository->find($product_id);
                     $this->productRepository->update([
@@ -104,7 +104,7 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             abort(404);
-        }                
+        }
     }
 
     /**
@@ -140,7 +140,7 @@ class OrderController extends Controller
     public function update(Request $request, string $id)
     {
         if ($request->status >= 3) {
-            return redirect()->back()->with('error', 'Can\'t update!!');
+            return redirect()->back()->with('error', 'Can\'t update, because the order is being delivered or has been successfully delivered!!');
         }
 
         $request->validate([
@@ -177,7 +177,7 @@ class OrderController extends Controller
                 ], $product_id);
             }
         }
-        
+
         return to_route('orders.edit', [
             'success' => 'Update Order successful!',
             'order' => $order->id

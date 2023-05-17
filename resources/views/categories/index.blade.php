@@ -73,9 +73,9 @@
 @endsection
 
 @section('scripts')
-    @if(app('request')->input('success'))
+    @if(session('success'))
         <script>
-            showSuccessToast('{{ app('request')->input('success') }}');
+            showSuccessToast('{{ session('success') }}');
         </script>
     @endif
 @endsection

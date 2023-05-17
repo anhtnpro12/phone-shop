@@ -199,9 +199,9 @@
             showSuccessToast('{{ request()->success }}');
         </script>
     @endif
-    @if(request()->error)
+    @if(session('error'))
         <script>
-            showErrorToast('{{ request()->error }}');
+            showErrorToast('{{ session('error') }}');
         </script>
     @endif
 @endsection
