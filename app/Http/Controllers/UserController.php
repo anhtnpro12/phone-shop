@@ -20,7 +20,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = $this->userRepository->paginate(10);
+        $users = $this->userRepository->paginate();
         return view('users.index', ['users' => $users]);
     }
 
@@ -56,11 +56,11 @@ class UserController extends Controller
             'role_as' => $request->role_as
         ]);
 
-        $users = $this->userRepository->paginate(10);
+        $users = $this->userRepository->paginate();
         return to_route('users.index', [
             'page' => $users->lastPage(),
-            'success' => 'Create User Successful'
-        ]);
+            
+        ])->with('success', 'Create User Successful');
     }
 
     /**
@@ -119,8 +119,8 @@ class UserController extends Controller
 
         return to_route('users.edit', [
             'user' => $id,
-            'success' => 'Update User Successful'
-        ]);
+            
+        ])->with('success', 'Update User Successful');
     }
 
     /**
@@ -132,7 +132,7 @@ class UserController extends Controller
 
         return to_route('users.index', [
             'page' => $request->page,
-            'success' => 'Delete Successful'
-        ]);
+            
+        ])->with('success', 'Delete Successful');
     }
 }

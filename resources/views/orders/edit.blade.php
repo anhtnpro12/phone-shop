@@ -42,9 +42,11 @@
                         </div>
                         <div class="mb-3">
                             <label for="qty1" class="form-label">Quantity</label>
-                            <input onchange="changeAmount();" type="number" min="1" max="{{ $oi->product->qty }}" value="{{ $oi->qty }}"
-                                    name="qty[]" class="form-control " id="qty1">
-                            <small class="text-danger d-none">Quantity must be an integer greater than 0 and less than the remainder</small>
+                            <input onchange="changeAmount();" type="number" min="1" value="{{ $oi->qty }}"
+                                    name="qty[]" class="form-control" id="qty1" readonly>
+                            @foreach ($errors->get('qty') as $message)
+                                <span class="d-block small text-danger">{{ $message }}</span>
+                            @endforeach 
                         </div>
                     </div>
                     <div class="flex-fill d-flex justify-content-end align-items-center">
@@ -84,7 +86,7 @@
                         data-live-search="true" data-width="100%"
                         data-style="border" data-size="5">
                     <option value="1" {{ $order->status == 1?'selected':'' }} data-content='<span class="badge bg-secondary">Unconfirmed</span>'>Unconfirmed</option>
-                    <option value="2" {{ $order->status == 2?'selected':'' }} data-content='<span class="badge bg-primary">Confirmed</span>' selected>Confirmed</option>
+                    <option value="2" {{ $order->status == 2?'selected':'' }} data-content='<span class="badge bg-primary">Confirmed</span>'>Confirmed</option>
                     <option value="3" {{ $order->status == 3?'selected':'' }} data-content='<span class="badge bg-warning">Delivery</span>'>Delivery</option>
                     <option value="4" {{ $order->status == 4?'selected':'' }} data-content='<span class="badge bg-success">Complete</span>'>Complete</option>
                 </select>
@@ -191,12 +193,12 @@
     </script>
     @if($errors->any())
         <script>
-            showErrorToast('Create Product failed!!');
+            showErrorToast('Edit Order failed!!');
         </script>
     @endif
-    @if(request()->success && !$errors->any())
+    @if(session('success') && !$errors->any())
         <script>
-            showSuccessToast('{{ request()->success }}');
+            showSuccessToast('{{ session('success') }}');
         </script>
     @endif
     @if(session('error'))

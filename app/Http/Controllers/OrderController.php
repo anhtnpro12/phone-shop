@@ -38,7 +38,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = $this->orderRepository->paginate(10);
+        $orders = $this->orderRepository->paginate();
         return view('orders.index', ['orders' => $orders]);
     }
 
@@ -63,9 +63,10 @@ class OrderController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
+    {                
         $request->validate([
-            'total_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/']
+            'total_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/'],
+            'qty.*' => 'required|numeric|min:1',
         ]);
         DB::beginTransaction();
         try {
@@ -87,23 +88,20 @@ class OrderController extends Controller
                     'product_id' => $product_id,
                     'qty' => $qtys[$key]
                 ]);
-
-                if ($request->status >= 3) {
-                    $pro = $this->productRepository->find($product_id);
-                    $this->productRepository->update([
-                        'qty' => $pro->qty - $qtys[$key]
-                    ], $product_id);
-                }
+                
+                $pro = $this->productRepository->find($product_id);
+                $this->productRepository->update([
+                    'qty' => $pro->qty - $qtys[$key]
+                ], $product_id);                
             }
             DB::commit();
-            $orders = $this->orderItemsRepository->paginate(10);
-            return to_route('orders.index', [
-                'success' => 'Add Order successful!',
+            $orders = $this->orderItemsRepository->paginate();
+            return to_route('orders.index', [                
                 'page' => $orders->lastPage()
-            ]);
+            ])->with('success', 'Add Order successful!');
         } catch (\Exception $e) {
             DB::rollBack();
-            abort(404);
+            // abort(404);
         }
     }
 
@@ -138,50 +136,62 @@ class OrderController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        if ($request->status >= 3) {
-            return redirect()->back()->with('error', 'Can\'t update, because the order is being delivered or has been successfully delivered!!');
-        }
-
+    {        
         $request->validate([
-            'total_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/']
+            'total_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/'],
+            'qty.*' => 'required|numeric|min:1',
         ]);
-
-        $order = $this->orderRepository->update([
-            'total_price' => $request->total_price,
-            'user_id' => $request->user_id,
-            'status' => $request->status,
-            'ship_id' => $request->ship_id,
-            'ship_mode' => 1,
-            'payment_id' => $request->payment_id,
-            'payment_mode' => 1,
-        ], $id);
-
-
-        $old_order_items = $this->orderItemsRepository->where('order_id','=', $order->id);
-        $old_order_items->delete();
-
-        $product_ids = $request->product_id;
-        $qtys = $request->qty;
-        foreach ($product_ids as $key => $product_id) {
-            $this->orderItemsRepository->create([
-                'order_id' => $order->id,
-                'product_id' => $product_id,
-                'qty' => $qtys[$key]
-            ]);
-
-            if ($request->status >= 3) {
-                $pro = $this->productRepository->find($product_id);
+        DB::beginTransaction();
+        try {
+            $order = $this->orderRepository->update([
+                'total_price' => $request->total_price,
+                'user_id' => $request->user_id,
+                'status' => $request->status,
+                'ship_id' => $request->ship_id,
+                'ship_mode' => 1,
+                'payment_id' => $request->payment_id,
+                'payment_mode' => 1,
+            ], $id);
+    
+    
+            $old_order_items = $this->orderItemsRepository->findWhere([
+                'order_id' => $order->id
+            ]);  
+            foreach ($old_order_items as $oi) {
+                $pro = $this->productRepository->find($oi->product_id);            
                 $this->productRepository->update([
-                    'qty' => $pro->qty - $qtys[$key]
-                ], $product_id);
+                    'qty' => ($pro->qty + $oi->qty)
+                ], $oi->product_id);
             }
-        }
-
-        return to_route('orders.edit', [
-            'success' => 'Update Order successful!',
-            'order' => $order->id
-        ]);
+            $this->orderItemsRepository->deleteWhere([
+                'order_id' => $order->id                    
+            ]);            
+                               
+            if (isset($request->product_id)) {
+                $product_ids = $request->product_id;
+                $qtys = $request->qty;
+                foreach ($product_ids as $key => $product_id) {
+                    $this->orderItemsRepository->create([
+                        'order_id' => $order->id,
+                        'product_id' => $product_id,
+                        'qty' => $qtys[$key]
+                    ]);
+                        
+                    $pro = $this->productRepository->find($product_id);
+                    $this->productRepository->update([
+                        'qty' => $pro->qty - $qtys[$key]
+                    ], $product_id);                
+                }                
+            }
+            
+            DB::commit();
+            return to_route('orders.edit', [                
+                'order' => $order->id
+            ])->with('success', 'Update Order successful!');   
+        } catch (\Exception $e) {
+            DB::rollBack();
+            abort(404);
+        }        
     }
 
     /**
@@ -194,7 +204,7 @@ class OrderController extends Controller
         $this->orderRepository->delete($id);
         return to_route('orders.index', [
             'page' => $request->page,
-            'success' => 'Delete Successful'
-        ]);
+            
+        ])->with('success', 'Delete Successful');
     }
 }

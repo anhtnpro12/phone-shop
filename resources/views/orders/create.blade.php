@@ -47,7 +47,9 @@
                                     @break
                                 @endif
                             @endforeach value="1" name="qty[]" class="form-control " id="qty1">
-                        <small class="text-danger d-none">Quantity must be an integer greater than 0 and less than the remainder</small>
+                        @foreach ($errors->get('qty') as $message)
+                            <span class="d-block small text-danger">{{ $message }}</span>
+                        @endforeach                        
                     </div>
                 </div>
                 <div class="flex-fill d-flex justify-content-end align-items-center">
@@ -60,9 +62,9 @@
             <hr>
             <div class="mb-3">
                 <label for="total_price" class="form-label">Total</label>
-                <input type="text" name="total_price" value=@foreach ($products as $p)
+                <input type="text" name="total_price" @foreach ($products as $p)
                         @if ($p->qty > 0)
-                            {{ $p->original_price }}
+                            value={{ $p->original_price }}
                             @break
                         @endif
                     @endforeach class="form-control @if ($errors->has('total_price')) is-invalid @endif" id="total_price">
@@ -226,12 +228,12 @@
     </script>
     @if($errors->any())
         <script>
-            showErrorToast('Create Product failed!!');
+            showErrorToast('Create Order failed!!');
         </script>
     @endif
-    @if(request()->success && !$errors->any())
+    @if(session('success') && !$errors->any())
         <script>
-            showSuccessToast('{{ request()->success }}');
+            showSuccessToast('{{ session('success') }}');
         </script>
     @endif
 @endsection

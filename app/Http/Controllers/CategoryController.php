@@ -22,7 +22,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = $this->categoryRepository->paginate(10);
+        $categories = $this->categoryRepository->paginate();
         return view('categories.index', ['categories' => $categories]);
     }
 
@@ -57,11 +57,10 @@ class CategoryController extends Controller
 
         $request->image->move(public_path('storage/imgs/categories/'.$category->id), $imageName);
 
-        $categories = $this->categoryRepository->paginate(10);
-        $request->flash('success', 'Add Category successful!');
+        $categories = $this->categoryRepository->paginate();        
         return to_route('categories.index', [
             'page' => $categories->lastPage()
-        ]);
+        ])->with('success', 'Add Category successful!');
     }
 
     /**

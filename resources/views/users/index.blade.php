@@ -6,7 +6,7 @@
 @section('contents')
     <div class="container mb-5">
         <a href="{{ route('users.create') }}"><button class="btn btn-success mt-3 mb-3">Add User</button></a>
-        <table class="table">
+        <table class="table table-hover" id="table">
             <thead>
                 <tr class="table-secondary">
                     <th scope="col">ID</th>
@@ -66,8 +66,7 @@
                     </div>
                 @endforeach
             </tbody>
-        </table>
-        {{ $users->links() }}
+        </table>        
     </div>
 @endsection
 
@@ -75,9 +74,15 @@
 @endsection
 
 @section('scripts')
-    @if(app('request')->input('success'))
+    <script>
+        $('#table').DataTable({
+            "lengthMenu": [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+            "pagingType": "full_numbers"
+        });
+    </script>
+    @if(session('success'))
         <script>
-            showSuccessToast('{{ app('request')->input('success') }}');
+            showSuccessToast('{{ session('success') }}');
         </script>
     @endif
 @endsection

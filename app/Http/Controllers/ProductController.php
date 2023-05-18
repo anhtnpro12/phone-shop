@@ -28,7 +28,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = $this->productRepository->paginate(10);
+        $products = $this->productRepository->paginate();
         return view('products.index', ['products' => $products]);
     }
 
@@ -64,11 +64,10 @@ class ProductController extends Controller
 
         $request->image->move(public_path('storage/imgs/products/'.$product->id), $imageName);
 
-        $products = $this->productRepository->paginate(10);
-        return to_route('products.index', [
-            'success' => 'Add Product successful!',
+        $products = $this->productRepository->paginate();
+        return to_route('products.index', [            
             'page' => $products->lastPage()
-        ]);
+        ])->with('success', 'Add Product successful!');
     }
 
     /**
@@ -136,8 +135,8 @@ class ProductController extends Controller
 
         return to_route('products.edit', [
             'product' => $id,
-            'success' => 'Update Category successful!'
-        ]);
+            
+        ])->with('success', 'Update Category successful!');
     }
 
     /**
@@ -148,8 +147,7 @@ class ProductController extends Controller
         $this->productRepository->delete($id);
 
         return to_route('products.index', [
-            'page' => $request->page,
-            'success' => 'Delete Successful'
-        ]);
+            'page' => $request->page,            
+        ])->with('success', 'Delete Successful');
     }
 }

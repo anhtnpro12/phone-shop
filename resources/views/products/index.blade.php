@@ -8,7 +8,7 @@
 
     <div class="container mb-5">
         <a href="{{ route('products.create') }}"><button class="btn btn-success mt-3 mb-3">Add Product</button></a>
-        <table class="table">
+        <table class="table table-hover" id="table">
             <thead>
                 <tr class="table-secondary">
                     <th scope="col">ID</th>
@@ -75,16 +75,21 @@
                 @endforeach
 
             </tbody>
-        </table>
-        {{ $products->links() }}
+        </table>    
     </div>
 
 @endsection
 
 @section('scripts')
-    @if(app('request')->input('success'))
+    <script>
+        $('#table').DataTable({
+            "lengthMenu": [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+            "pagingType": "full_numbers"
+        });
+    </script>
+    @if(session('success'))
         <script>
-            showSuccessToast('{{ app('request')->input('success') }}');
+            showSuccessToast('{{ session('success') }}');
         </script>
     @endif
 @endsection

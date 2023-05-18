@@ -81,9 +81,9 @@
             showErrorToast('Update User failed!!');
         </script>
     @endif
-    @if(request()->success && !$errors->any())
+    @if(session('success') && !$errors->any())
         <script>
-            showSuccessToast('{{ request()->success }}');
+            showSuccessToast('{{ session('success') }}');
         </script>
     @endif
 @endsection
