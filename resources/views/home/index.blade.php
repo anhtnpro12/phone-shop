@@ -35,7 +35,7 @@
                         </div>
                     </div>
                 </div>
-                <h1 class="mt-1 mb-3">$ 166666</h1>
+                <h1 class="mt-1 mb-3">${{ $revenue }}</h1>
                 <div class="mb-0">
                     <!-- <span class="badge text-primary bg-primary bg-opacity-10"> <i class="mdi mdi-arrow-bottom-right"></i> -3.65% </span>
                     <span class="text-muted">Since last week</span> -->
@@ -55,7 +55,7 @@
                         </div>
                     </div>
                 </div>
-                <h1 class="mt-1 mb-3">123 <small>Products</small></h1>
+                <h1 class="mt-1 mb-3">{{ $products_paid }} <small>Products</small></h1>
                 <div class="mb-0">
                     <!-- <span class="badge text-primary bg-primary bg-opacity-10"> <i class="mdi mdi-arrow-bottom-right"></i> -3.65% </span>
                     <span class="text-muted">Since last week</span> -->
@@ -84,13 +84,21 @@
                 labels: xValues,
                 datasets: [{
                         label: "Order",
-                        data: [2, 4, 3, 6, 3, 1, 8, 5, 3, 8, 5, 4],
+                        data: [
+                            @foreach ($orderNums as $on)
+                                {{ $on }},
+                            @endforeach
+                        ],
                         backgroundColor: "rgba(255,0,0,1)",
                         borderColor: "rgba(255,0,0,0.3)",
                         fill: false
                     }, {
                         label: "Revenue",
-                        data: [1, 2, 4, 3, 2, 5, 7, 2, 4, 4, 2, 1],
+                        data: [
+                            @foreach ($revenues as $r)
+                                {{ $r }},
+                            @endforeach
+                        ],
                         backgroundColor: "rgba(0,0,255,1)",
                         borderColor: "rgba(0,0,255,0.3)",
                         fill: false

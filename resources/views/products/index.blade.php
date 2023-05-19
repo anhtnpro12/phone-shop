@@ -50,8 +50,8 @@
                                     <span class="badge bg-success">New</span>
                             @endswitch
                         </td>
-                        <td>{{ $p->trending }}</td>
-
+                        <td>{!! $p->trending==1?'<span class="badge bg-danger"><i class="fa-solid fa-fire fa-beat text-warning"></i> Trending</span>'
+                                :'<span class="badge bg-secondary">Normal</span>' !!}</td>
                         <td>
                             <a href="{{ route('products.edit', ['product' => $p->id]) }}"><button class="btn btn-primary">Edit</button></a>
                             <button type="button" class="btn btn-danger"

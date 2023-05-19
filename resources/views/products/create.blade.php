@@ -122,10 +122,12 @@
             </div>
             <div class="mb-3">
                 <label for="trending" class="form-label">Trending Priority</label>
-                <input type="number" value="{{ old('trending') }}" name="trending" class="form-control @if ($errors->has('trending')) is-invalid @endif" id="trending">
-                @foreach ($errors->get('trending') as $message)
-                    <span class="d-block small text-danger">{{ $message }}</span>
-                @endforeach
+                <select id="trending" name="trending" class="selectpicker"
+                        data-live-search="true" data-width="100%"
+                        data-style="border" data-size="5">
+                        <option value="1" data-content='<span class="badge bg-danger">Trending</span>'>Trending</option>
+                        <option value="2" selected data-content='<span class="badge bg-secondary">Normal</span>'>Normal</option>
+                </select>
             </div>
             <input type="submit" name="submit" value="Add now" class="btn btn-primary">
         </form>

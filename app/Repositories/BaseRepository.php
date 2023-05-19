@@ -32,4 +32,9 @@ class BaseRepository extends PrettusBaseRepository implements RepositoryInterfac
     {
         return $this->model->where($conditions)->update($attributes);
     }
+
+    public function sum(string $column)
+    {
+        return $this->model->sum($column);
+    }
 }

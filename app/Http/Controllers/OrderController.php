@@ -102,7 +102,7 @@ class OrderController extends Controller
             ])->with('success', 'Add Order successful!');
         } catch (\Exception $e) {
             DB::rollBack();
-            // abort(404);
+            abort(404);
         }
     }
 
