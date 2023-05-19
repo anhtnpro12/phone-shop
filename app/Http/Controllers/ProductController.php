@@ -65,7 +65,7 @@ class ProductController extends Controller
         $request->image->move(public_path('storage/imgs/products/'.$product->id), $imageName);
 
         $products = $this->productRepository->paginate();
-        return to_route('products.index', [            
+        return to_route('products.index', [
             'page' => $products->lastPage()
         ])->with('success', 'Add Product successful!');
     }
@@ -103,7 +103,7 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required',
             'original_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/'],
-            'qty' => 'required|numeric|min:1',
+            'qty' => 'required|numeric|min:0',
             'trending' => 'required|numeric|min:1'
         ], [
             'original_price.regex' => 'The price field format is invalid. Must be decimal.'
@@ -135,7 +135,7 @@ class ProductController extends Controller
 
         return to_route('products.edit', [
             'product' => $id,
-            
+
         ])->with('success', 'Update Category successful!');
     }
 
@@ -147,7 +147,7 @@ class ProductController extends Controller
         $this->productRepository->delete($id);
 
         return to_route('products.index', [
-            'page' => $request->page,            
+            'page' => $request->page,
         ])->with('success', 'Delete Successful');
     }
 }

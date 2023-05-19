@@ -77,11 +77,13 @@
                 <textarea class="form-control" name="description" id="description" rows="3"></textarea>
             </div>
             <div class="mb-3">
-                <label for="popular" class="form-label">Popular Priority</label>
-                <input type="number" value="{{ old('popular') }}" name="popular" class="form-control @if ($errors->has('popular')) is-invalid @endif" id="popular">
-                @foreach ($errors->get('popular') as $message)
-                    <span class="d-block small text-danger">{{ $message }}</span>
-                @endforeach
+                <label for="popular" class="form-label">Popular</label>
+                <select id="popular" name="popular" class="selectpicker"
+                        data-live-search="true" data-width="100%"
+                        data-style="border" data-size="5">
+                        <option value="1" data-content='<span class="badge bg-danger">Trending</span>'>Trending</option>
+                        <option value="2" selected data-content='<span class="badge bg-secondary">Normal</span>'>Normal</option>
+                </select>
             </div>
             <input type="submit" name="submit" value="Add now" class="btn btn-primary">
         </form>

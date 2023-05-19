@@ -42,11 +42,11 @@
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <div class="input-group">
-                    <input type="password" value="{{ old('password') }}" name="password" 
+                    <input type="password" value="{{ old('password') }}" name="password"
                             class="form-control @if ($errors->has('password')) is-invalid @endif" id="password" style="display: inline-block" >
                     <div class="input-group-text">
                         <i class="bi bi-eye-fill" id="togglePassword" style="cursor: pointer;"></i>
-                    </div>   
+                    </div>
                 </div>
                 @foreach ($errors->get('password') as $message)
                     <span class="d-block small text-danger">{{ $message }}</span>
@@ -54,10 +54,12 @@
             </div>
             <div class="mb-3">
                 <label for="role_as" class="form-label">Role</label>
-                <input type="number" value="{{ old('role_as') }}" name="role_as" class="form-control @if ($errors->has('role_as')) is-invalid @endif" id="role_as" >
-                @foreach ($errors->get('role_as') as $message)
-                    <span class="d-block small text-danger">{{ $message }}</span>
-                @endforeach
+                <select id="role_as" name="role_as" class="selectpicker"
+                        data-live-search="true" data-width="100%"
+                        data-style="border" data-size="5">
+                        <option value="1" data-content='<span class="badge bg-primary">Admin</span>'>Admin</option>
+                        <option value="2" selected data-content='<span class="badge bg-secondary">Customer</span>'>Customer</option>
+                </select>
             </div>
             <input type="submit" name="submit" value="Add now" class="btn btn-primary">
         </form>
@@ -69,9 +71,9 @@
         const togglePassword = document
             .querySelector('#togglePassword');
         const password = document.querySelector('#password');
-        togglePassword.addEventListener('click', (e) => {            
+        togglePassword.addEventListener('click', (e) => {
             const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);                      
+            password.setAttribute('type', type);
             e.target.classList.toggle('bi-eye-fill');
             e.target.classList.toggle('bi-eye-slash-fill');
         });

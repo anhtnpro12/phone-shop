@@ -49,7 +49,7 @@
                             @endforeach value="1" name="qty[]" class="form-control " id="qty1">
                         @foreach ($errors->get('qty') as $message)
                             <span class="d-block small text-danger">{{ $message }}</span>
-                        @endforeach                        
+                        @endforeach
                     </div>
                 </div>
                 <div class="flex-fill d-flex justify-content-end align-items-center">
@@ -137,6 +137,16 @@
                 </select>
             </div>
             <div class="mb-3">
+                <label for="ship_mode" class="form-label">Shipping Mode</label>
+                <select id="ship_mode" name="ship_mode" class="selectpicker"
+                        data-live-search="true" data-width="100%"
+                        data-style="border" data-size="5">
+                        <option value="1" data-content='<span class="badge bg-success">Shipped</span>'>Shipped</option>
+                        <option value="2" data-content='<span class="badge bg-warning">delivery</span>'>delivery</option>
+                        <option value="3" selected data-content='<span class="badge bg-secondary">Not delivery</span>'>Not delivery</option>
+                </select>
+            </div>
+            <div class="mb-3">
                 <label for="payment_id" class="form-label">Payment Method</label>
                 <select id="payment_id" name="payment_id" class="selectpicker"
                         data-live-search="true" data-width="100%"
@@ -147,8 +157,15 @@
                     @endforeach
                 </select>
             </div>
-
-
+            <div class="mb-3">
+                <label for="payment_mode" class="form-label">Payment Mode</label>
+                <select id="payment_mode" name="payment_mode" class="selectpicker"
+                        data-live-search="true" data-width="100%"
+                        data-style="border" data-size="5">
+                        <option value="1" data-content='<span class="badge bg-success">Paid</span>'>Paid</option>
+                        <option value="2" selected data-content='<span class="badge bg-secondary">Unpaid</span>'>Unpaid</option>
+                </select>
+            </div>
 
             <input type="submit" name="submit" value="Add now" class="btn btn-primary">
         </form>

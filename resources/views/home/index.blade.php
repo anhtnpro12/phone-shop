@@ -10,18 +10,18 @@
                     </div>
 
                     <div class="col-auto">
-                        <div class="stat text-primary h2">                            
+                        <div class="stat text-primary h2">
                             <i class="bi bi-truck"></i>
                         </div>
                     </div>
                 </div>
-                <h1 class="mt-1 mb-3">1234</h1>
+                <h1 class="mt-1 mb-3">{{ $orderNum }}</h1>
                 <div class="mb-0">
                     <!-- <span class="badge text-primary bg-primary bg-opacity-10"> <i class="mdi mdi-arrow-bottom-right"></i> Orders </span>
                     <span class="text-muted">Since last week</span> -->
                 </div>
             </div>
-        </div>    
+        </div>
         <div class="card">
             <div class="card-body">
                 <div class="row">
@@ -41,7 +41,7 @@
                     <span class="text-muted">Since last week</span> -->
                 </div>
             </div>
-        </div>    
+        </div>
         <div class="card">
             <div class="card-body">
                 <div class="row">
@@ -61,7 +61,7 @@
                     <span class="text-muted">Since last week</span> -->
                 </div>
             </div>
-        </div>       
+        </div>
     </div>
     <div class="container mb-5 mt-3">
         <div class="card">
@@ -69,7 +69,7 @@
                 <h3 class="card-title mb-2">Statistical</h3>
                 <canvas id="myChart" style="width:100%;"></canvas>
             </div>
-        </div> 
+        </div>
     </div>
 @endsection
 

@@ -28,7 +28,7 @@
                             <img src="{{ asset('storage/imgs/categories/'.$c->id.'/'.$c->image) }}" alt="image" style="max-height: 15vh; max-width: 20vh;">
                         </td>
                         <td>{{ $c->description }}</td>
-                        <td>{{ $c->popular }}</td>
+                        <td>{!! $c->popular==1?'<span class="badge bg-primary">Trending</span>':'<span class="badge bg-secondary">Normal</span>' !!}</td>
                         <td>
                             <a href="{{ route('categories.edit', ['category' => $c->id]) }}"><button class="btn btn-primary">Edit</button></a>
                             <button type="button" class="btn btn-danger"
@@ -66,7 +66,7 @@
                 @endforeach
 
             </tbody>
-        </table>        
+        </table>
     </div>
 
 @endsection

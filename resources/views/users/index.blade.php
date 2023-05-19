@@ -27,7 +27,7 @@
                         <td>{{ $user->address }}</td>
                         <td>{{ $user->phone }}</td>
                         <td>{{ $user->email }}</td>
-                        <td>{{ $user->role_as }}</td>
+                        <td>{!! $user->role_as==1?'<span class="badge bg-primary">Admin</span>':'<span class="badge bg-secondary">Customer</span>' !!}</td>
                         <td>{{ $user->created_at }}</td>
                         <td>
                             <a href="{{ route('users.edit', ['user' => $user->id]) }}"><button
@@ -66,7 +66,7 @@
                     </div>
                 @endforeach
             </tbody>
-        </table>        
+        </table>
     </div>
 @endsection
 

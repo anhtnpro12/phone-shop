@@ -35,7 +35,21 @@
                         <td>{{ $p->category->name }}</td>
                         <td>{{ $p->original_price }}</td>
                         <td>{{ $p->qty }}</td>
-                        <td>{{ $p->status }}</td>
+                        <td>
+                            @switch($p->status)
+                                @case(1)
+                                    <span class="badge bg-secondary">4hand</span>
+                                    @break
+                                @case(2)
+                                    <span class="badge bg-primary">3hand</span>
+                                    @break
+                                @case(3)
+                                    <span class="badge bg-warning">2hand</span>
+                                    @break
+                                @default
+                                    <span class="badge bg-success">New</span>
+                            @endswitch
+                        </td>
                         <td>{{ $p->trending }}</td>
 
                         <td>
@@ -75,7 +89,7 @@
                 @endforeach
 
             </tbody>
-        </table>    
+        </table>
     </div>
 
 @endsection
