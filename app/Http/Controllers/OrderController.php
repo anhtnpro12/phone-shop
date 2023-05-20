@@ -8,7 +8,7 @@ use App\Repositories\Contracts\PaymentRepositoryInterface;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\ShipRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
-use App\Repositories\OrderItemsRepository;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -64,7 +64,8 @@ class OrderController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
+    {   
+
         $request->validate([
             'total_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/'],
             'qty.*' => 'required|numeric|min:1',
@@ -84,13 +85,18 @@ class OrderController extends Controller
             $product_ids = $request->product_id;
             $qtys = $request->qty;
             foreach ($product_ids as $key => $product_id) {
+                $pro = $this->productRepository->find($product_id);
+                if ($pro->qty < $qtys[$key]) {                    
+                    DB::rollBack();
+                    return redirect()->back()->withErrors(['error' => 'Quantity must be less than or equal to remain']);
+                }
+
                 $this->orderItemsRepository->create([
                     'order_id' => $order->id,
                     'product_id' => $product_id,
                     'qty' => $qtys[$key]
                 ]);
 
-                $pro = $this->productRepository->find($product_id);
                 $this->productRepository->update([
                     'qty' => $pro->qty - $qtys[$key]
                 ], $product_id);
@@ -172,13 +178,18 @@ class OrderController extends Controller
                 $product_ids = $request->product_id;
                 $qtys = $request->qty;
                 foreach ($product_ids as $key => $product_id) {
+                    $pro = $this->productRepository->find($product_id);
+                    if ($pro->qty < $qtys[$key]) {                    
+                        DB::rollBack();
+                        return redirect()->back()->withErrors(['error' => 'Quantity must be less than or equal to remain']);
+                    }
+
                     $this->orderItemsRepository->create([
                         'order_id' => $order->id,
                         'product_id' => $product_id,
                         'qty' => $qtys[$key]
                     ]);
-
-                    $pro = $this->productRepository->find($product_id);
+                    
                     $this->productRepository->update([
                         'qty' => $pro->qty - $qtys[$key]
                     ], $product_id);

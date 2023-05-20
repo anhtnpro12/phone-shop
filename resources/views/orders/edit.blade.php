@@ -212,7 +212,7 @@
     </script>
     @if($errors->any())
         <script>
-            showErrorToast('Edit Order failed!!');
+            showErrorToast('Edit Order failed!!' + '{{ $errors->first('error') }}');
         </script>
     @endif
     @if(session('success') && !$errors->any())

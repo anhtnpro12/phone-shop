@@ -243,9 +243,9 @@
         }
 
     </script>
-    @if($errors->any())
+    @if($errors->any())            
         <script>
-            showErrorToast('Create Order failed!!');
+            showErrorToast('Create Order failed!! ' + '{{ $errors->first('error') }}');
         </script>
     @endif
     @if(session('success') && !$errors->any())

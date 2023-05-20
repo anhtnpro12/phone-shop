@@ -67,7 +67,8 @@
         <div class="card">
             <div class="card-body">
                 <h3 class="card-title mb-2">Statistical</h3>
-                <canvas id="myChart" style="width:100%;"></canvas>
+                <canvas id="orderChart" style="width:100%;"></canvas>
+                <canvas id="revenueChart" style="width:100%;"></canvas>
             </div>
         </div>
     </div>
@@ -78,7 +79,7 @@
     <script>
         const xValues = ['January', 'February', 'March', 'April', 'May', 'June'
             , 'July', 'August', 'September', 'October', 'November', 'December'];
-        new Chart("myChart", {
+        new Chart("orderChart", {
             type: "line",
             data: {
                 labels: xValues,
@@ -92,7 +93,23 @@
                         backgroundColor: "rgba(255,0,0,1)",
                         borderColor: "rgba(255,0,0,0.3)",
                         fill: false
-                    }, {
+                    }]
+            },
+            options: {
+                legend: {
+                    display: true
+                },
+                title: {
+                    display: true,
+                    text: 'Order Chart'
+                }
+            }
+        });
+        new Chart("revenueChart", {
+            type: "line",
+            data: {
+                labels: xValues,
+                datasets: [{
                         label: "Revenue",
                         data: [
                             @foreach ($revenues as $r)
@@ -105,7 +122,13 @@
                     }]
             },
             options: {
-                legend: {display: true}
+                legend: {
+                    display: true
+                },
+                title: {
+                    display: true,
+                    text: 'Revenue Chart',                    
+                }
             }
         });
     </script>
