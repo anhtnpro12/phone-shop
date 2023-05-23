@@ -23,6 +23,7 @@
                 <textarea class="form-control" name="description" id="description" rows="3">{{ $payment->description }}</textarea>
             </div>
             <input type="submit" name="submit" value="Update now" class="btn btn-primary">
+            <a href="{{ route('payments.index') }}" class="btn btn-secondary">Back</a>
         </form>
     </div>
 @endsection

@@ -135,6 +135,7 @@
 
 
             <input type="submit" name="submit" value="Update now" class="btn btn-primary">
+            <a href="{{ route('orders.index') }}" class="btn btn-secondary">Back</a>
         </form>
     </div>
 @endsection

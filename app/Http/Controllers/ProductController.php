@@ -136,7 +136,7 @@ class ProductController extends Controller
         return to_route('products.edit', [
             'product' => $id,
 
-        ])->with('success', 'Update Category successful!');
+        ])->with('success', 'Update Product successful!');
     }
 
     /**

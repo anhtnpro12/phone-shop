@@ -12,35 +12,35 @@
             <h3 class="text-center">Add User</h3>
 
             <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
+                <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
                 <input type="text" value="{{ old('name') }}" name="name" class="form-control @if ($errors->has('name')) is-invalid @endif" id="name">
                 @foreach ($errors->get('name') as $message)
                     <span class="d-block small text-danger">{{ $message }}</span>
                 @endforeach
             </div>
             <div class="mb-3">
-                <label for="address" class="form-label">Address</label>
+                <label for="address" class="form-label">Address <span class="text-danger">*</span></label>
                 <input type="text" value="{{ old('address') }}" name="address" class="form-control @if ($errors->has('address')) is-invalid @endif" id="address" >
                 @foreach ($errors->get('address') as $message)
                     <span class="d-block small text-danger">{{ $message }}</span>
                 @endforeach
             </div>
             <div class="mb-3">
-                <label for="phone" class="form-label">Phone</label>
+                <label for="phone" class="form-label">Phone <span class="text-danger">*</span></label>
                 <input type="text" value="{{ old('phone') }}" name="phone" class="form-control @if ($errors->has('phone')) is-invalid @endif" id="phone" >
                 @foreach ($errors->get('phone') as $message)
                     <span class="d-block small text-danger">{{ $message }}</span>
                 @endforeach
             </div>
             <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
+                <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
                 <input type="email" value="{{ old('email') }}" name="email" class="form-control @if ($errors->has('email')) is-invalid @endif" id="email" >
                 @foreach ($errors->get('email') as $message)
                     <span class="d-block small text-danger">{{ $message }}</span>
                 @endforeach
             </div>
             <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
+                <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
                 <div class="input-group">
                     <input type="password" value="{{ old('password') }}" name="password"
                             class="form-control @if ($errors->has('password')) is-invalid @endif" id="password" style="display: inline-block" >
@@ -53,7 +53,7 @@
                 @endforeach
             </div>
             <div class="mb-3">
-                <label for="role_as" class="form-label">Role</label>
+                <label for="role_as" class="form-label">Role <span class="text-danger">*</span></label>
                 <select id="role_as" name="role_as" class="selectpicker"
                         data-live-search="true" data-width="100%"
                         data-style="border" data-size="5">
@@ -62,6 +62,7 @@
                 </select>
             </div>
             <input type="submit" name="submit" value="Add now" class="btn btn-primary">
+            <a href="{{ route('users.index') }}" class="btn btn-secondary">Back</a>  
         </form>
     </div>
 @endsection
@@ -80,7 +81,7 @@
     </script>
     @if($errors->any())
         <script>
-            showErrorToast('Create Category failed!!');
+            showErrorToast('Create Users failed!!');
         </script>
     @endif
 @endsection

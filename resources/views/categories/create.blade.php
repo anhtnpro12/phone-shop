@@ -86,6 +86,7 @@
                 </select>
             </div>
             <input type="submit" name="submit" value="Add now" class="btn btn-primary">
+            <a href="{{ route('categories.index') }}" class="btn btn-secondary">Back</a>            
         </form>
     </div>
 
