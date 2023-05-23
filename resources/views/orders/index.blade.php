@@ -46,16 +46,16 @@
                         <td>
                             @switch($o->status)
                                 @case(1)
-                                    <span class="badge bg-secondary">4hand</span>
+                                    <span class="badge bg-secondary">Unconfirmed</span>
                                     @break
                                 @case(2)
-                                    <span class="badge bg-primary">3hand</span>
+                                    <span class="badge bg-primary">Confirmed</span>
                                     @break
                                 @case(3)
-                                    <span class="badge bg-warning">2hand</span>
+                                    <span class="badge bg-warning">Delivery</span>
                                     @break
                                 @default
-                                    <span class="badge bg-success">New</span>
+                                    <span class="badge bg-success">Complete</span>
                             @endswitch
                         </td>
                         <td>
