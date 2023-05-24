@@ -21,4 +21,8 @@ class User extends Model
     protected $hidden = [
         'password'
     ];
+
+    public function orders() {
+        return $this->hasMany(Order::class, 'user_id');
+    }
 }

@@ -144,8 +144,17 @@ class ProductController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
-        $this->productRepository->delete($id);
+        $product = $this->productRepository->find($id);
 
+        // dd($product->orders->count());
+
+        if($product->orders->count() > 0) {
+            return to_route('products.index', [
+                'page' => $request->page,
+            ])->with('error', 'Delete Failed. ' . $product->name .' has been ordered');
+        }
+
+        $this->productRepository->delete($id);
         return to_route('products.index', [
             'page' => $request->page,
         ])->with('success', 'Delete Successful');

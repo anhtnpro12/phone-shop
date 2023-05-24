@@ -17,4 +17,8 @@ class Category extends Model
         'popular',
         'image'
     ];
+
+    public function products() {
+        return $this->hasMany(Product::class, 'category_id');
+    }
 }

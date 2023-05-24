@@ -4,7 +4,7 @@
 
 @endsection
 
-@section('contents')    
+@section('contents')
     <div class="container mb-5">
         <a href="{{ route('categories.create') }}"><button class="btn btn-success mt-3 mb-3">Add Category</button></a>
         <table class="table table-hover" id="table">
@@ -81,6 +81,11 @@
     @if(session('success'))
         <script>
             showSuccessToast('{{ session('success') }}');
+        </script>
+    @endif
+    @if(session('error'))
+        <script>
+            showErrorToast('{{ session('error') }}');
         </script>
     @endif
 @endsection

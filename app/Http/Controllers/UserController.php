@@ -59,7 +59,7 @@ class UserController extends Controller
         $users = $this->userRepository->paginate();
         return to_route('users.index', [
             'page' => $users->lastPage(),
-            
+
         ])->with('success', 'Create User Successful');
     }
 
@@ -119,7 +119,7 @@ class UserController extends Controller
 
         return to_route('users.edit', [
             'user' => $id,
-            
+
         ])->with('success', 'Update User Successful');
     }
 
@@ -128,11 +128,17 @@ class UserController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
-        $this->userRepository->delete($id);
+        $user = $this->userRepository->find($id);
 
+        if($user->orders->count() > 0) {
+            return to_route('users.index', [
+                'page' => $request->page,
+            ])->with('error', 'Delete Failed. ' . $user->name .' has orders');
+        }
+
+        $this->userRepository->delete($id);
         return to_route('users.index', [
             'page' => $request->page,
-            
         ])->with('success', 'Delete Successful');
     }
 }

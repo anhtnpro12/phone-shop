@@ -30,3 +30,4 @@ Route::resources([
     'payments' => PaymentController::class,
     'orders' => OrderController::class,
 ]);
+

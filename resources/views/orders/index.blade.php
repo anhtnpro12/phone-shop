@@ -50,7 +50,7 @@
                                     @break
                                 @case(2)
                                     <span class="badge bg-primary">Confirmed</span>
-                                    @break                                
+                                    @break
                                 @default
                                     <span class="badge bg-success">Complete</span>
                             @endswitch

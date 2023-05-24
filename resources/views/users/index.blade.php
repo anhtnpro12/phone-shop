@@ -85,4 +85,9 @@
             showSuccessToast('{{ session('success') }}');
         </script>
     @endif
+    @if(session('error'))
+        <script>
+            showErrorToast('{{ session('error') }}');
+        </script>
+    @endif
 @endsection

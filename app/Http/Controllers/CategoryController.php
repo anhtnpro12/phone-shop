@@ -126,6 +126,14 @@ class CategoryController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
+        $category = $this->categoryRepository->find($id);
+
+        if($category->products->count() > 0) {
+            return to_route('categories.index', [
+                'page' => $request->page,
+            ])->with('error', 'Delete Failed. ' . $category->name .' has orders');
+        }
+
         $this->categoryRepository->delete($id);
         return to_route('categories.index', [
             'page' => $request->page,
