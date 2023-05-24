@@ -85,11 +85,13 @@
                 <select id="status" name="status" class="selectpicker"
                         data-live-search="true" data-width="100%"
                         data-style="border" data-size="5">
-                    <option value="1" {{ $order->status == 1?'selected':'' }} data-content='<span class="badge bg-secondary">Unconfirmed</span>'>Unconfirmed</option>
-                    <option value="2" {{ $order->status == 2?'selected':'' }} data-content='<span class="badge bg-primary">Confirmed</span>'>Confirmed</option>
-                    <option value="3" {{ $order->status == 3?'selected':'' }} data-content='<span class="badge bg-warning">Delivery</span>'>Delivery</option>
-                    <option value="4" {{ $order->status == 4?'selected':'' }} data-content='<span class="badge bg-success">Complete</span>'>Complete</option>
+                    <option value="1" {{ $order->status == 1?'selected':'' }} class="@if ($order->status==3 || $order->ship_mode <= 2) d-none @endif" data-content='<span class="badge bg-secondary">Unconfirmed</span>'>Unconfirmed</option>
+                    <option value="2" {{ $order->status == 2?'selected':'' }} class="@if ($order->status==3) d-none @endif" data-content='<span class="badge bg-primary">Confirmed</span>'>Confirmed</option>                    
+                    <option value="3" {{ $order->status == 3?'selected':'' }} class="@if ($order->status!=3) d-none @endif" data-content='<span class="badge bg-success">Complete</span>'>Complete</option>
                 </select>
+                @foreach ($errors->get('status') as $message)
+                    <span class="d-block small text-danger">{{ $message }}</span>
+                @endforeach
             </div>
             <div class="mb-3">
                 <label for="ship_id" class="form-label">Shipping Method</label>
@@ -107,9 +109,12 @@
                         data-live-search="true" data-width="100%"
                         data-style="border" data-size="5">
                         <option value="1" {{ $order->ship_mode==1?'selected':'' }} data-content='<span class="badge bg-success">Shipped</span>'>Shipped</option>
-                        <option value="2" {{ $order->ship_mode==2?'selected':'' }} data-content='<span class="badge bg-warning">delivery</span>'>delivery</option>
-                        <option value="3" {{ $order->ship_mode==3?'selected':'' }} data-content='<span class="badge bg-secondary">Not delivery</span>'>Not delivery</option>
+                        <option value="2" {{ $order->ship_mode==2?'selected':'' }} class="@if ($order->ship_mode<2) d-none @endif" data-content='<span class="badge bg-warning">delivery</span>'>delivery</option>
+                        <option value="3" {{ $order->ship_mode==3?'selected':'' }} class="@if ($order->ship_mode<3) d-none @endif" data-content='<span class="badge bg-secondary">Not delivery</span>'>Not delivery</option>
                 </select>
+                @foreach ($errors->get('ship_mode') as $message)
+                    <span class="d-block small text-danger">{{ $message }}</span>
+                @endforeach
             </div>
             <div class="mb-3">
                 <label for="payment_id" class="form-label">Payment Method</label>
@@ -128,8 +133,11 @@
                         data-live-search="true" data-width="100%"
                         data-style="border" data-size="5">
                         <option value="1" {{ $order->payment_mode==1?'selected':'' }} data-content='<span class="badge bg-success">Paid</span>'>Paid</option>
-                        <option value="2" {{ $order->payment_mode==2?'selected':'' }} data-content='<span class="badge bg-secondary">Unpaid</span>'>Unpaid</option>
+                        <option value="2" {{ $order->payment_mode==2?'selected':'' }} class="@if ($order->payment_mode<2) d-none @endif" data-content='<span class="badge bg-secondary">Unpaid</span>'>Unpaid</option>
                 </select>
+                @foreach ($errors->get('payment_mode') as $message)
+                    <span class="d-block small text-danger">{{ $message }}</span>
+                @endforeach
             </div>
 
 

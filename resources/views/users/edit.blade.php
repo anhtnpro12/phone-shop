@@ -57,8 +57,8 @@
                 <select id="role_as" name="role_as" class="selectpicker"
                         data-live-search="true" data-width="100%"
                         data-style="border" data-size="5">
-                        <option value="1" {{ $user->status==1 ? 'selected' : '' }} data-content='<span class="badge bg-primary">Admin</span>'>Admin</option>
-                        <option value="2" {{ $user->status==2 ? 'selected' : '' }} data-content='<span class="badge bg-secondary">Customer</span>'>Customer</option>
+                        <option value="1" {{ $user->role_as==1 ? 'selected' : '' }} data-content='<span class="badge bg-primary">Admin</span>'>Admin</option>
+                        <option value="2" {{ $user->role_as==2 ? 'selected' : '' }} data-content='<span class="badge bg-secondary">Customer</span>'>Customer</option>
                 </select>
             </div>
             <input type="submit" name="submit" value="Update now" class="btn btn-primary">

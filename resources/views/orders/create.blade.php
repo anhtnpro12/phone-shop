@@ -6,6 +6,10 @@
 
 @section('contents')
 
+    {{-- @if ($errors->any())
+        {{ dd($errors->get('qty.*')) }}
+    @endif --}}
+
     <div class="container mt-5 mb-5 d-flex justify-content-center">
         <form action="{{ route('orders.store') }}" method="post" style="width: 50%;">
             <h3 class="text-center">Add Order</h3>
@@ -40,15 +44,10 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="qty1" class="form-label">Quantity</label>
-                        <input onchange="changeAmount();" type="number" min="1" max=@foreach ($products as $p)
-                                @if ($p->qty > 0)
-                                    {{ $p->qty }}
-                                    @break
-                                @endif
-                            @endforeach value="1" name="qty[]" class="form-control " id="qty1">
-                        @foreach ($errors->get('qty') as $message)
-                            <span class="d-block small text-danger">{{ $message }}</span>
+                        <label for="qty1" class="form-label">Quantity <span class="text-danger">*</span></label>
+                        <input onchange="changeAmount();" type="number" value="1" name="qty[]" class="form-control @if ($errors->has('qty.*')) is-invalid @endif" id="qty1">
+                        @foreach ($errors->get('qty.*') as $message)
+                            <span class="d-block small text-danger">{{ $message[0] }}</span>
                         @endforeach
                     </div>
                 </div>
@@ -61,7 +60,7 @@
             </div>
             <hr>
             <div class="mb-3">
-                <label for="total_price" class="form-label">Total</label>
+                <label for="total_price" class="form-label">Total <span class="text-danger">*</span></label>
                 <input type="text" name="total_price" @foreach ($products as $p)
                         @if ($p->qty > 0)
                             value={{ $p->original_price }}
@@ -87,17 +86,16 @@
                     @endforeach
                     </select>
                 </div>
-            <div class="mb-3">
+            {{-- <div class="mb-3">
                 <label for="status" class="form-label">Status</label>
                 <select id="status" name="status" class="selectpicker"
                         data-live-search="true" data-width="100%"
                         data-style="border" data-size="5">
                     <option value="1" data-content='<span class="badge bg-secondary">Unconfirmed</span>'>Unconfirmed</option>
-                    <option value="2" data-content='<span class="badge bg-primary">Confirmed</span>' selected>Confirmed</option>
-                    <option value="3" data-content='<span class="badge bg-warning">Delivery</span>'>Delivery</option>
-                    <option value="4" data-content='<span class="badge bg-success">Complete</span>'>Complete</option>
+                    <option value="2" data-content='<span class="badge bg-primary">Confirmed</span>' selected>Confirmed</option>                    
+                    <option value="3" data-content='<span class="badge bg-success">Complete</span>'>Complete</option>
                 </select>
-            </div>
+            </div> --}}
             {{-- <div class="mb-3">
                 <label for="name" class="form-label">Recipient's name</label>
                 <input type="text" value="{{ old('name') }}" name="name" class="form-control @if ($errors->has('name')) is-invalid @endif" id="name">
@@ -136,7 +134,7 @@
                     @endforeach
                 </select>
             </div>
-            <div class="mb-3">
+            {{-- <div class="mb-3">
                 <label for="ship_mode" class="form-label">Shipping Mode</label>
                 <select id="ship_mode" name="ship_mode" class="selectpicker"
                         data-live-search="true" data-width="100%"
@@ -145,7 +143,7 @@
                         <option value="2" data-content='<span class="badge bg-warning">delivery</span>'>delivery</option>
                         <option value="3" selected data-content='<span class="badge bg-secondary">Not delivery</span>'>Not delivery</option>
                 </select>
-            </div>
+            </div> --}}
             <div class="mb-3">
                 <label for="payment_id" class="form-label">Payment Method</label>
                 <select id="payment_id" name="payment_id" class="selectpicker"
@@ -157,7 +155,7 @@
                     @endforeach
                 </select>
             </div>
-            <div class="mb-3">
+            {{-- <div class="mb-3">
                 <label for="payment_mode" class="form-label">Payment Mode</label>
                 <select id="payment_mode" name="payment_mode" class="selectpicker"
                         data-live-search="true" data-width="100%"
@@ -165,7 +163,7 @@
                         <option value="1" data-content='<span class="badge bg-success">Paid</span>'>Paid</option>
                         <option value="2" selected data-content='<span class="badge bg-secondary">Unpaid</span>'>Unpaid</option>
                 </select>
-            </div>
+            </div> --}}
 
             <input type="submit" name="submit" value="Add now" class="btn btn-primary">
             <a href="{{ route('orders.index') }}" class="btn btn-secondary">Back</a>
@@ -211,13 +209,8 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="qty${count}" class="form-label">Quantity</label>
-                        <input onchange="changeAmount();" type="number" min="1" max=@foreach ($products as $p)
-                                @if ($p->qty > 0)
-                                    {{ $p->qty }}
-                                    @break
-                                @endif
-                            @endforeach value="1"  name="qty[]" class="form-control" id="qty${count}">
+                        <label for="qty${count}" class="form-label">Quantity <span class="text-danger">*</span></label>
+                        <input onchange="changeAmount();" type="number" value="1"  name="qty[]" class="form-control" id="qty${count}">
                     </div>
                 </div>
                 <div class="flex-fill d-flex justify-content-end align-items-center">

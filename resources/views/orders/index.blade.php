@@ -16,7 +16,7 @@
                     <th scope="col">Creator</th>
                     <th scope="col">Total</th>
                     <th scope="col">Status</th>
-                    <th scope="col">Shipping</th>
+                    {{-- <th scope="col">Shipping</th> --}}
                     <th scope="col">Payment</th>
                     <th scope="col">Date</th>
                     <th scope="col">Action</th>
@@ -50,15 +50,12 @@
                                     @break
                                 @case(2)
                                     <span class="badge bg-primary">Confirmed</span>
-                                    @break
-                                @case(3)
-                                    <span class="badge bg-warning">Delivery</span>
-                                    @break
+                                    @break                                
                                 @default
                                     <span class="badge bg-success">Complete</span>
                             @endswitch
                         </td>
-                        <td>
+                        {{-- <td>
                             @switch($o->ship_mode)
                                 @case(1)
                                     <span class="badge bg-success">Shipped</span>
@@ -69,7 +66,7 @@
                                 @default
                                     <span class="badge bg-secondary">Not delivery</span>
                             @endswitch
-                        </td>
+                        </td> --}}
                         <td>{!! $o->payment_mode==1?'<span class="badge bg-success">Paid</span>':'<span class="badge bg-secondary">Unpaid</span>' !!}</td>
                         <td>{{ $o->created_at }}</td>
 

@@ -58,7 +58,7 @@
             @method('post')
             @csrf
             <div class="mb-3">
-                <label for="image" class="form-label">Image</label>
+                <label for="image" class="form-label">Image <span class="text-danger">*</span></label>
                 <input type="file" name="image" id="image"
                         data-style-item-panel-aspect-ratio="0.5625" accept="image/png, image/jpeg, image/gif">
                 @foreach ($errors->get('image') as $message)
@@ -66,7 +66,7 @@
                 @endforeach
             </div>
             <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
+                <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
                 <input type="text" value="{{ old('name') }}" name="name" class="form-control @if ($errors->has('name')) is-invalid @endif" id="name">
                 @foreach ($errors->get('name') as $message)
                     <span class="d-block small text-danger">{{ $message }}</span>
@@ -74,10 +74,10 @@
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
-                <textarea class="form-control" name="description" id="description" rows="3"></textarea>
+                <textarea class="form-control" name="description" id="description" rows="3">{{ old('description') }}</textarea>
             </div>
             <div class="mb-3">
-                <label for="popular" class="form-label">Popular</label>
+                <label for="popular" class="form-label">Popular <span class="text-danger">*</span></label>
                 <select id="popular" name="popular" class="selectpicker"
                         data-live-search="true" data-width="100%"
                         data-style="border" data-size="5">

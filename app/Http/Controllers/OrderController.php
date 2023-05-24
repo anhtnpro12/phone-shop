@@ -69,17 +69,20 @@ class OrderController extends Controller
         $request->validate([
             'total_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/'],
             'qty.*' => 'required|numeric|min:1',
+        ], [
+            'qty.*.required' => 'The quantity field is required.',
+            'qty.*.min' => 'The quantity field must be at least 1.'
         ]);
         DB::beginTransaction();
         try {
             $order = $this->orderRepository->create([
                 'total_price' => $request->total_price,
                 'user_id' => $request->user_id,
-                'status' => $request->status,
+                'status' => '1',
                 'ship_id' => $request->ship_id,
-                'ship_mode' => $request->ship_mode,
+                'ship_mode' => '3',
                 'payment_id' => $request->payment_id,
-                'payment_mode' => $request->payment_mode,
+                'payment_mode' => '2',
             ]);
 
             $product_ids = $request->product_id;
@@ -88,7 +91,7 @@ class OrderController extends Controller
                 $pro = $this->productRepository->find($product_id);
                 if ($pro->qty < $qtys[$key]) {                    
                     DB::rollBack();
-                    return redirect()->back()->withErrors(['error' => 'Quantity must be less than or equal to remain']);
+                    return redirect()->back()->withErrors(['qty.*.max' => 'Quantity must be less than or equal to remain']);
                 }
 
                 $this->orderItemsRepository->create([
@@ -148,6 +151,21 @@ class OrderController extends Controller
             'total_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/'],
             'qty.*' => 'required|numeric|min:1',
         ]);
+        $order = $this->orderRepository->find($id);
+        // dd(+$request->ship_mode);
+        if ($order->ship_mode <= 2 && +$request->status == 1) {            
+            return redirect()->back()->withErrors(['status' => 'Order are delivery or shipped']);
+        }
+        if ($order->status == 1 && +$request->ship_mode <= 2) {            
+            return redirect()->back()->withErrors(['ship_mode' => 'Order are Unconfirmed']);
+        }
+        if ($order->status == 1 && +$request->ship_mode <= 2) {            
+            return redirect()->back()->withErrors(['ship_mode' => 'Order are Unconfirmed']);
+        }
+        if ($order->status == 1 && +$request->payment_mode < 2) {            
+            return redirect()->back()->withErrors(['payment_mode' => 'Order are Unconfirmed']);
+        }
+
         DB::beginTransaction();
         try {
             $order = $this->orderRepository->update([
@@ -160,6 +178,11 @@ class OrderController extends Controller
                 'payment_mode' => $request->payment_mode,
             ], $id);
 
+            if ($order->ship_mode == 1 && $order->payment_mode == 1) {
+                $order = $this->orderRepository->update([
+                    'status' => '3'
+                ], $id);
+            }            
 
             $old_order_items = $this->orderItemsRepository->findWhere([
                 'order_id' => $order->id
@@ -181,7 +204,7 @@ class OrderController extends Controller
                     $pro = $this->productRepository->find($product_id);
                     if ($pro->qty < $qtys[$key]) {                    
                         DB::rollBack();
-                        return redirect()->back()->withErrors(['error' => 'Quantity must be less than or equal to remain']);
+                        return redirect()->back()->withErrors(['qty.*.max' => 'Quantity must be less than or equal to remain']);
                     }
 
                     $this->orderItemsRepository->create([
