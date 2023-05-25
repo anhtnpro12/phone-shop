@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('tracking_no', 191)->nullable();
+            $table->uuid('uuid')->unique();
             $table->integer('user_id')->nullable();
             $table->string('name', 191)->nullable()->charset('utf8mb4')->collation('utf8mb4_vietnamese_ci');
             $table->string('email', 191)->nullable();
@@ -23,7 +23,6 @@ return new class extends Migration
             $table->decimal('total_price', 20, 2)->nullable();
             $table->tinyInteger('payment_mode')->nullable();
             $table->tinyInteger('payment_id')->nullable();
-            $table->tinyInteger('ship_mode')->nullable();
             $table->tinyInteger('ship_id')->nullable();
             $table->tinyInteger('status')->nullable();
             $table->string('comments', 255)->nullable();

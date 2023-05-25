@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->increments('id');
+            $table->uuid('uuid')->unique();
             $table->integer('category_id')->nullable();
             $table->string('name', 191)->nullable()->charset('utf8mb4')->collation('utf8mb4_vietnamese_ci');
             $table->string('slug', 191)->nullable();

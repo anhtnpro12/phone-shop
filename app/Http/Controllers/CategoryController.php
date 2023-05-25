@@ -131,7 +131,7 @@ class CategoryController extends Controller
         if($category->products->count() > 0) {
             return to_route('categories.index', [
                 'page' => $request->page,
-            ])->with('error', 'Delete Failed. ' . $category->name .' has orders');
+            ])->with('error', 'Delete Failed. ' . $category->name .' has products');
         }
 
         $this->categoryRepository->delete($id);

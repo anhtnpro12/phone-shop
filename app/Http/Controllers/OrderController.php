@@ -9,6 +9,7 @@ use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\ShipRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use Exception;
+use Faker\Core\Uuid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -64,7 +65,7 @@ class OrderController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {   
+    {
 
         $request->validate([
             'total_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/'],
@@ -80,16 +81,15 @@ class OrderController extends Controller
                 'user_id' => $request->user_id,
                 'status' => '1',
                 'ship_id' => $request->ship_id,
-                'ship_mode' => '3',
                 'payment_id' => $request->payment_id,
-                'payment_mode' => '2',
+                'payment_mode' => '1',
             ]);
 
             $product_ids = $request->product_id;
             $qtys = $request->qty;
             foreach ($product_ids as $key => $product_id) {
                 $pro = $this->productRepository->find($product_id);
-                if ($pro->qty < $qtys[$key]) {                    
+                if ($pro->qty < $qtys[$key]) {
                     DB::rollBack();
                     return redirect()->back()->withErrors(['qty.*.max' => 'Quantity must be less than or equal to remain']);
                 }
@@ -147,77 +147,13 @@ class OrderController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'total_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/'],
-            'qty.*' => 'required|numeric|min:1',
-        ]);
-        $order = $this->orderRepository->find($id);
-        // dd(+$request->ship_mode);
-        if ($order->ship_mode <= 2 && +$request->status == 1) {            
-            return redirect()->back()->withErrors(['status' => 'Order are delivery or shipped']);
-        }
-        if ($order->status == 1 && +$request->ship_mode <= 2) {            
-            return redirect()->back()->withErrors(['ship_mode' => 'Order are Unconfirmed']);
-        }
-        if ($order->status == 1 && +$request->ship_mode <= 2) {            
-            return redirect()->back()->withErrors(['ship_mode' => 'Order are Unconfirmed']);
-        }
-        if ($order->status == 1 && +$request->payment_mode < 2) {            
-            return redirect()->back()->withErrors(['payment_mode' => 'Order are Unconfirmed']);
-        }
-
         DB::beginTransaction();
         try {
             $order = $this->orderRepository->update([
-                'total_price' => $request->total_price,
                 'user_id' => $request->user_id,
-                'status' => $request->status,
                 'ship_id' => $request->ship_id,
-                'ship_mode' => $request->ship_mode,
                 'payment_id' => $request->payment_id,
-                'payment_mode' => $request->payment_mode,
             ], $id);
-
-            if ($order->ship_mode == 1 && $order->payment_mode == 1) {
-                $order = $this->orderRepository->update([
-                    'status' => '3'
-                ], $id);
-            }            
-
-            $old_order_items = $this->orderItemsRepository->findWhere([
-                'order_id' => $order->id
-            ]);
-            foreach ($old_order_items as $oi) {
-                $pro = $this->productRepository->find($oi->product_id);
-                $this->productRepository->update([
-                    'qty' => ($pro->qty + $oi->qty)
-                ], $oi->product_id);
-            }
-            $this->orderItemsRepository->deleteWhere([
-                'order_id' => $order->id
-            ]);
-
-            if (isset($request->product_id)) {
-                $product_ids = $request->product_id;
-                $qtys = $request->qty;
-                foreach ($product_ids as $key => $product_id) {
-                    $pro = $this->productRepository->find($product_id);
-                    if ($pro->qty < $qtys[$key]) {                    
-                        DB::rollBack();
-                        return redirect()->back()->withErrors(['qty.*.max' => 'Quantity must be less than or equal to remain']);
-                    }
-
-                    $this->orderItemsRepository->create([
-                        'order_id' => $order->id,
-                        'product_id' => $product_id,
-                        'qty' => $qtys[$key]
-                    ]);
-                    
-                    $this->productRepository->update([
-                        'qty' => $pro->qty - $qtys[$key]
-                    ], $product_id);
-                }
-            }
 
             DB::commit();
             return to_route('orders.edit', [
@@ -239,7 +175,11 @@ class OrderController extends Controller
         $this->orderRepository->delete($id);
         return to_route('orders.index', [
             'page' => $request->page,
-
         ])->with('success', 'Delete Successful');
+    }
+
+    public function changeStatus($id, $status)
+    {
+        return "id = $id, status = $status";
     }
 }

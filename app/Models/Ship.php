@@ -13,4 +13,8 @@ class Ship extends Model
         'name',
         'description',
     ];
+
+    public function orders() {
+        return $this->hasMany(Order::class, 'ship_id');
+    }
 }

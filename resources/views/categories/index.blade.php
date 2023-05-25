@@ -24,7 +24,10 @@
                         <th>{{ $c->id }}</th>
                         <td>{{ $c->name }}</td>
                         <td>
-                            <img src="{{ asset('storage/imgs/categories/'.$c->id.'/'.$c->image) }}" alt="image" style="max-height: 15vh; max-width: 20vh;">
+                            <div class="mb-4">
+                                <img src="{{ asset('storage/imgs/categories/'.$c->id.'/'.$c->image) }}"
+                                    class="w-100 " style="object-fit:contain" height="100px" alt="image" >
+                            </div>
                         </td>
                         <td>{{ $c->description }}</td>
                         <td>{!! $c->popular==1?'<span class="badge bg-danger"><i class="fa-solid fa-fire fa-beat text-warning"></i> Trending</span>'

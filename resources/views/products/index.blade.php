@@ -29,7 +29,10 @@
                         <th>{{ $p->id }}</th>
                         <td>{{ $p->name }}</td>
                         <td>
-                            <img src="{{ asset('storage/imgs/products/'.$p->id.'/'.$p->image) }}" alt="image" style="max-height: 15vh; max-width: 20vh;">
+                            <div class="mb-4">
+                                <img src="{{ asset('storage/imgs/products/'.$p->id.'/'.$p->image) }}"
+                                    class="w-100" style="object-fit:contain" height="100px" alt="image">
+                            </div>
                         </td>
                         <td>{{ $p->description }}</td>
                         <td>{{ $p->category->name }}</td>
