@@ -9,7 +9,7 @@
         <table class="table table-hover" id="table">
             <thead>
                 <tr class="table-secondary">
-                    <th scope="col">ID</th>
+                    <th scope="col">#</th>
                     <th scope="col">User</th>
                     <th scope="col">Products</th>
                     <th scope="col">Quantity</th>
@@ -22,9 +22,9 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($orders as $o)
+                @foreach ($orders as $index => $o)
                     <tr>
-                        <th>{{ $o->id }}</th>
+                        <th>{{ $orders->count()-$index }}</th>
                         <td>{{ $o->user->name }}</td>
                         <td>
                             @if ($o->products->count() > 0)
@@ -62,22 +62,32 @@
                                     <span class="badge bg-primary">Confirmed</span>
                                 @break
 
-                                @default
+                                @case(3)
+                                    <span class="badge bg-warning">Delivery</span>
+                                @break
+
+                                @case(4)
                                     <span class="badge bg-success">Complete</span>
+                                @break
+
+                                @default
+                                    <span class="badge bg-danger">Cancel</span>
                             @endswitch
                         </td>
                         <td>{!! $o->payment_mode == 1
-                            ? '<span class="badge bg-success">Paid</span>'
-                            : '<span class="badge bg-secondary">Unpaid</span>' !!}</td>
+                            ? '<span class="badge bg-secondary">Unpaid</span>'
+                            : '<span class="badge bg-success">Paid</span>' !!}</td>
                         <td>{{ $o->created_at }}</td>
 
                         <td>
                             <a href="{{ route('orders.edit', ['order' => $o->id]) }}"><button
                                     class="btn btn-primary">View</button></a>
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#deleteModal{{ $o->id }}">
-                                Delete
-                            </button>
+                            @if ($o->status < 2)
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal{{ $o->id }}">
+                                    Cancel
+                                </button>                                
+                            @endif
                         </td>
                     </tr>
 
@@ -92,16 +102,15 @@
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    Are you sure you want to delete <span class="text-danger">{{ $o->name }}</span>?
+                                    Are you sure you want to delete <span class="text-danger"></span>?
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                                    <form action="{{ route('orders.destroy', ['order' => $o->id]) }}" method="post">
-                                        @method('DELETE')
-                                        @csrf
-                                        <input type="hidden" name="page" value="{{ $orders->currentPage() }}">
-                                        <button class="btn btn-danger">Yes</button>
-                                    </form>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>                                    
+                                        <form action="{{ route('orders.changeStatus', [$o->id, 5]) }}" method="post">
+                                            @method('put')
+                                            @csrf
+                                            <button class="btn btn-danger me-1">Cancel</button>
+                                        </form>                                     
                                 </div>
                             </div>
                         </div>

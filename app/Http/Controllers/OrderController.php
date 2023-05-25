@@ -180,6 +180,55 @@ class OrderController extends Controller
 
     public function changeStatus($id, $status)
     {
-        return "id = $id, status = $status";
+        DB::beginTransaction();
+        try {
+            $order = $this->orderRepository->update([
+                'status' => $status
+            ], $id);
+            
+            if ($status == '5') {
+                $ois = $this->orderItemsRepository->findWhere([
+                    'order_id' => $id
+                ]);
+                foreach ($ois as $oi) {
+                    $pro = $this->productRepository->find($oi->product_id);
+                    $this->productRepository->update([
+                        'qty' => $pro->qty + $oi->qty
+                    ], $oi->product_id);                        
+                }
+
+                DB::commit();
+                return to_route('orders.index', [
+                    'order' => $order->id
+                ])->with('success', 'Cancel Order successful!');
+            }
+
+            DB::commit();
+            return to_route('orders.edit', [
+                'order' => $order->id
+            ])->with('success', 'Update Order successful!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            abort(404);
+        }
+    }
+
+    public function changePayment($id, $mode)
+    {
+        DB::beginTransaction();
+        try {
+            $order = $this->orderRepository->update([
+                'payment_mode' => $mode
+            ], $id);
+            
+
+            DB::commit();
+            return to_route('orders.edit', [
+                'order' => $order->id
+            ])->with('success', 'Update Order successful!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            abort(404);
+        }
     }
 }

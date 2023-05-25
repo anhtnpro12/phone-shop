@@ -1,7 +1,6 @@
 @extends('layouts.default')
 
 @section('styles')
-
 @endsection
 
 @section('contents')
@@ -25,44 +24,62 @@
             </div> --}}
             <div class="mb-3">
                 <label for="user_id" class="form-label">User</label>
-                <select id="user_id" name="user_id" class="selectpicker"
-                        data-live-search="true" data-width="100%"
+                @if ($order->status <= 2)
+                    <select id="user_id" name="user_id" class="selectpicker" data-live-search="true" data-width="100%"
                         data-style="border" data-size="5">
 
-                    @foreach ($users as $u)
-                        <option value='{{ $u->id }}'
-                            data-content='<div>
-                                            <h6>{{ $u->name }}</h6>
-                                            <div><small>{{ $u->phone }}</small></div>
-                                            <small>{{ $u->address }}</small>
-                                        </div>' {{ $order->user->id === $u->id?'selected':'' }}></option>
-                    @endforeach
+                        @foreach ($users as $u)
+                            <option value='{{ $u->id }}'
+                                data-content='<div>
+                                                <h6>{{ $u->name }}</h6>
+                                                <div><small>{{ $u->phone }}</small></div>
+                                                <small>{{ $u->address }}</small>
+                                            </div>'
+                                {{ $order->user->id === $u->id ? 'selected' : '' }}></option>
+                        @endforeach
                     </select>
-                </div>
+                @else                    
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>{{ $order->user->name }}</strong></li>                        
+                        <li class="list-group-item">Phone: {{ $order->user->phone }}</li>                        
+                        <li class="list-group-item">Address: {{ $order->user->address }}</li>                        
+                    </ul>                        
+                @endif
+            </div>
             <div class="mb-3">
                 <label for="ship_id" class="form-label">Shipping Method</label>
-                <select id="ship_id" name="ship_id" class="selectpicker"
-                        data-live-search="true" data-width="100%"
+                @if ($order->status <= 2)
+                    <select id="ship_id" name="ship_id" class="selectpicker" data-live-search="true" data-width="100%"
                         data-style="border" data-size="5">
-                    @foreach ($ships as $s)
-                        <option value='{{ $s->id }}' {{ $order->ship->id === $s->id?'selected':'' }}>{{ $s->name }}</option>
-                    @endforeach
-                </select>
+                        @foreach ($ships as $s)
+                            <option value='{{ $s->id }}' {{ $order->ship->id === $s->id ? 'selected' : '' }}>
+                                {{ $s->name }}</option>
+                        @endforeach
+                    </select>
+                @else
+                    <strong>: {{ $order->ship->name }}</strong>
+                @endif
             </div>
             <div class="mb-3">
                 <label for="payment_id" class="form-label">Payment Method</label>
-                <select id="payment_id" name="payment_id" class="selectpicker"
-                        data-live-search="true" data-width="100%"
+                @if ($order->status == 1)
+                    <select id="payment_id" name="payment_id" class="selectpicker" data-live-search="true" data-width="100%"
                         data-style="border" data-size="5">
 
-                    @foreach ($payments as $p)
-                        <option value='{{ $p->id }}' {{ $order->payment->id === $p->id?'selected':'' }}>{{ $p->name }}</option>
-                    @endforeach
-                </select>
+                        @foreach ($payments as $p)
+                            <option value='{{ $p->id }}' {{ $order->payment->id === $p->id ? 'selected' : '' }}>
+                                {{ $p->name }}</option>
+                        @endforeach
+                    </select>
+                @else
+                    <strong>: {{ $order->payment->name }}</strong>
+                @endif
             </div>
-            <div class="d-flex justify-content-end">
-                <input type="submit" name="submit" value="Update now" class="btn btn-primary">
-            </div>
+            @if ($order->status <= 2)
+                <div class="d-flex justify-content-end">
+                    <input type="submit" name="submit" value="Update now" class="btn btn-primary">
+                </div>                
+            @endif
 
             <div class="mb-3">
                 <label for="status" class="form-label">Status: </label>
@@ -70,34 +87,41 @@
                     @case(1)
                         <span class="badge bg-secondary">Unconfirmed</span>
                         @break
+
                     @case(2)
                         <span class="badge bg-primary">Confirmed</span>
                         @break
+
                     @case(3)
+                        <span class="badge bg-warning">Delivery</span>
+                        @break
+                    
+                    @case(4)
                         <span class="badge bg-success">Complete</span>
                         @break
+
                     @default
-                        <span class="badge bg-warning">Complete</span>
+                        <span class="badge bg-danger">Canceled</span>
                 @endswitch
             </div>
             <div class="mb-3">
                 <label for="payment_mode" class="form-label">Payment: </label>
-                {!! $order->payment_mode==1?'<span class="badge bg-secondary">Unpaid</span>':'' !!}
-                {!! $order->payment_mode==2?'<span class="badge bg-success">Paid</span>':'' !!}
+                {!! $order->payment_mode == 1 ? '<span class="badge bg-secondary">Unpaid</span>' : '' !!}
+                {!! $order->payment_mode == 2 ? '<span class="badge bg-success">Paid</span>' : '' !!}
             </div>
             <table class="table table-hover">
                 <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Products</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Total</th>
-                </tr>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Products</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                    </tr>
                 </thead>
                 <tbody>
                     @foreach ($order->order_items as $index => $oi)
                         <tr>
-                            <th scope="row">{{ $index+1 }}</th>
+                            <th scope="row">{{ $index + 1 }}</th>
                             <td>
                                 <div class="row justify-content-center mb-1">
                                     <div class="col-md-5">
@@ -118,7 +142,7 @@
                                 </div>
                             </td>
                             <td>{{ $oi->qty }}</td>
-                            <td>${{ number_format($oi->qty*$oi->product->original_price, 2, '.', ',') }}</td>
+                            <td>${{ number_format($oi->qty * $oi->product->original_price, 2, '.', ',') }}</td>
                         </tr>
                     @endforeach
                     <tr>
@@ -130,29 +154,70 @@
             </table>
 
         </form>
-        <div class="w-50 d-flex justify-content-start">
-            <a href="{{ route('orders.index') }}" class="btn btn-secondary">Back</a>
-            <form action="{{ route('orders.changeStatus', [2, 3]) }}" method="post">
-                @method('put')
-                @csrf
-                <button class="btn btn-primary ms-1">test</button>
-            </form>
+        <div class="container-fluid w-50">
+            <div class="row">
+                <div class="col d-flex justify-content-start">
+                    @switch($order->status)
+                        @case(1)
+                            <form action="{{ route('orders.changeStatus', [$order->id, 2]) }}" method="post">
+                                @method('put')
+                                @csrf
+                                <button class="btn btn-primary me-1">Confirm</button>
+                            </form>
+                            @break
+                        @case(2)
+                            <form action="{{ route('orders.changeStatus', [$order->id, 3]) }}" method="post">
+                                @method('put')
+                                @csrf
+                                <button class="btn btn-warning me-1">Delivery</button>
+                            </form>                            
+                            @break                        
+                        @case(3)
+                            @if ($order->payment_mode == 2)
+                                <form action="{{ route('orders.changeStatus', [$order->id, 4]) }}" method="post">
+                                    @method('put')
+                                    @csrf
+                                    <button class="btn btn-success me-1">Complete</button>
+                                </form>                                        
+                            @endif                        
+                        @default
+                            
+                    @endswitch 
+                    @if ($order->payment_mode == 1 && $order->status > 1 && $order->status != 5)
+                        <form action="{{ route('orders.changePayment', [$order->id, 2]) }}" method="post">
+                            @method('put')
+                            @csrf
+                            <button class="btn btn-success me-1">Pay</button>
+                        </form>                            
+                    @endif                   
+                    <a href="{{ route('orders.index') }}" class="btn btn-secondary">Back</a>
+                </div>
+                @if ($order->status < 2)
+                    <div class="col d-flex justify-content-end">
+                        <form action="{{ route('orders.changeStatus', [$order->id, 5]) }}" method="post">
+                            @method('put')
+                            @csrf
+                            <button class="btn btn-danger me-1">Cancel</button>
+                        </form>                    
+                    </div>                    
+                @endif
+            </div>
         </div>
     </div>
 @endsection
 
 @section('scripts')
-    @if($errors->any())
+    @if ($errors->any())
         <script>
             showErrorToast('Edit Order failed!!' + '{{ $errors->first('error') }}');
         </script>
     @endif
-    @if(session('success') && !$errors->any())
+    @if (session('success') && !$errors->any())
         <script>
             showSuccessToast('{{ session('success') }}');
         </script>
     @endif
-    @if(session('error'))
+    @if (session('error'))
         <script>
             showErrorToast('{{ session('error') }}');
         </script>

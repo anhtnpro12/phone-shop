@@ -146,9 +146,9 @@ class ProductController extends Controller
     {
         $product = $this->productRepository->find($id);
 
-        // dd($product->orders->count());
+        // dd($product->orderItems->count());
 
-        if($product->orders->count() > 0) {
+        if($product->orderItems->count() > 0) {
             return to_route('products.index', [
                 'page' => $request->page,
             ])->with('error', 'Delete Failed. ' . $product->name .' has been ordered');

@@ -94,8 +94,15 @@ class PaymentController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
-        $this->paymentRepository->delete($id);
+        $payment = $this->paymentRepository->find($id);
 
+        if($payment->orders->count() > 0) {
+            return to_route('payments.index', [
+                'page' => $request->page,
+            ])->with('error', 'Delete Failed. Have an order using this payment method.');
+        }
+
+        $this->paymentRepository->delete($id);
         return to_route('payments.index', [
             'page' => $request->page,
             'success' => 'Delete Successful'
