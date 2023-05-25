@@ -94,8 +94,15 @@ class ShipController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
-        $this->shipRepository->delete($id);
+        $ship = $this->shipRepository->find($id);
 
+        if($ship->orders->count() > 0) {
+            return to_route('ships.index', [
+                'page' => $request->page,
+            ])->with('error', 'Delete Failed. Orders are being shipped using this method.');
+        }
+
+        $this->shipRepository->delete($id);
         return to_route('ships.index', [
             'page' => $request->page,
             'success' => 'Delete Successful'

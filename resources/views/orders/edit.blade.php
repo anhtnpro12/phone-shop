@@ -6,67 +6,25 @@
 
 @section('contents')
 
-    <div class="container mt-5 mb-5 d-flex justify-content-center">
+    <div class="container mt-5 mb-5 d-flex flex-column align-items-center">
         <form action="{{ route('orders.update', ['order' => $order->id]) }}" method="post" style="width: 50%;">
-            <h3 class="text-center">Update Order</h3>
+            <div class="mb-3">
+                <p style="color: #7e8d9f;font-size: 20px;">Invoice &gt;&gt; <strong>ID: {{ $order->uuid }}</strong></p>
+            </div>
+            {{-- <h3 class="text-center">Order</h3> --}}
 
             @method('put')
             @csrf
-            @foreach ($order->order_items as $oi)
-                <div class="container mb-3 d-flex flex-wrap">
-                    <hr style="width: 100%;"/>
-                    <div class="wrapper flex-fill">
-                        <div class="mb-3">
-                            <label for="product_id1" class="form-label">Product Name</label>
-                            <select id="product_id1" name="product_id[]" class="selectpicker"
-                                    data-live-search="true" data-width="100%"
-                                    onchange="changeAmount(); changeMaxQuantity(this.id.substr(10), this.selectedOptions[0].dataset.quantity);"
-                                    data-style="border" data-size="5">
-                                    @foreach ($products as $p)
-                                        <option data-price='{{ $p->original_price }}' data-quantity='{{ $p->qty }}'
-                                        value='{{ $p->id }}'
-                                        data-content='<div class="d-flex">
-                                                        <div class="">
-                                                            <img src="{{ asset('storage/imgs/products/'.$p->id.'/'.$p->image) }}"
-                                                                    class="img-fluid" alt="image" style="max-height: 15vh; max-width: 20vh;">
-                                                        </div>
-                                                        <div class="ps-2">
-                                                            <h6>{{ $p->name }}</h6>
-                                                            <div>{{ $p->category->name }}</div>
-                                                            <small>${{ $p->original_price }}</small>
-                                                            <small>Remaining: {{ $p->qty }}</small>
-                                                        </div>
-                                                    </div>' {{ $p->qty<=0?'disabled':'' }} {{ $p->id === $oi->product->id?'selected':'' }}></option>
-                                    @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="qty1" class="form-label">Quantity</label>
-                            <input onchange="changeAmount();" type="number" min="1" value="{{ $oi->qty }}"
-                                    name="qty[]" class="form-control" id="qty1" readonly>
-                            @foreach ($errors->get('qty') as $message)
-                                <span class="d-block small text-danger">{{ $message }}</span>
-                            @endforeach
-                        </div>
-                    </div>
-                    <div class="flex-fill d-flex justify-content-end align-items-center">
-                        <button class="btn btn-danger" onclick="this.parentNode.parentNode.remove(); changeAmount();">Remove</button>
-                    </div>
-                </div>
-            @endforeach
-            <div id="add-product-container" class="container mb-3 d-flex">
-                <button id="add-product-btn" class="btn btn-success" type="button" onclick="addProduct(); changeAmount();">Add Product</button>
-            </div>
-            <hr>
-            <div class="mb-3">
-                <label for="total_price" class="form-label">Total</label>
-                <input type="text" name="total_price" value="{{ $order->total_price }}" class="form-control @if ($errors->has('total_price')) is-invalid @endif" id="total_price">
+            {{-- <div class="mb-3">
+                <label for="total_price" class="form-label">Total Amount</label>
+                <input type="text" name="total_price" value="{{ $order->total_price }}"
+                        class="form-control @if ($errors->has('total_price')) is-invalid @endif" id="total_price" readonly>
                 @foreach ($errors->get('total_price') as $message)
                     <span class="d-block small text-danger">{{ $message }}</span>
                 @endforeach
-            </div>
+            </div> --}}
             <div class="mb-3">
-                <label for="user_id" class="form-label">Customer</label>
+                <label for="user_id" class="form-label">User</label>
                 <select id="user_id" name="user_id" class="selectpicker"
                         data-live-search="true" data-width="100%"
                         data-style="border" data-size="5">
@@ -75,24 +33,12 @@
                         <option value='{{ $u->id }}'
                             data-content='<div>
                                             <h6>{{ $u->name }}</h6>
+                                            <div><small>{{ $u->phone }}</small></div>
                                             <small>{{ $u->address }}</small>
                                         </div>' {{ $order->user->id === $u->id?'selected':'' }}></option>
                     @endforeach
                     </select>
                 </div>
-            <div class="mb-3">
-                <label for="status" class="form-label">Status</label>
-                <select id="status" name="status" class="selectpicker"
-                        data-live-search="true" data-width="100%"
-                        data-style="border" data-size="5">
-                    <option value="1" {{ $order->status == 1?'selected':'' }} class="@if ($order->status==3 || $order->ship_mode <= 2) d-none @endif" data-content='<span class="badge bg-secondary">Unconfirmed</span>'>Unconfirmed</option>
-                    <option value="2" {{ $order->status == 2?'selected':'' }} class="@if ($order->status==3) d-none @endif" data-content='<span class="badge bg-primary">Confirmed</span>'>Confirmed</option>                    
-                    <option value="3" {{ $order->status == 3?'selected':'' }} class="@if ($order->status!=3) d-none @endif" data-content='<span class="badge bg-success">Complete</span>'>Complete</option>
-                </select>
-                @foreach ($errors->get('status') as $message)
-                    <span class="d-block small text-danger">{{ $message }}</span>
-                @endforeach
-            </div>
             <div class="mb-3">
                 <label for="ship_id" class="form-label">Shipping Method</label>
                 <select id="ship_id" name="ship_id" class="selectpicker"
@@ -102,19 +48,6 @@
                         <option value='{{ $s->id }}' {{ $order->ship->id === $s->id?'selected':'' }}>{{ $s->name }}</option>
                     @endforeach
                 </select>
-            </div>
-            <div class="mb-3">
-                <label for="ship_mode" class="form-label">Shipping Mode {{ $order->ship_mode }}</label>
-                <select id="ship_mode" name="ship_mode" class="selectpicker"
-                        data-live-search="true" data-width="100%"
-                        data-style="border" data-size="5">
-                        <option value="1" {{ $order->ship_mode==1?'selected':'' }} data-content='<span class="badge bg-success">Shipped</span>'>Shipped</option>
-                        <option value="2" {{ $order->ship_mode==2?'selected':'' }} class="@if ($order->ship_mode<2) d-none @endif" data-content='<span class="badge bg-warning">delivery</span>'>delivery</option>
-                        <option value="3" {{ $order->ship_mode==3?'selected':'' }} class="@if ($order->ship_mode<3) d-none @endif" data-content='<span class="badge bg-secondary">Not delivery</span>'>Not delivery</option>
-                </select>
-                @foreach ($errors->get('ship_mode') as $message)
-                    <span class="d-block small text-danger">{{ $message }}</span>
-                @endforeach
             </div>
             <div class="mb-3">
                 <label for="payment_id" class="form-label">Payment Method</label>
@@ -127,98 +60,88 @@
                     @endforeach
                 </select>
             </div>
-            <div class="mb-3">
-                <label for="payment_mode" class="form-label">Payment Mode</label>
-                <select id="payment_mode" name="payment_mode" class="selectpicker"
-                        data-live-search="true" data-width="100%"
-                        data-style="border" data-size="5">
-                        <option value="1" {{ $order->payment_mode==1?'selected':'' }} data-content='<span class="badge bg-success">Paid</span>'>Paid</option>
-                        <option value="2" {{ $order->payment_mode==2?'selected':'' }} class="@if ($order->payment_mode<2) d-none @endif" data-content='<span class="badge bg-secondary">Unpaid</span>'>Unpaid</option>
-                </select>
-                @foreach ($errors->get('payment_mode') as $message)
-                    <span class="d-block small text-danger">{{ $message }}</span>
-                @endforeach
+            <div class="d-flex justify-content-end">
+                <input type="submit" name="submit" value="Update now" class="btn btn-primary">
             </div>
 
+            <div class="mb-3">
+                <label for="status" class="form-label">Status: </label>
+                @switch($order->status)
+                    @case(1)
+                        <span class="badge bg-secondary">Unconfirmed</span>
+                        @break
+                    @case(2)
+                        <span class="badge bg-primary">Confirmed</span>
+                        @break
+                    @case(3)
+                        <span class="badge bg-success">Complete</span>
+                        @break
+                    @default
+                        <span class="badge bg-warning">Complete</span>
+                @endswitch
+            </div>
+            <div class="mb-3">
+                <label for="payment_mode" class="form-label">Payment: </label>
+                {!! $order->payment_mode==1?'<span class="badge bg-secondary">Unpaid</span>':'' !!}
+                {!! $order->payment_mode==2?'<span class="badge bg-success">Paid</span>':'' !!}
+            </div>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Products</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                    @foreach ($order->order_items as $index => $oi)
+                        <tr>
+                            <th scope="row">{{ $index+1 }}</th>
+                            <td>
+                                <div class="row justify-content-center mb-1">
+                                    <div class="col-md-5">
+                                        <img src="{{ asset('storage/imgs/products/' . $oi->product->id . '/' . $oi->product->image) }}"
+                                            class="w-100" style="object-fit:contain" height="100px" alt="image" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="fw-bold">{{ $oi->product->name }}</p>
+                                        <p class="mb-1">
+                                            <span
+                                                class="text-muted me-2">Category:</span><span>{{ $oi->product->category->name }}</span>
+                                        </p>
+                                        <p>
+                                            <span
+                                                class="text-muted me-2">Price:</span><span>${{ number_format($oi->product->original_price, 2, '.', ',') }}</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ $oi->qty }}</td>
+                            <td>${{ number_format($oi->qty*$oi->product->original_price, 2, '.', ',') }}</td>
+                        </tr>
+                    @endforeach
+                    <tr>
+                        <th scope="row"></th>
+                        <td colspan="2"></td>
+                        <td><strong>${{ number_format($order->total_price, 2, '.', ',') }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
 
-
-            <input type="submit" name="submit" value="Update now" class="btn btn-primary">
-            <a href="{{ route('orders.index') }}" class="btn btn-secondary">Back</a>
         </form>
+        <div class="w-50 d-flex justify-content-start">
+            <a href="{{ route('orders.index') }}" class="btn btn-secondary">Back</a>
+            <form action="{{ route('orders.changeStatus', [2, 3]) }}" method="post">
+                @method('put')
+                @csrf
+                <button class="btn btn-primary ms-1">test</button>
+            </form>
+        </div>
     </div>
 @endsection
 
 @section('scripts')
-    <script>
-
-        let addProductContainer = $('#add-product-container')[0];
-        let amountInput = $('#total_price')[0];
-        let count = 1;
-
-        function addProduct() {
-            count++;
-            addProductContainer.insertAdjacentHTML('beforebegin',
-            `<div class="container mb-3 d-flex flex-wrap">
-                <hr style="width: 100%;"/>
-                <div class="wrapper flex-fill">
-                    <div class="mb-3">
-                        <label for="product_id${count}" class="form-label">Product Name</label>
-                        <select id="product_id${count}" name="product_id[]" class="selectpicker"
-                                data-live-search="true" data-width="100%"
-                                onchange="changeAmount(); changeMaxQuantity(this.id.substr(10), this.selectedOptions[0].dataset.quantity);"
-                                data-style="border" data-size="5">
-                                @foreach ($products as $p)
-                                    <option data-price='{{ $p->original_price }}' data-quantity='{{ $p->qty }}'
-                                    value='{{ $p->id }}'
-                                    data-content='<div class="d-flex">
-                                                    <div class="">
-                                                        <img src="{{ asset('storage/imgs/products/'.$p->id.'/'.$p->image) }}"
-                                                                class="img-fluid" alt="image" style="max-height: 15vh; max-width: 20vh;">
-                                                    </div>
-                                                    <div class="ps-2">
-                                                        <h6>{{ $p->name }}</h6>
-                                                        <div>{{ $p->category->name }}</div>
-                                                        <small>${{ $p->original_price }}</small>
-                                                        <small>Remaining: {{ $p->qty }}</small>
-                                                    </div>
-                                                </div>' {{ $p->qty<=0?'disabled':'' }}></option>
-                                @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="qty${count}" class="form-label">Quantity</label>
-                        <input onchange="changeAmount();" type="number" min="1" max=@foreach ($products as $p)
-                                @if ($p->qty > 0)
-                                    {{ $p->qty }}
-                                    @break
-                                @endif
-                            @endforeach value="1"  name="qty[]" class="form-control" id="qty${count}">
-                    </div>
-                </div>
-                <div class="flex-fill d-flex justify-content-end align-items-center">
-                    <button class="btn btn-danger" onclick="this.parentNode.parentNode.remove(); changeAmount();">Remove</button>
-                </div>
-            </div>`
-            );
-            $(".selectpicker").selectpicker();
-        }
-
-        function changeAmount() {
-            productSelects = $('select[name="product_id[]"]');
-            quantities = $('input[name="qty[]"]');
-            sum = 0;
-            for (let i = 0; i < productSelects.length; i++) {
-                sum += (+productSelects[i].selectedOptions[0].dataset.price) * (+quantities[i].value);
-            }
-            sum = sum.toFixed(2);
-            amountInput.value = sum;
-        }
-
-        function changeMaxQuantity(count, value) {
-            $('#qty'+count)[0].max = value;
-        }
-
-    </script>
     @if($errors->any())
         <script>
             showErrorToast('Edit Order failed!!' + '{{ $errors->first('error') }}');

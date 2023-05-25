@@ -1,19 +1,18 @@
 @extends('layouts.default')
 
 @section('styles')
-
 @endsection
 
 @section('contents')
-
     <div class="container mb-5">
         <a href="{{ route('orders.create') }}"><button class="btn btn-success mt-3 mb-3">Add Order</button></a>
         <table class="table table-hover" id="table">
             <thead>
                 <tr class="table-secondary">
                     <th scope="col">ID</th>
+                    <th scope="col">User</th>
                     <th scope="col">Products</th>
-                    <th scope="col">Creator</th>
+                    <th scope="col">Quantity</th>
                     <th scope="col">Total</th>
                     <th scope="col">Status</th>
                     {{-- <th scope="col">Shipping</th> --}}
@@ -26,61 +25,64 @@
                 @foreach ($orders as $o)
                     <tr>
                         <th>{{ $o->id }}</th>
+                        <td>{{ $o->user->name }}</td>
                         <td>
                             @if ($o->products->count() > 0)
-                                <div class="d-flex">
-                                    <div class="">
-                                        <img src="{{ asset('storage/imgs/products/'.$o->products[0]->id.'/'.$o->products[0]->image) }}"
-                                                class="img-fluid" alt="image" style="max-height: 15vh; max-width: 20vh;">
+                                <div class="row justify-content-center mb-4">
+                                    <div class="col-md-5">
+                                        <img src="{{ asset('storage/imgs/products/' . $o->products[0]->id . '/' . $o->products[0]->image) }}"
+                                            class="w-100" style="object-fit:contain" height="100px" alt="image" />
                                     </div>
-                                    <div class="ps-2">
-                                        <h5>{{ $o->products[0]->name }}</h6>
-                                        <div class="small">{{ $o->products[0]->category->name }}</div>
-                                        <div class="small">${{ $o->products[0]->original_price }}</div>
+                                    <div class="col-md-6">
+                                        <p class="fw-bold">{{ $o->products[0]->name }}</p>
+                                        <p class="mb-1">
+                                            <span
+                                                class="text-muted me-2">Category:</span><span>{{ $o->products[0]->category->name }}</span>
+                                        </p>
+                                        <p>
+                                            <span
+                                                class="text-muted me-2">Price:</span><span>${{ number_format($o->products[0]->original_price, 2, '.', ',') }}</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="text-end">x{{ $o->order_items[0]->qty }}</div>
                                     </div>
                                 </div>
                             @endif
                         </td>
-                        <td>{{ $o->user->name }}</td>
-                        <td>{{ $o->total_price }}</td>
+                        <td>{{ $o->products->count() }} products</td>
+                        <td>{{ number_format($o->total_price, 2, '.', ',') }}</td>
                         <td>
                             @switch($o->status)
                                 @case(1)
                                     <span class="badge bg-secondary">Unconfirmed</span>
-                                    @break
+                                @break
+
                                 @case(2)
                                     <span class="badge bg-primary">Confirmed</span>
-                                    @break
+                                @break
+
                                 @default
                                     <span class="badge bg-success">Complete</span>
                             @endswitch
                         </td>
-                        {{-- <td>
-                            @switch($o->ship_mode)
-                                @case(1)
-                                    <span class="badge bg-success">Shipped</span>
-                                    @break
-                                @case(2)
-                                    <span class="badge bg-warning">delivery</span>
-                                    @break
-                                @default
-                                    <span class="badge bg-secondary">Not delivery</span>
-                            @endswitch
-                        </td> --}}
-                        <td>{!! $o->payment_mode==1?'<span class="badge bg-success">Paid</span>':'<span class="badge bg-secondary">Unpaid</span>' !!}</td>
+                        <td>{!! $o->payment_mode == 1
+                            ? '<span class="badge bg-success">Paid</span>'
+                            : '<span class="badge bg-secondary">Unpaid</span>' !!}</td>
                         <td>{{ $o->created_at }}</td>
 
                         <td>
-                            <a href="{{ route('orders.edit', ['order' => $o->id]) }}"><button class="btn btn-primary">Edit</button></a>
-                            <button type="button" class="btn btn-danger"
-                                data-bs-toggle="modal" data-bs-target="#deleteModal{{ $o->id }}">
+                            <a href="{{ route('orders.edit', ['order' => $o->id]) }}"><button
+                                    class="btn btn-primary">View</button></a>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal{{ $o->id }}">
                                 Delete
                             </button>
                         </td>
                     </tr>
 
-                    <div class="modal fade" id="deleteModal{{ $o->id }}" data-bs-backdrop="static" data-bs-keyboard="false"
-                        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal fade" id="deleteModal{{ $o->id }}" data-bs-backdrop="static"
+                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -109,17 +111,26 @@
             </tbody>
         </table>
     </div>
-
 @endsection
 
 @section('scripts')
     <script>
         $('#table').DataTable({
-            "lengthMenu": [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
-            "pagingType": "full_numbers"
+            columnDefs: [{
+                orderable: false,
+                targets: [2, 8]
+            }],
+            "lengthMenu": [
+                [5, 10, 25, 50, -1],
+                [5, 10, 25, 50, "All"]
+            ],
+            "pagingType": "full_numbers",
+            "order": [
+                [7, 'desc']
+            ]
         });
     </script>
-    @if(session('success'))
+    @if (session('success'))
         <script>
             showSuccessToast('{{ session('success') }}');
         </script>

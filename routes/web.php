@@ -31,3 +31,6 @@ Route::resources([
     'orders' => OrderController::class,
 ]);
 
+Route::group(['prefix' => 'orders', 'as' => 'orders.'], function() {
+    Route::put('{id}/{status}/change-status', [OrderController::class, 'changeStatus'])->name('changeStatus');
+});

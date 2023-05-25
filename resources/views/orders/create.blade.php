@@ -92,38 +92,10 @@
                         data-live-search="true" data-width="100%"
                         data-style="border" data-size="5">
                     <option value="1" data-content='<span class="badge bg-secondary">Unconfirmed</span>'>Unconfirmed</option>
-                    <option value="2" data-content='<span class="badge bg-primary">Confirmed</span>' selected>Confirmed</option>                    
+                    <option value="2" data-content='<span class="badge bg-primary">Confirmed</span>' selected>Confirmed</option>
                     <option value="3" data-content='<span class="badge bg-success">Complete</span>'>Complete</option>
                 </select>
             </div> --}}
-            {{-- <div class="mb-3">
-                <label for="name" class="form-label">Recipient's name</label>
-                <input type="text" value="{{ old('name') }}" name="name" class="form-control @if ($errors->has('name')) is-invalid @endif" id="name">
-                @foreach ($errors->get('name') as $message)
-                    <span class="d-block small text-danger">{{ $message }}</span>
-                @endforeach
-            </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Recipient's email</label>
-                <input type="text" value="{{ old('email') }}" name="email" class="form-control @if ($errors->has('email')) is-invalid @endif" id="email">
-                @foreach ($errors->get('email') as $message)
-                    <span class="d-block small text-danger">{{ $message }}</span>
-                @endforeach
-            </div>
-            <div class="mb-3">
-                <label for="address" class="form-label">Recipient's Address</label>
-                <input type="text" value="{{ old('address') }}" name="address" class="form-control @if ($errors->has('address')) is-invalid @endif" id="address" >
-                @foreach ($errors->get('address') as $message)
-                    <span class="d-block small text-danger">{{ $message }}</span>
-                @endforeach
-            </div>
-            <div class="mb-3">
-                <label for="phone" class="form-label">Recipient's Phone</label>
-                <input type="text" value="{{ old('phone') }}" name="phone" class="form-control @if ($errors->has('phone')) is-invalid @endif" id="phone" >
-                @foreach ($errors->get('phone') as $message)
-                    <span class="d-block small text-danger">{{ $message }}</span>
-                @endforeach
-            </div>   --}}
             <div class="mb-3">
                 <label for="ship_id" class="form-label">Shipping Method</label>
                 <select id="ship_id" name="ship_id" class="selectpicker"
@@ -134,16 +106,6 @@
                     @endforeach
                 </select>
             </div>
-            {{-- <div class="mb-3">
-                <label for="ship_mode" class="form-label">Shipping Mode</label>
-                <select id="ship_mode" name="ship_mode" class="selectpicker"
-                        data-live-search="true" data-width="100%"
-                        data-style="border" data-size="5">
-                        <option value="1" data-content='<span class="badge bg-success">Shipped</span>'>Shipped</option>
-                        <option value="2" data-content='<span class="badge bg-warning">delivery</span>'>delivery</option>
-                        <option value="3" selected data-content='<span class="badge bg-secondary">Not delivery</span>'>Not delivery</option>
-                </select>
-            </div> --}}
             <div class="mb-3">
                 <label for="payment_id" class="form-label">Payment Method</label>
                 <select id="payment_id" name="payment_id" class="selectpicker"
@@ -155,15 +117,6 @@
                     @endforeach
                 </select>
             </div>
-            {{-- <div class="mb-3">
-                <label for="payment_mode" class="form-label">Payment Mode</label>
-                <select id="payment_mode" name="payment_mode" class="selectpicker"
-                        data-live-search="true" data-width="100%"
-                        data-style="border" data-size="5">
-                        <option value="1" data-content='<span class="badge bg-success">Paid</span>'>Paid</option>
-                        <option value="2" selected data-content='<span class="badge bg-secondary">Unpaid</span>'>Unpaid</option>
-                </select>
-            </div> --}}
 
             <input type="submit" name="submit" value="Add now" class="btn btn-primary">
             <a href="{{ route('orders.index') }}" class="btn btn-secondary">Back</a>
@@ -237,7 +190,7 @@
         }
 
     </script>
-    @if($errors->any())            
+    @if($errors->any())
         <script>
             showErrorToast('Create Order failed!! ' + '{{ $errors->first('error') }}');
         </script>
