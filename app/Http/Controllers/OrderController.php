@@ -185,7 +185,7 @@ class OrderController extends Controller
             $order = $this->orderRepository->update([
                 'status' => $status
             ], $id);
-            
+
             if ($status == '5') {
                 $ois = $this->orderItemsRepository->findWhere([
                     'order_id' => $id
@@ -194,7 +194,7 @@ class OrderController extends Controller
                     $pro = $this->productRepository->find($oi->product_id);
                     $this->productRepository->update([
                         'qty' => $pro->qty + $oi->qty
-                    ], $oi->product_id);                        
+                    ], $oi->product_id);
                 }
 
                 DB::commit();
@@ -220,7 +220,7 @@ class OrderController extends Controller
             $order = $this->orderRepository->update([
                 'payment_mode' => $mode
             ], $id);
-            
+
 
             DB::commit();
             return to_route('orders.edit', [

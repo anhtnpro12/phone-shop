@@ -132,6 +132,20 @@
         let count = 1;
 
         function addProduct() {
+            let selects = $('select[name="product_id[]"]');
+            let flag = true;
+            for (const option of selects[selects.length-1]) {
+                // console.log(option.hasAttribute('disabled'));
+                if (option.hasAttribute('disabled') == false && option != selects[selects.length-1].selectedOptions[0]) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                showErrorToast('Add product failed. out of product');
+                return;
+            }
+
             count++;
             addProductContainer.insertAdjacentHTML('beforebegin',
             `<div class="container mb-3 d-flex flex-wrap">
@@ -171,7 +185,32 @@
                 </div>
             </div>`
             );
-            $(".selectpicker").selectpicker();
+
+            let map = new Map();
+            selects = $('select[name="product_id[]"]');
+            for (const i in selects) {
+                if (Object.hasOwnProperty.call(selects, i)) {
+                    const select = selects[i];
+                    if (i != selects.length - 1) {
+                        map.set(select.selectedOptions[0].value, 1);
+                    } else {
+                        for (const option of select) {
+                            if (map.has(option.value)) {
+                                $(option).attr('disabled', 'disabled');
+                            }
+                        }
+                        for (const option of select) {
+                            if (!option.hasAttribute('disabled')) {
+                                $(option).attr('selected', 'selected');
+                                break;
+                            }
+                        }
+                    }
+
+                    $(select).selectpicker('destroy');
+                    $(select).selectpicker('render');
+                }
+            }
         }
 
         function changeAmount() {
