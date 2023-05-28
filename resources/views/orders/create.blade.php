@@ -20,10 +20,11 @@
                 <hr style="width: 100%;"/>
                 <div class="wrapper flex-fill">
                     <div class="mb-3">
-                        <label for="product_id1" class="form-label">Product Name</label>
-                        <select id="product_id1" name="product_id[]" class="selectpicker"
+                        <label for="product_id0" class="form-label">Product Name</label>
+                        <select id="product_id0" name="product_id[]" class="selectpicker"
                                 data-live-search="true" data-width="100%"
-                                onchange="changeAmount(); changeMaxQuantity(this.id.substr(10), this.selectedOptions[0].dataset.quantity);"
+                                onchange="changeSelect(this); changeAmount(); 
+                                        changeMaxQuantity(this.id.substr(10), this.selectedOptions[0].dataset.quantity);"
                                 data-style="border" data-size="5">
                                 @foreach ($products as $p)
                                     <option data-price='{{ $p->original_price }}' data-quantity='{{ $p->qty }}'
@@ -44,15 +45,16 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="qty1" class="form-label">Quantity <span class="text-danger">*</span></label>
-                        <input onchange="changeAmount();" type="number" value="1" name="qty[]" class="form-control @if ($errors->has('qty.*')) is-invalid @endif" id="qty1">
+                        <label for="qty0" class="form-label">Quantity <span class="text-danger">*</span></label>
+                        <input onchange="changeAmount();" type="number" value="1" name="qty[]" class="form-control @if ($errors->has('qty.*')) is-invalid @endif" id="qty0">
                         @foreach ($errors->get('qty.*') as $message)
                             <span class="d-block small text-danger">{{ $message[0] }}</span>
                         @endforeach
                     </div>
                 </div>
                 <div class="flex-fill d-flex justify-content-end align-items-center">
-                    <button class="btn btn-danger" onclick="this.parentNode.parentNode.remove(); changeAmount();">Remove</button>
+                    <button class="btn btn-danger" onclick="deleteSelect(this.parentNode.parentNode.querySelector('select'));
+                            this.parentNode.parentNode.remove(); changeAmount();">Remove</button>
                 </div>
             </div>
             <div id="add-product-container" class="container mb-3 d-flex">
@@ -129,21 +131,29 @@
 
         let addProductContainer = $('#add-product-container')[0];
         let amountInput = $('#total_price')[0];
-        let count = 1;
+        let count = 0;
+        let map = new Map();
+        let selects = $('select[name="product_id[]"]');
+        let preValues = [];
+        for (const select of selects) {
+            map.set(select.value, count+'');    
+            preValues.push(select.value);
+        }
 
         function addProduct() {
-            let selects = $('select[name="product_id[]"]');
-            let flag = true;
-            for (const option of selects[selects.length-1]) {
-                // console.log(option.hasAttribute('disabled'));
-                if (option.hasAttribute('disabled') == false && option != selects[selects.length-1].selectedOptions[0]) {
-                    flag = false;
-                    break;
+            selects = $('select[name="product_id[]"]');
+            if (selects.length > 0) {
+                let flag = true;            
+                for (const option of selects[selects.length-1]) {                    
+                    if (option.hasAttribute('disabled') == false && option != selects[selects.length-1].selectedOptions[0]) {
+                        flag = false;
+                        break;
+                    }
                 }
-            }
-            if (flag) {
-                showErrorToast('Add product failed. out of product');
-                return;
+                if (flag) {
+                    showErrorToast('Add product failed. out of product');
+                    return;
+                }
             }
 
             count++;
@@ -155,7 +165,8 @@
                         <label for="product_id${count}" class="form-label">Product Name</label>
                         <select id="product_id${count}" name="product_id[]" class="selectpicker"
                                 data-live-search="true" data-width="100%"
-                                onchange="changeAmount(); changeMaxQuantity(this.id.substr(10), this.selectedOptions[0].dataset.quantity);"
+                                onchange="changeSelect(this); changeAmount(); 
+                                        changeMaxQuantity(this.id.substr(10), this.selectedOptions[0].dataset.quantity);"
                                 data-style="border" data-size="5">
                                 @foreach ($products as $p)
                                     <option data-price='{{ $p->original_price }}' data-quantity='{{ $p->qty }}'
@@ -181,35 +192,55 @@
                     </div>
                 </div>
                 <div class="flex-fill d-flex justify-content-end align-items-center">
-                    <button class="btn btn-danger" onclick="this.parentNode.parentNode.remove(); changeAmount();">Remove</button>
+                    <button class="btn btn-danger" onclick="deleteSelect(this.parentNode.parentNode.querySelector('select'));
+                            this.parentNode.parentNode.remove(); changeAmount();">Remove</button>
                 </div>
             </div>`
             );
-
-            let map = new Map();
-            selects = $('select[name="product_id[]"]');
-            for (const i in selects) {
-                if (Object.hasOwnProperty.call(selects, i)) {
-                    const select = selects[i];
-                    if (i != selects.length - 1) {
-                        map.set(select.selectedOptions[0].value, 1);
-                    } else {
-                        for (const option of select) {
-                            if (map.has(option.value)) {
-                                $(option).attr('disabled', 'disabled');
-                            }
-                        }
-                        for (const option of select) {
-                            if (!option.hasAttribute('disabled')) {
-                                $(option).attr('selected', 'selected');
-                                break;
-                            }
-                        }
-                    }
-
-                    $(select).selectpicker('destroy');
-                    $(select).selectpicker('render');
+            
+            let select = $('select[name="product_id[]"]:last')[0];            
+            for (const option of select) {
+                if (!map.has(option.value) && option.dataset.quantity > 0) {
+                    $(option).attr('selected', 'selected');
+                    map.set(select.value, count); 
+                    preValues.push(select.value); 
+                    break;
                 }
+            }                    
+
+            refreshSelects();            
+        }
+
+        function changeSelect(select) {            
+            let id = select.id.substr(10);
+            
+            map.delete(preValues[id]);
+            map.set(select.value, id);
+            refreshSelects();            
+
+            preValues[id] = select.value;            
+        }
+
+        function deleteSelect(select) {
+            console.log(select);
+            let id = select.id.substr(10);            
+            map.delete(select.value);
+            refreshSelects();
+        }
+
+        function refreshSelects() {
+            selects = $('select[name="product_id[]"]');
+
+            for (const select of selects) {
+                for (const option of select) {
+                    if (option.value != select.value && map.has(option.value)) {
+                        $(option).attr('disabled', 'disabled');
+                    } else if (option.dataset.quantity > 0) {
+                        $(option).removeAttr('disabled');
+                    }
+                }
+                $(select).selectpicker('destroy');
+                $(select).selectpicker('render'); 
             }
         }
 
