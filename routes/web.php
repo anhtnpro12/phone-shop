@@ -45,7 +45,8 @@ Route::group([
 });
 
 Route::group([
-    'controller' => LoginRegisterController::class
+    'controller' => LoginRegisterController::class,
+    // 'middleware' => 'guest',
 ], function() {
     Route::get('/register', 'register')->name('register');
     Route::post('/store', 'store')->name('store');
