@@ -102,8 +102,8 @@ class ProductController extends Controller
         }
         $request->validate([
             'name' => 'required',
-            'original_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/'],
-            'qty' => 'required|numeric|min:0',
+            'original_price' => ['required', 'numeric', 'regex:/^\d+(\.\d{1,10})?$/', 'min:0', 'max:999999999'],
+            'qty' => 'required|numeric|min:0|max:999999999',
             'trending' => 'required|numeric|min:1'
         ], [
             'original_price.regex' => 'The price field format is invalid. Must be decimal.'

@@ -38,12 +38,12 @@
                                 {{ $order->user->id === $u->id ? 'selected' : '' }}></option>
                         @endforeach
                     </select>
-                @else                    
+                @else
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>{{ $order->user->name }}</strong></li>                        
-                        <li class="list-group-item">Phone: {{ $order->user->phone }}</li>                        
-                        <li class="list-group-item">Address: {{ $order->user->address }}</li>                        
-                    </ul>                        
+                        <li class="list-group-item"><strong>{{ $order->user->name }}</strong></li>
+                        <li class="list-group-item">Phone: {{ $order->user->phone }}</li>
+                        <li class="list-group-item">Address: {{ $order->user->address }}</li>
+                    </ul>
                 @endif
             </div>
             <div class="mb-3">
@@ -78,7 +78,7 @@
             @if ($order->status <= 2)
                 <div class="d-flex justify-content-end">
                     <input type="submit" name="submit" value="Update now" class="btn btn-primary">
-                </div>                
+                </div>
             @endif
 
             <div class="mb-3">
@@ -95,7 +95,7 @@
                     @case(3)
                         <span class="badge bg-warning">Delivery</span>
                         @break
-                    
+
                     @case(4)
                         <span class="badge bg-success">Complete</span>
                         @break
@@ -170,37 +170,63 @@
                                 @method('put')
                                 @csrf
                                 <button class="btn btn-warning me-1">Delivery</button>
-                            </form>                            
-                            @break                        
+                            </form>
+                            @break
                         @case(3)
                             @if ($order->payment_mode == 2)
                                 <form action="{{ route('orders.changeStatus', [$order->id, 4]) }}" method="post">
                                     @method('put')
                                     @csrf
                                     <button class="btn btn-success me-1">Complete</button>
-                                </form>                                        
-                            @endif                        
+                                </form>
+                            @endif
                         @default
-                            
-                    @endswitch 
+
+                    @endswitch
                     @if ($order->payment_mode == 1 && $order->status > 1 && $order->status != 5)
                         <form action="{{ route('orders.changePayment', [$order->id, 2]) }}" method="post">
                             @method('put')
                             @csrf
                             <button class="btn btn-success me-1">Pay</button>
-                        </form>                            
-                    @endif                   
+                        </form>
+                    @endif
                     <a href="{{ route('orders.index') }}" class="btn btn-secondary">Back</a>
                 </div>
                 @if ($order->status < 2)
                     <div class="col d-flex justify-content-end">
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal{{ $order->id }}">
+                            Cancel
+                        </button>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('modals')
+    <div class="modal fade" id="deleteModal{{ $order->id }}" data-bs-backdrop="static"
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel"><i
+                            class="bi bi-exclamation-circle-fill text-danger"></i> Warning!!!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to cancel <span class="text-danger">{{ $order->uuid }}</span>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
                         <form action="{{ route('orders.changeStatus', [$order->id, 5]) }}" method="post">
                             @method('put')
                             @csrf
                             <button class="btn btn-danger me-1">Cancel</button>
-                        </form>                    
-                    </div>                    
-                @endif
+                        </form>
+                </div>
             </div>
         </div>
     </div>

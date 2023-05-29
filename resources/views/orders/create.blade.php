@@ -23,7 +23,7 @@
                         <label for="product_id0" class="form-label">Product Name</label>
                         <select id="product_id0" name="product_id[]" class="selectpicker"
                                 data-live-search="true" data-width="100%"
-                                onchange="changeSelect(this); changeAmount(); 
+                                onchange="changeSelect(this); changeAmount();
                                         changeMaxQuantity(this.id.substr(10), this.selectedOptions[0].dataset.quantity);"
                                 data-style="border" data-size="5">
                                 @foreach ($products as $p)
@@ -83,7 +83,8 @@
                         <option value='{{ $u->id }}'
                             data-content='<div>
                                             <h6>{{ $u->name }}</h6>
-                                            <small>{{ $u->address }}</small>
+                                            <div><small>{{ $u->phone }}</small></div>
+                                            <div><small>{{ $u->address }}</small></div>
                                         </div>' ></option>
                     @endforeach
                     </select>
@@ -136,15 +137,15 @@
         let selects = $('select[name="product_id[]"]');
         let preValues = [];
         for (const select of selects) {
-            map.set(select.value, count+'');    
+            map.set(select.value, count+'');
             preValues.push(select.value);
         }
 
         function addProduct() {
             selects = $('select[name="product_id[]"]');
             if (selects.length > 0) {
-                let flag = true;            
-                for (const option of selects[selects.length-1]) {                    
+                let flag = true;
+                for (const option of selects[selects.length-1]) {
                     if (option.hasAttribute('disabled') == false && option != selects[selects.length-1].selectedOptions[0]) {
                         flag = false;
                         break;
@@ -165,7 +166,7 @@
                         <label for="product_id${count}" class="form-label">Product Name</label>
                         <select id="product_id${count}" name="product_id[]" class="selectpicker"
                                 data-live-search="true" data-width="100%"
-                                onchange="changeSelect(this); changeAmount(); 
+                                onchange="changeSelect(this); changeAmount();
                                         changeMaxQuantity(this.id.substr(10), this.selectedOptions[0].dataset.quantity);"
                                 data-style="border" data-size="5">
                                 @foreach ($products as $p)
@@ -197,33 +198,33 @@
                 </div>
             </div>`
             );
-            
-            let select = $('select[name="product_id[]"]:last')[0];            
+
+            let select = $('select[name="product_id[]"]:last')[0];
             for (const option of select) {
                 if (!map.has(option.value) && option.dataset.quantity > 0) {
                     $(option).attr('selected', 'selected');
-                    map.set(select.value, count); 
-                    preValues.push(select.value); 
+                    map.set(select.value, count);
+                    preValues.push(select.value);
                     break;
                 }
-            }                    
+            }
 
-            refreshSelects();            
+            refreshSelects();
         }
 
-        function changeSelect(select) {            
+        function changeSelect(select) {
             let id = select.id.substr(10);
-            
+
             map.delete(preValues[id]);
             map.set(select.value, id);
-            refreshSelects();            
+            refreshSelects();
 
-            preValues[id] = select.value;            
+            preValues[id] = select.value;
         }
 
         function deleteSelect(select) {
             console.log(select);
-            let id = select.id.substr(10);            
+            let id = select.id.substr(10);
             map.delete(select.value);
             refreshSelects();
         }
@@ -240,7 +241,7 @@
                     }
                 }
                 $(select).selectpicker('destroy');
-                $(select).selectpicker('render'); 
+                $(select).selectpicker('render');
             }
         }
 

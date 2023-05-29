@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginRegisterController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
@@ -20,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->middleware('auth')->name('home');
 
 Route::resources([
     'users' => UserController::class,
@@ -29,9 +30,26 @@ Route::resources([
     'ships' => ShipController::class,
     'payments' => PaymentController::class,
     'orders' => OrderController::class,
+], [
+    'middleware' => 'auth'
 ]);
 
-Route::group(['prefix' => 'orders', 'as' => 'orders.'], function() {
-    Route::put('{id}/{status}/change-status', [OrderController::class, 'changeStatus'])->name('changeStatus');
-    Route::put('{id}/{mode}/change-payment', [OrderController::class, 'changePayment'])->name('changePayment');
+Route::group([
+    'prefix' => 'orders',
+    'as' => 'orders.',
+    'controller' => OrderController::class,
+    'middleware' => 'auth'
+], function() {
+    Route::put('{id}/{status}/change-status', 'changeStatus')->name('changeStatus');
+    Route::put('{id}/{mode}/change-payment', 'changePayment')->name('changePayment');
+});
+
+Route::group([
+    'controller' => LoginRegisterController::class
+], function() {
+    Route::get('/register', 'register')->name('register');
+    Route::post('/store', 'store')->name('store');
+    Route::get('/login', 'login')->name('login');
+    Route::post('/authenticate', 'authenticate')->name('authenticate');
+    Route::post('/logout', 'logout')->name('logout');
 });

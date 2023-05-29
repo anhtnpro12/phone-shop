@@ -80,13 +80,13 @@
                         <td>{{ $o->created_at }}</td>
 
                         <td>
-                            <a href="{{ route('orders.edit', ['order' => $o->id]) }}"><button
+                            <a href="{{ route('orders.edit', ['order' => $o->uuid]) }}"><button
                                     class="btn btn-primary">View</button></a>
                             @if ($o->status < 2)
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal{{ $o->id }}">
                                     Cancel
-                                </button>                                
+                                </button>
                             @endif
                         </td>
                     </tr>
@@ -102,15 +102,15 @@
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    Are you sure you want to delete <span class="text-danger"></span>?
+                                    Are you sure you want to cancel <span class="text-danger">{{ $o->uuid }}</span>?
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>                                    
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
                                         <form action="{{ route('orders.changeStatus', [$o->id, 5]) }}" method="post">
                                             @method('put')
                                             @csrf
                                             <button class="btn btn-danger me-1">Cancel</button>
-                                        </form>                                     
+                                        </form>
                                 </div>
                             </div>
                         </div>

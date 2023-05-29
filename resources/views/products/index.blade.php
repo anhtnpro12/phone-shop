@@ -100,6 +100,10 @@
 @section('scripts')
     <script>
         $('#table').DataTable({
+            columnDefs: [{
+                orderable: false,
+                targets: [2, 9]
+            }],
             "lengthMenu": [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
             "pagingType": "full_numbers"
         });

@@ -8,8 +8,6 @@ use App\Repositories\Contracts\PaymentRepositoryInterface;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\ShipRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
-use Exception;
-use Faker\Core\Uuid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -126,10 +124,12 @@ class OrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $uuid)
     {
         $products = $this->productRepository->all();
-        $order = $this->orderRepository->find($id);
+        $order = $this->orderRepository->findWhere([
+            'uuid' => $uuid
+        ])[0];
         $users = $this->userRepository->all();
         $payments = $this->paymentRepository->all();
         $ships = $this->shipRepository->all();
@@ -157,7 +157,7 @@ class OrderController extends Controller
 
             DB::commit();
             return to_route('orders.edit', [
-                'order' => $order->id
+                'order' => $order->uuid
             ])->with('success', 'Update Order successful!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -198,14 +198,12 @@ class OrderController extends Controller
                 }
 
                 DB::commit();
-                return to_route('orders.index', [
-                    'order' => $order->id
-                ])->with('success', 'Cancel Order successful!');
+                return to_route('orders.index')->with('success', 'Cancel Order successful!');
             }
 
             DB::commit();
             return to_route('orders.edit', [
-                'order' => $order->id
+                'order' => $order->uuid
             ])->with('success', 'Update Order successful!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -224,7 +222,7 @@ class OrderController extends Controller
 
             DB::commit();
             return to_route('orders.edit', [
-                'order' => $order->id
+                'order' => $order->uuid
             ])->with('success', 'Update Order successful!');
         } catch (\Exception $e) {
             DB::rollBack();
