@@ -53,6 +53,14 @@
                 @endforeach
             </div>
             <div class="mb-3">
+                <label for="password_confirmation"
+                    class="col-form-label text-md-end text-start">Confirm Password</label>
+                <div class="">
+                    <input type="password" class="form-control" id="password_confirmation"
+                        name="password_confirmation">
+                </div>
+            </div>
+            <div class="mb-3">
                 <label for="role_as" class="form-label">Role <span class="text-danger">*</span></label>
                 <select id="role_as" name="role_as" class="selectpicker"
                         data-live-search="true" data-width="100%"
@@ -72,9 +80,11 @@
         const togglePassword = document
             .querySelector('#togglePassword');
         const password = document.querySelector('#password');
+        const passwordConfirmation = document.querySelector('#password_confirmation');
         togglePassword.addEventListener('click', (e) => {
             const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
             password.setAttribute('type', type);
+            passwordConfirmation.setAttribute('type', type);
             e.target.classList.toggle('bi-eye-fill');
             e.target.classList.toggle('bi-eye-slash-fill');
         });

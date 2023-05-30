@@ -5,7 +5,7 @@
 @endsection
 
 @section('contents')
-    <div class="container mt-5 mb-5 d-flex justify-content-center">
+    <div class="container mt-5 mb-5 d-flex flex-column align-items-center">
         <form action="{{ route('users.update', ['user' => $user->id]) }}" method="post" style="width: 50%;">
             @method('PUT')
             @csrf
@@ -38,20 +38,7 @@
                 @foreach ($errors->get('email') as $message)
                     <span class="d-block small text-danger">{{ $message }}</span>
                 @endforeach
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
-                <div class="input-group">
-                    <input type="password" value="{{ old('password', $user->password) }}" name="password"
-                            class="form-control @if ($errors->has('password')) is-invalid @endif" id="password" style="display: inline-block" >
-                    <div class="input-group-text">
-                        <i class="bi bi-eye-fill" id="togglePassword" style="cursor: pointer;"></i>
-                    </div>
-                </div>
-                @foreach ($errors->get('password') as $message)
-                    <span class="d-block small text-danger">{{ $message }}</span>
-                @endforeach
-            </div>
+            </div>            
             <div class="mb-3">
                 <label for="role_as" class="form-label">Role <span class="text-danger">*</span></label>
                 <select id="role_as" name="role_as" class="selectpicker"
@@ -64,20 +51,67 @@
             <input type="submit" name="submit" value="Update now" class="btn btn-primary">
             <a href="{{ route('users.index') }}" class="btn btn-secondary">Back</a>
         </form>
+        <form action="{{ route('users.changePassword', ['id' => $user->id]) }}" method="post" style="width: 50%;">
+            @method('PUT')
+            @csrf
+            <h3 class="text-center mt-3">Change Password</h3>
+
+            <div class="mb-3">
+                <label for="old_password" class="form-label">Old Password<span class="text-danger">*</span></label>
+                <div class="input-group">
+                    <input type="password" value="" name="old_password"
+                            class="form-control @if ($errors->has('old_password')) is-invalid @endif" id="old_password" style="display: inline-block" >
+                    <div class="input-group-text togglePassword">
+                        <i class="bi bi-eye-fill " style="cursor: pointer;"></i>
+                    </div>
+                </div>
+                @foreach ($errors->get('old_password') as $message)
+                    <span class="d-block small text-danger">{{ $message }}</span>
+                @endforeach
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">New Password<span class="text-danger">*</span></label>
+                <div class="input-group">
+                    <input type="password" value="" name="password"
+                            class="form-control @if ($errors->has('password')) is-invalid @endif" id="password" style="display: inline-block" >
+                    <div class="input-group-text togglePassword">
+                        <i class="bi bi-eye-fill" style="cursor: pointer;"></i>
+                    </div>
+                </div>
+                @foreach ($errors->get('password') as $message)
+                    <span class="d-block small text-danger">{{ $message }}</span>
+                @endforeach
+            </div>
+            <div class="mb-3">
+                <label for="password_confirmation"
+                    class="col-form-label text-md-end text-start">Confirm New Password</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="password_confirmation"
+                        name="password_confirmation">
+                    <div class="input-group-text togglePassword">
+                        <i class="bi bi-eye-fill" style="cursor: pointer;"></i>
+                    </div>
+                </div>
+            </div>
+            <input type="submit" name="submit" value="Change now" class="btn btn-primary">
+            <a href="{{ route('users.index') }}" class="btn btn-secondary">Back</a>
+        </form>
     </div>
 @endsection
 
 @section('scripts')
     <script>
-        const togglePassword = document
-            .querySelector('#togglePassword');
-        const password = document.querySelector('#password');
-        togglePassword.addEventListener('click', (e) => {
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-            e.target.classList.toggle('bi-eye-fill');
-            e.target.classList.toggle('bi-eye-slash-fill');
-        });
+        const togglePasswords = document.querySelectorAll('.togglePassword');        
+        togglePasswords.forEach((tp) => {            
+            tp.addEventListener('click', (e) => {
+                const input = tp.parentElement.querySelector('input');
+                const eye = tp.querySelector('i');
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';                
+                input.setAttribute('type', type);
+                eye.classList.toggle('bi-eye-fill');
+                eye.classList.toggle('bi-eye-slash-fill');
+            });             
+        });        
     </script>
     @if($errors->any())
         <script>

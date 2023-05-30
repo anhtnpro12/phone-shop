@@ -89,7 +89,7 @@
     </script>
     @if($errors->any())
         <script>
-            showErrorToast('Create Users failed!!');
+            showErrorToast('Register failed!!');
         </script>
     @endif
 @endsection

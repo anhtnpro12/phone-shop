@@ -45,6 +45,15 @@ Route::group([
 });
 
 Route::group([
+    'prefix' => 'users',
+    'as' => 'users.',
+    'controller' => UserController::class,
+    'middleware' => 'auth'
+], function() {
+    Route::put('{id}/change-password', 'changePassword')->name('changePassword');
+});
+
+Route::group([
     'controller' => LoginRegisterController::class,
     // 'middleware' => 'guest',
 ], function() {
