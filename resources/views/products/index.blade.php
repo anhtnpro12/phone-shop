@@ -36,8 +36,8 @@
                         </td>
                         <td>{{ $p->description }}</td>
                         <td>{{ $p->category->name }}</td>
-                        <td>{{ $p->original_price }}</td>
-                        <td>{{ $p->qty }}</td>
+                        <td class="text-end">{{ $p->original_price }}</td>
+                        <td class="text-end">{{ $p->qty }}</td>
                         <td>
                             @switch($p->status)
                                 @case(1)

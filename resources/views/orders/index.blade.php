@@ -50,8 +50,8 @@
                                 </div>
                             @endif
                         </td>
-                        <td>{{ $o->products->count() }} products</td>
-                        <td>{{ number_format($o->total_price, 2, '.', ',') }}</td>
+                        <td class="text-end">{{ $o->products->count() }} products</td>
+                        <td class="text-end">{{ number_format($o->total_price, 2, '.', ',') }}</td>
                         <td>
                             @switch($o->status)
                                 @case(1)

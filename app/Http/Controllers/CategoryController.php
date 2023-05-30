@@ -41,7 +41,7 @@ class CategoryController extends Controller
     {
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'name' => 'required',
+            'name' => 'required|unique:categories,name',
             'popular' => 'required'
         ]);
 
@@ -91,7 +91,7 @@ class CategoryController extends Controller
             ]);
         }
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|unique:categories,name',
             'popular' => 'required'
         ]);
 

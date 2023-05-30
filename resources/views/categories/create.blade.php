@@ -86,7 +86,7 @@
                 </select>
             </div>
             <input type="submit" name="submit" value="Add now" class="btn btn-primary">
-            <a href="{{ route('categories.index') }}" class="btn btn-secondary">Back</a>            
+            <a href="{{ route('categories.index') }}" class="btn btn-secondary">Back</a>
         </form>
     </div>
 
@@ -120,6 +120,7 @@
             maxFiles: 1,
             storeAsFile: true,
             maxFileSize: 2000000,
+            imageCropAspectRatio: '16:9',
             labelIdle: 'Drag & Drop your image or <span class="filepond--label-action"> Browse </span>',
             acceptedFileTypes: ['image/png', 'image/jpeg', 'image/gif']
         });

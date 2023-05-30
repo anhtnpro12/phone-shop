@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
-use Hash;
 use Illuminate\Http\Request;
-use \Validator;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -91,7 +91,7 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$id,
             'phone' => 'required|digits_between:9,11|unique:users,phone,'.$id,
-            'address' => 'required',            
+            'address' => 'required',
             'role_as' => 'required|numeric|min:1'
         ]);
 
@@ -112,11 +112,11 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'address' => $request->address,            
+            'address' => $request->address,
             'role_as' => $request->role_as
         ], $id);
 
-        return to_route('users.edit', [
+        return to_route('users.index', [
             'user' => $id,
 
         ])->with('success', 'Update User Successful');
@@ -142,27 +142,27 @@ class UserController extends Controller
     }
 
     public function changePassword(Request $request, $id)
-    {                
+    {
         $validator = Validator::make($request->all(), [
             'old_password' => 'required',
             'password' => 'required|min:8|confirmed',
         ]);
 
-        $user = $this->userRepository->find($id);    
-        if (!Hash::check($request->old_password, $user->password)) {                            
-            $validator->getMessageBag()->add('old_password', 'Wrong password'); 
+        $user = $this->userRepository->find($id);
+        if (!Hash::check($request->old_password, $user->password)) {
+            $validator->getMessageBag()->add('old_password', 'Wrong password');
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
-        }                
+        }
 
         $this->userRepository->update([
-            'password' => Hash::make($request->password)               
+            'password' => Hash::make($request->password)
         ], $id);
 
-        return to_route('users.edit', [
+        return to_route('users.index', [
             'user' => $id,
 
         ])->with('success', 'Change Password Successful');
