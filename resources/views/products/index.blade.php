@@ -42,7 +42,7 @@
                         </td>
                         <td>{{ $p->description }}</td>
                         <td>{{ $p->category->name }}</td>
-                        <td class="text-end">{{ $p->original_price }}</td>
+                        <td class="text-end">${{ number_format($p->original_price, 2, '.', ',') }}</td>
                         <td class="text-end">{{ $p->qty }}</td>
                         <td>
                             @switch($p->status)

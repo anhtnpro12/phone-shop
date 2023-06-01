@@ -143,7 +143,7 @@ class ProductController extends Controller
         }
 
 
-        return to_route('products.edit', [
+        return to_route('products.index', [
             'product' => $id,
 
         ])->with('success', 'Update Product successful!');

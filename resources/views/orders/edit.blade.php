@@ -66,7 +66,7 @@
             </div>
             <div class="mb-3">
                 <label for="payment_id" class="form-label">Payment Method</label>
-                @if ($order->payment_id  == 1 && $order->status <= 2)
+                @if ($order->payment_mode  == 1 && $order->status <= 2)
                     <select id="payment_id" name="payment_id" class="selectpicker" data-live-search="true" data-width="100%"
                         data-style="border" data-size="5">
 

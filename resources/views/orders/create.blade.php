@@ -16,47 +16,97 @@
 
             @method('post')
             @csrf
-            <div class="container mb-3 d-flex flex-wrap">
-                <hr style="width: 100%;"/>
-                <div class="wrapper flex-fill">
-                    <div class="mb-3">
-                        <label for="product_id0" class="form-label">Product Name</label>
-                        <select id="product_id0" name="product_id[]" class="selectpicker"
-                                data-live-search="true" data-width="100%"
-                                onchange="changeSelect(this); changeAmount();
-                                        changeMaxQuantity(this.id.substr(10), this.selectedOptions[0].dataset.quantity);"
-                                data-style="border" data-size="5">
-                                @foreach ($products as $p)
-                                    <option data-price='{{ $p->original_price }}' data-quantity='{{ $p->qty }}'
-                                    value='{{ $p->id }}'
-                                    data-content='<div class="d-flex">
-                                                    <div class="">
-                                                        <img src="{{ asset('storage/imgs/products/'.$p->id.'/'.$p->image) }}"
-                                                                class="img-fluid" alt="image" style="max-height: 15vh; max-width: 20vh;">
-                                                    </div>
-                                                    <div class="ps-2">
-                                                        <h6>{{ $p->name }}</h6>
-                                                        <div>{{ $p->category->name }}</div>
-                                                        <small>${{ $p->original_price }}</small>
-                                                        <small>Remaining: {{ $p->qty }}</small>
-                                                    </div>
-                                                </div>' {{ $p->qty<=0?'disabled':'' }}></option>
-                                @endforeach
-                        </select>
+            @error('qty.*')
+                @foreach (old('product_id') as $index => $id)                    
+                    <div class="container mb-3 d-flex flex-wrap">
+                        <hr style="width: 100%;"/>
+                        <div class="wrapper flex-fill">
+                            <div class="mb-3">
+                                <label for="product_id{{ $index }}" class="form-label">Product Name</label>
+                                <select id="product_id{{ $index }}" name="product_id[]" class="selectpicker"
+                                        data-live-search="true" data-width="100%"
+                                        onchange="changeSelect(this); changeAmount();
+                                                // changeMaxQuantity(this.id.substr(10), this.selectedOptions[0].dataset.quantity);"
+                                        data-style="border" data-size="5">
+                                        @foreach ($products as $p)
+                                            <option data-price='{{ $p->original_price }}' data-quantity='{{ $p->qty }}'
+                                            value='{{ $p->id }}'
+                                            data-content='<div class="d-flex">
+                                                            <div class="">
+                                                                <img src="{{ asset('storage/imgs/products/'.$p->id.'/'.$p->image) }}"
+                                                                        class="img-fluid" alt="image" style="max-height: 15vh; max-width: 20vh;">
+                                                            </div>
+                                                            <div class="ps-2">
+                                                                <h6>{{ $p->name }}</h6>
+                                                                <div>{{ $p->category->name }}</div>
+                                                                <small>${{ $p->original_price }}</small>
+                                                                <small>Remaining: {{ $p->qty }}</small>
+                                                            </div>
+                                                        </div>' 
+                                                        {{ $p->qty<=0?'disabled':'' }}
+                                                        {{ $p->id == $id?'selected':'' }}></option>
+                                        @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="qty{{ $index }}" class="form-label">Quantity <span class="text-danger">*</span></label>
+                                <input onchange="changeAmount();" type="number" value="{{ old('qty.'.$index) }}" name="qty[]" class="form-control @if ($errors->has('qty.'.$index)) is-invalid @endif" id="qty{{ $index }}">
+                                @foreach ($errors->get('qty.'.$index) as $message)                                      
+                                    <span class="d-block small text-danger">{{ $message }}</span>
+                                @endforeach                        
+                            </div>
+                        </div>
+                        <div class="flex-fill d-flex justify-content-end align-items-center">
+                            <button class="btn btn-danger" onclick="deleteSelect(this.parentNode.parentNode.querySelector('select'));
+                                    this.parentNode.parentNode.remove(); changeAmount();">Remove</button>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="qty0" class="form-label">Quantity <span class="text-danger">*</span></label>
-                        <input onchange="changeAmount();" type="number" value="1" name="qty[]" class="form-control @if ($errors->has('qty.*')) is-invalid @endif" id="qty0">
-                        @foreach ($errors->get('qty.*') as $message)
-                            <span class="d-block small text-danger">{{ $message[0] }}</span>
-                        @endforeach
+                @endforeach
+            @else
+                <div class="container mb-3 d-flex flex-wrap">
+                    <hr style="width: 100%;"/>
+                    <div class="wrapper flex-fill">
+                        <div class="mb-3">
+                            <label for="product_id0" class="form-label">Product Name</label>
+                            <select id="product_id0" name="product_id[]" class="selectpicker"
+                                    data-live-search="true" data-width="100%"
+                                    onchange="changeSelect(this); changeAmount();
+                                            // changeMaxQuantity(this.id.substr(10), this.selectedOptions[0].dataset.quantity);"
+                                    data-style="border" data-size="5">
+                                    @foreach ($products as $p)
+                                        <option data-price='{{ $p->original_price }}' data-quantity='{{ $p->qty }}'
+                                        value='{{ $p->id }}'
+                                        data-content='<div class="d-flex">
+                                                        <div class="">
+                                                            <img src="{{ asset('storage/imgs/products/'.$p->id.'/'.$p->image) }}"
+                                                                    class="img-fluid" alt="image" style="max-height: 15vh; max-width: 20vh;">
+                                                        </div>
+                                                        <div class="ps-2">
+                                                            <h6>{{ $p->name }}</h6>
+                                                            <div>{{ $p->category->name }}</div>
+                                                            <small>${{ $p->original_price }}</small>
+                                                            <small>Remaining: {{ $p->qty }}</small>
+                                                        </div>
+                                                    </div>' {{ $p->qty<=0?'disabled':'' }}></option>
+                                    @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="qty0" class="form-label">Quantity <span class="text-danger">*</span></label>
+                            <input onchange="changeAmount();" type="number" value="1" name="qty[]" class="form-control @if ($errors->has('qty.*')) is-invalid @endif" id="qty0">
+                            @foreach ($errors->get('qty.*') as $message)  
+                                @foreach ($message as $m)
+                                    <span class="d-block small text-danger">{{ $m }}</span>                                
+                                @endforeach                          
+                            @endforeach                        
+                        </div>
                     </div>
-                </div>
-                <div class="flex-fill d-flex justify-content-end align-items-center">
-                    <button class="btn btn-danger" onclick="deleteSelect(this.parentNode.parentNode.querySelector('select'));
-                            this.parentNode.parentNode.remove(); changeAmount();">Remove</button>
-                </div>
-            </div>
+                    <div class="flex-fill d-flex justify-content-end align-items-center">
+                        <button class="btn btn-danger" onclick="deleteSelect(this.parentNode.parentNode.querySelector('select'));
+                                this.parentNode.parentNode.remove(); changeAmount();">Remove</button>
+                    </div>
+                </div>                    
+            @enderror            
             <div id="add-product-container" class="container mb-3 d-flex">
                 <button id="add-product-btn" class="btn btn-success" type="button" onclick="addProduct(); changeAmount();">Add Product</button>
             </div>
@@ -65,7 +115,7 @@
                 <label for="total_price" class="form-label">Total <span class="text-danger">*</span></label>
                 <input type="text" name="total_price" @foreach ($products as $p)
                         @if ($p->qty > 0)
-                            value={{ $p->original_price }}
+                            value={{ old('total_price', $p->original_price) }}
                             @break
                         @endif
                     @endforeach class="form-control @if ($errors->has('total_price')) is-invalid @endif" id="total_price">
@@ -176,8 +226,7 @@
                         <label for="product_id${count}" class="form-label">Product Name</label>
                         <select id="product_id${count}" name="product_id[]" class="selectpicker"
                                 data-live-search="true" data-width="100%"
-                                onchange="changeSelect(this); changeAmount();
-                                        changeMaxQuantity(this.id.substr(10), this.selectedOptions[0].dataset.quantity);"
+                                onchange="changeSelect(this); changeAmount();"
                                 data-style="border" data-size="5">
                                 @foreach ($products as $p)
                                     <option data-price='{{ $p->original_price }}' data-quantity='{{ $p->qty }}'
@@ -269,7 +318,10 @@
         function changeMaxQuantity(count, value) {
             $('#qty'+count)[0].max = value;
         }
-
+        
+        @error('qty.*')
+            refreshSelects();
+        @enderror        
     </script>
     @if($errors->any())
         <script>

@@ -11,6 +11,7 @@ use App\Repositories\Contracts\UserRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Validator;
 
 class OrderController extends Controller
 {
@@ -77,7 +78,7 @@ class OrderController extends Controller
     {
         $this->authorize('create', Order::class);
 
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'total_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/', 'numeric', 'max:999999999999'],
             'qty.*' => 'required|numeric|min:1',
         ], [
@@ -97,11 +98,12 @@ class OrderController extends Controller
 
             $product_ids = $request->product_id;
             $qtys = $request->qty;
+            $isError = $validator->fails();
             foreach ($product_ids as $key => $product_id) {
                 $pro = $this->productRepository->find($product_id);
                 if ($pro->qty < $qtys[$key]) {
-                    DB::rollBack();
-                    return redirect()->back()->withErrors(['qty.*.max' => 'Quantity must be less than or equal to remain']);
+                    $isError = true;
+                    $validator->errors()->add('qty.'.$key, 'Quantity must be less than or equal to remain');
                 }
 
                 $this->orderItemsRepository->create([
@@ -114,6 +116,12 @@ class OrderController extends Controller
                     'qty' => $pro->qty - $qtys[$key]
                 ], $product_id);
             }
+
+            if ($isError) {
+                DB::rollback();
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+
             DB::commit();
             $orders = $this->orderItemsRepository->paginate();
             return to_route('orders.index', [
