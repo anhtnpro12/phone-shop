@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -21,6 +22,7 @@ class UserController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', User::class);
         $users = $this->userRepository->paginate();
         return view('users.index', ['users' => $users]);
     }
@@ -30,6 +32,7 @@ class UserController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', User::class);
         return view('users.create');
     }
 
@@ -38,6 +41,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', User::class);
 
         $validatedData = $request->validate([
             'name' => 'required',
@@ -79,6 +83,8 @@ class UserController extends Controller
     public function edit(string $id)
     {
         $user = $this->userRepository->find($id);
+        $this->authorize('update', $user);
+
         return view('users.edit', ['user' => $user]);
     }
 
@@ -87,6 +93,9 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $user = $this->userRepository->find($id);
+        $this->authorize('update', $user);
+
         $validatedData = $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$id,
@@ -116,9 +125,14 @@ class UserController extends Controller
             'role_as' => $request->role_as
         ], $id);
 
+        if (Auth::user()->role_as === 2) {
+            return to_route('users.edit', [
+                'user' => $id,
+            ])->with('success', 'Update Profile Successful');
+        }
+
         return to_route('users.index', [
             'user' => $id,
-
         ])->with('success', 'Update User Successful');
     }
 
@@ -127,6 +141,8 @@ class UserController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
+        $this->authorize('forceDelete', User::class);
+
         $user = $this->userRepository->find($id);
 
         if($user->orders->count() > 0) {
@@ -143,12 +159,14 @@ class UserController extends Controller
 
     public function changePassword(Request $request, $id)
     {
+        $user = $this->userRepository->find($id);
+        $this->authorize('update', $user);
+
         $validator = Validator::make($request->all(), [
             'old_password' => 'required',
             'password' => 'required|min:8|confirmed',
         ]);
 
-        $user = $this->userRepository->find($id);
         if (!Hash::check($request->old_password, $user->password)) {
             $validator->getMessageBag()->add('old_password', 'Wrong password');
             return redirect()->back()->withErrors($validator)->withInput();
@@ -162,9 +180,14 @@ class UserController extends Controller
             'password' => Hash::make($request->password)
         ], $id);
 
+        if (Auth::user()->role_as === 2) {
+            return to_route('users.edit', [
+                'user' => $id,
+            ])->with('success', 'Change Password Successful');
+        }
+
         return to_route('users.index', [
             'user' => $id,
-
         ])->with('success', 'Change Password Successful');
     }
 }

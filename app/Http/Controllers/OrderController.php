@@ -9,6 +9,7 @@ use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\ShipRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
@@ -38,7 +39,15 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = $this->orderRepository->paginate();
+        // $this->authorize('viewAny', Order::class);
+
+        if (Auth::user()->role_as === 2) {
+            $orders = $this->orderRepository->findWhere([
+                'user_id' => Auth::id()
+            ]);
+        } else {
+            $orders = $this->orderRepository->paginate();
+        }
         return view('orders.index', ['orders' => $orders]);
     }
 
@@ -47,6 +56,8 @@ class OrderController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Order::class);
+
         $products = $this->productRepository->all();
         $users = $this->userRepository->all();
         $payments = $this->paymentRepository->all();
@@ -64,9 +75,10 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Order::class);
 
         $request->validate([
-            'total_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/'],
+            'total_price' => ['required', 'regex:/^\d+(\.\d{1,10})?$/', 'numeric', 'max:999999999999'],
             'qty.*' => 'required|numeric|min:1',
         ], [
             'qty.*.required' => 'The quantity field is required.',
@@ -126,10 +138,12 @@ class OrderController extends Controller
      */
     public function edit(string $uuid)
     {
-        $products = $this->productRepository->all();
         $order = $this->orderRepository->findWhere([
             'uuid' => $uuid
         ])[0];
+        $this->authorize('update', $order);
+
+        $products = $this->productRepository->all();
         $users = $this->userRepository->all();
         $payments = $this->paymentRepository->all();
         $ships = $this->shipRepository->all();
@@ -147,6 +161,9 @@ class OrderController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $order = $this->orderRepository->find($id);
+        $this->authorize('update', $order);
+
         DB::beginTransaction();
         try {
             $order = $this->orderRepository->update([
@@ -170,6 +187,8 @@ class OrderController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
+        $this->authorize('forceDelete', Order::class);
+
         $old_order_items = $this->orderItemsRepository->where('order_id','=', $id);
         $old_order_items->delete();
         $this->orderRepository->delete($id);
@@ -180,6 +199,9 @@ class OrderController extends Controller
 
     public function changeStatus($id, $status)
     {
+        $order = $this->orderRepository->find($id);
+        $this->authorize('changeStatus', $order);
+
         DB::beginTransaction();
         try {
             $order = $this->orderRepository->update([
@@ -213,6 +235,9 @@ class OrderController extends Controller
 
     public function changePayment($id, $mode)
     {
+        $order = $this->orderRepository->find($id);
+        $this->authorize('changePayment', $order);
+
         DB::beginTransaction();
         try {
             $order = $this->orderRepository->update([

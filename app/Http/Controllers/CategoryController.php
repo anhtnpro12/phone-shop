@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Traits\UrlTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use PhpParser\Node\Stmt\TryCatch;
 
 class CategoryController extends Controller
 {
@@ -22,6 +24,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Category::class);
         $categories = $this->categoryRepository->paginate();
         return view('categories.index', ['categories' => $categories]);
     }
@@ -31,6 +34,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Category::class);
         return view('categories.create');
     }
 
@@ -39,6 +43,8 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Category::class);
+
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'name' => 'required|unique:categories,name',
@@ -77,6 +83,8 @@ class CategoryController extends Controller
     public function edit(string $id)
     {
         $category = $this->categoryRepository->find($id);
+        $this->authorize('update', Category::class);
+
         return view('categories.edit', ['category' => $category]);
     }
 
@@ -85,13 +93,15 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $this->authorize('update', Category::class);
+
         if (gettype($request->image) === 'object' || !isset($request->image)) {
             $request->validate([
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);
         }
         $request->validate([
-            'name' => 'required|unique:categories,name',
+            'name' => 'required|unique:categories,name,'.$id,
             'popular' => 'required'
         ]);
 
@@ -127,6 +137,7 @@ class CategoryController extends Controller
     public function destroy(Request $request, string $id)
     {
         $category = $this->categoryRepository->find($id);
+        $this->authorize('forceDelete', Category::class);
 
         if($category->products->count() > 0) {
             return to_route('categories.index', [

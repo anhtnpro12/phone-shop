@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Payment;
 use App\Repositories\Contracts\PaymentRepositoryInterface;
 use Illuminate\Http\Request;
 
@@ -17,6 +18,8 @@ class PaymentController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Payment::class);
+
         $payments = $this->paymentRepository->paginate(10);
         return view('payments.index', [
             'payments' => $payments
@@ -28,6 +31,8 @@ class PaymentController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Payment::class);
+
         return view('payments.create');
     }
 
@@ -36,6 +41,8 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Payment::class);
+
         $request->validate([
             'name' => 'required'
         ]);
@@ -65,6 +72,8 @@ class PaymentController extends Controller
      */
     public function edit(string $id)
     {
+        $this->authorize('update', Payment::class);
+
         $payment = $this->paymentRepository->find($id);
         return view('payments.edit', ['payment' => $payment]);
     }
@@ -74,6 +83,8 @@ class PaymentController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $this->authorize('update', Payment::class);
+
         $request->validate([
             'name' => 'required',
         ]);
@@ -94,6 +105,8 @@ class PaymentController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
+        $this->authorize('forceDelete', Payment::class);
+
         $payment = $this->paymentRepository->find($id);
 
         if($payment->orders->count() > 0) {

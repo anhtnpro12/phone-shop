@@ -11,9 +11,9 @@
                 <tr class="table-secondary">
                     <th scope="col">#</th>
                     <th scope="col">User</th>
-                    <th scope="col">Products</th>
+                    <th scope="col">Order ID</th>
                     <th scope="col">Quantity</th>
-                    <th scope="col">Total</th>
+                    <th scope="col">Total (USD)</th>
                     <th scope="col">Status</th>
                     {{-- <th scope="col">Shipping</th> --}}
                     <th scope="col">Payment</th>
@@ -26,7 +26,7 @@
                     <tr>
                         <th>{{ $orders->count()-$index }}</th>
                         <td>{{ $o->user->name }}</td>
-                        <td>
+                        {{-- <td>
                             @if ($o->products->count() > 0)
                                 <div class="row justify-content-center mb-4">
                                     <div class="col-md-5">
@@ -49,8 +49,9 @@
                                     </div>
                                 </div>
                             @endif
-                        </td>
-                        <td class="text-end">{{ $o->products->count() }} products</td>
+                        </td> --}}
+                        <td>{{ $o->uuid }}</td>
+                        <td class="text-end">{{ $o->products->count() }}</td>
                         <td class="text-end">{{ number_format($o->total_price, 2, '.', ',') }}</td>
                         <td>
                             @switch($o->status)
@@ -82,7 +83,7 @@
                         <td>
                             <a href="{{ route('orders.edit', ['order' => $o->uuid]) }}"><button
                                     class="btn btn-primary">View</button></a>
-                            @if ($o->status < 2)
+                            @if ($o->status < 2 && Auth::user()->role_as === 1)
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal{{ $o->id }}">
                                     Cancel
@@ -91,30 +92,32 @@
                         </td>
                     </tr>
 
-                    <div class="modal fade" id="deleteModal{{ $o->id }}" data-bs-backdrop="static"
-                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="staticBackdropLabel"><i
-                                            class="bi bi-exclamation-circle-fill text-danger"></i> Warning!!!</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    Are you sure you want to cancel <span class="text-danger">{{ $o->uuid }}</span>?
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                                        <form action="{{ route('orders.changeStatus', [$o->id, 5]) }}" method="post">
-                                            @method('put')
-                                            @csrf
-                                            <button class="btn btn-danger me-1">Cancel</button>
-                                        </form>
+                    @if (Auth::user()->role_as === 1)
+                        <div class="modal fade" id="deleteModal{{ $o->id }}" data-bs-backdrop="static"
+                            data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel"><i
+                                                class="bi bi-exclamation-circle-fill text-danger"></i> Warning!!!</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to cancel <span class="text-danger">{{ $o->uuid }}</span>?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                            <form action="{{ route('orders.changeStatus', [$o->id, 5]) }}" method="post">
+                                                @method('put')
+                                                @csrf
+                                                <button class="btn btn-danger me-1">Cancel</button>
+                                            </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    @endif
                 @endforeach
 
             </tbody>

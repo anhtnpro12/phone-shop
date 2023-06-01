@@ -28,6 +28,8 @@ class ProductController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Product::class);
+
         $products = $this->productRepository->paginate();
         return view('products.index', ['products' => $products]);
     }
@@ -37,6 +39,8 @@ class ProductController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Product::class);
+
         return view('products.create', [
             'categories' => $this->categoryRepository->all()
         ]);
@@ -47,6 +51,8 @@ class ProductController extends Controller
      */
     public function store(ProductStorePostRequest $request)
     {
+        $this->authorize('create', Product::class);
+
         $request->validated();
 
         $imageName = time() . '.' . $request->image->extension();
@@ -83,6 +89,8 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
+        $this->authorize('update', Product::class);
+
         $product = $this->productRepository->find($id);
         return view('products.edit', [
             'product' => $product,
@@ -95,6 +103,8 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $this->authorize('update', Product::class);
+
         if (gettype($request->image) === 'object' || !isset($request->image)) {
             $request->validate([
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
@@ -144,9 +154,9 @@ class ProductController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
-        $product = $this->productRepository->find($id);
+        $this->authorize('forceDelete', Product::class);
 
-        // dd($product->orderItems->count());
+        $product = $this->productRepository->find($id);
 
         if($product->orderItems->count() > 0) {
             return to_route('products.index', [

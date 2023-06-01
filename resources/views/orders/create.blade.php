@@ -73,22 +73,32 @@
                     <span class="d-block small text-danger">{{ $message }}</span>
                 @endforeach
             </div>
-            <div class="mb-3">
-                <label for="user_id" class="form-label">Customer</label>
-                <select id="user_id" name="user_id" class="selectpicker"
-                        data-live-search="true" data-width="100%"
-                        data-style="border" data-size="5">
 
-                    @foreach ($users as $u)
-                        <option value='{{ $u->id }}'
-                            data-content='<div>
-                                            <h6>{{ $u->name }}</h6>
-                                            <div><small>{{ $u->phone }}</small></div>
-                                            <div><small>{{ $u->address }}</small></div>
-                                        </div>' ></option>
-                    @endforeach
+            <div class="mb-3">
+                <label for="user_id" class="form-label">User</label>
+                @if (Auth::user()->role_as === 1)
+                    <select id="user_id" name="user_id" class="selectpicker"
+                            data-live-search="true" data-width="100%"
+                            data-style="border" data-size="5">
+
+                        @foreach ($users as $u)
+                            <option value='{{ $u->id }}'
+                                data-content='<div>
+                                                <h6>{{ $u->name }}</h6>
+                                                <div><small>{{ $u->phone }}</small></div>
+                                                <div><small>{{ $u->address }}</small></div>
+                                            </div>' ></option>
+                        @endforeach
                     </select>
-                </div>
+                @else
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>{{ Auth::user()->name }}</strong></li>
+                        <li class="list-group-item">Phone: {{ Auth::user()->phone }}</li>
+                        <li class="list-group-item">Address: {{ Auth::user()->address }}</li>
+                    </ul>
+                    <input type="hidden" name="user_id" value="{{ Auth::id() }}">
+                @endif
+            </div>
             {{-- <div class="mb-3">
                 <label for="status" class="form-label">Status</label>
                 <select id="status" name="status" class="selectpicker"

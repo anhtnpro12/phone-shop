@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ship;
 use App\Repositories\Contracts\ShipRepositoryInterface;
 use Illuminate\Http\Request;
 
@@ -17,6 +18,8 @@ class ShipController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Ship::class);
+
         $ships = $this->shipRepository->paginate(10);
         return view('ships.index', [
             'ships' => $ships
@@ -28,6 +31,8 @@ class ShipController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Ship::class);
+
         return view('ships.create');
     }
 
@@ -36,6 +41,8 @@ class ShipController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Ship::class);
+
         $request->validate([
             'name' => 'required'
         ]);
@@ -65,6 +72,8 @@ class ShipController extends Controller
      */
     public function edit(string $id)
     {
+        $this->authorize('update', Ship::class);
+
         $ship = $this->shipRepository->find($id);
         return view('ships.edit', ['ship' => $ship]);
     }
@@ -74,6 +83,8 @@ class ShipController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $this->authorize('update', Ship::class);
+
         $request->validate([
             'name' => 'required',
         ]);
@@ -94,6 +105,8 @@ class ShipController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
+        $this->authorize('forceDelete', Ship::class);
+
         $ship = $this->shipRepository->find($id);
 
         if($ship->orders->count() > 0) {

@@ -24,7 +24,7 @@
             </div> --}}
             <div class="mb-3">
                 <label for="user_id" class="form-label">User</label>
-                @if ($order->status <= 2)
+                @if ($order->status <= 2 && Auth::user()->role_as === 1)
                     <select id="user_id" name="user_id" class="selectpicker" data-live-search="true" data-width="100%"
                         data-style="border" data-size="5">
 
@@ -45,6 +45,9 @@
                         <li class="list-group-item">Address: {{ $order->user->address }}</li>
                     </ul>
                 @endif
+                @if (Auth::user()->role_as === 2)
+                    <input type="hidden" name="user_id" value="{{ $order->user_id }}">
+                @endif
             </div>
             <div class="mb-3">
                 <label for="ship_id" class="form-label">Shipping Method</label>
@@ -57,12 +60,13 @@
                         @endforeach
                     </select>
                 @else
+                    <input type="hidden" name="ship_id" value="{{ $order->ship_id }}">
                     <strong>: {{ $order->ship->name }}</strong>
                 @endif
             </div>
             <div class="mb-3">
                 <label for="payment_id" class="form-label">Payment Method</label>
-                @if ($order->status == 1)
+                @if ($order->payment_id  == 1 && $order->status <= 2)
                     <select id="payment_id" name="payment_id" class="selectpicker" data-live-search="true" data-width="100%"
                         data-style="border" data-size="5">
 
@@ -72,6 +76,7 @@
                         @endforeach
                     </select>
                 @else
+                    <input type="hidden" name="payment_id" value="{{ $order->payment_id }}">
                     <strong>: {{ $order->payment->name }}</strong>
                 @endif
             </div>
@@ -159,27 +164,32 @@
                 <div class="col d-flex justify-content-start">
                     @switch($order->status)
                         @case(1)
-                            <form action="{{ route('orders.changeStatus', [$order->id, 2]) }}" method="post">
-                                @method('put')
-                                @csrf
-                                <button class="btn btn-primary me-1">Confirm</button>
-                            </form>
+                            @if (Auth::user()->role_as === 1)
+                                <form action="{{ route('orders.changeStatus', [$order->id, 2]) }}" method="post">
+                                    @method('put')
+                                    @csrf
+                                    <button class="btn btn-primary me-1">Confirm</button>
+                                </form>
+                            @endif
                             @break
                         @case(2)
-                            <form action="{{ route('orders.changeStatus', [$order->id, 3]) }}" method="post">
-                                @method('put')
-                                @csrf
-                                <button class="btn btn-warning me-1">Delivery</button>
-                            </form>
+                            @if (Auth::user()->role_as === 1)
+                                <form action="{{ route('orders.changeStatus', [$order->id, 3]) }}" method="post">
+                                    @method('put')
+                                    @csrf
+                                    <button class="btn btn-warning me-1">Delivery</button>
+                                </form>
+                            @endif
                             @break
                         @case(3)
-                            @if ($order->payment_mode == 2)
+                            @if ($order->payment_mode == 2 && Auth::user()->role_as === 1)
                                 <form action="{{ route('orders.changeStatus', [$order->id, 4]) }}" method="post">
                                     @method('put')
                                     @csrf
                                     <button class="btn btn-success me-1">Complete</button>
                                 </form>
                             @endif
+                            @break
                         @default
 
                     @endswitch
@@ -192,7 +202,7 @@
                     @endif
                     <a href="{{ route('orders.index') }}" class="btn btn-secondary">Back</a>
                 </div>
-                @if ($order->status < 2)
+                @if ($order->status < 2 && Auth::user()->role_as === 1)
                     <div class="col d-flex justify-content-end">
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                             data-bs-target="#deleteModal{{ $order->id }}">

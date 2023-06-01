@@ -9,7 +9,8 @@
         <form action="{{ route('users.update', ['user' => $user->id]) }}" method="post" style="width: 50%;">
             @method('PUT')
             @csrf
-            <h3 class="text-center">Update User</h3>
+
+            <h3 class="text-center">User</h3>
 
             <div class="mb-3">
                 <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
@@ -38,18 +39,24 @@
                 @foreach ($errors->get('email') as $message)
                     <span class="d-block small text-danger">{{ $message }}</span>
                 @endforeach
-            </div>            
-            <div class="mb-3">
-                <label for="role_as" class="form-label">Role <span class="text-danger">*</span></label>
-                <select id="role_as" name="role_as" class="selectpicker"
-                        data-live-search="true" data-width="100%"
-                        data-style="border" data-size="5">
-                        <option value="1" {{ $user->role_as==1 ? 'selected' : '' }} data-content='<span class="badge bg-primary">Admin</span>'>Admin</option>
-                        <option value="2" {{ $user->role_as==2 ? 'selected' : '' }} data-content='<span class="badge bg-secondary">Customer</span>'>Customer</option>
-                </select>
             </div>
+            @if (Auth::user()->role_as === 1)
+                <div class="mb-3">
+                    <label for="role_as" class="form-label">Role <span class="text-danger">*</span></label>
+                    <select id="role_as" name="role_as" class="selectpicker"
+                            data-live-search="true" data-width="100%"
+                            data-style="border" data-size="5">
+                            <option value="1" {{ $user->role_as==1 ? 'selected' : '' }} data-content='<span class="badge bg-primary">Admin</span>'>Admin</option>
+                            <option value="2" {{ $user->role_as==2 ? 'selected' : '' }} data-content='<span class="badge bg-secondary">Customer</span>'>Customer</option>
+                    </select>
+                </div>
+            @else
+                <input type="hidden" name="role_as" value="2">
+            @endif
             <input type="submit" name="submit" value="Update now" class="btn btn-primary">
-            <a href="{{ route('users.index') }}" class="btn btn-secondary">Back</a>
+            @if (Auth::user()->role_as === 1)
+                <a href="{{ route('users.index') }}" class="btn btn-secondary">Back</a>
+            @endif
         </form>
         <form action="{{ route('users.changePassword', ['id' => $user->id]) }}" method="post" style="width: 50%;">
             @method('PUT')
@@ -94,24 +101,26 @@
                 </div>
             </div>
             <input type="submit" name="submit" value="Change now" class="btn btn-primary">
-            <a href="{{ route('users.index') }}" class="btn btn-secondary">Back</a>
+            @if (Auth::user()->role_as === 1)
+                <a href="{{ route('users.index') }}" class="btn btn-secondary">Back</a>
+            @endif
         </form>
     </div>
 @endsection
 
 @section('scripts')
     <script>
-        const togglePasswords = document.querySelectorAll('.togglePassword');        
-        togglePasswords.forEach((tp) => {            
+        const togglePasswords = document.querySelectorAll('.togglePassword');
+        togglePasswords.forEach((tp) => {
             tp.addEventListener('click', (e) => {
                 const input = tp.parentElement.querySelector('input');
                 const eye = tp.querySelector('i');
-                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';                
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
                 input.setAttribute('type', type);
                 eye.classList.toggle('bi-eye-fill');
                 eye.classList.toggle('bi-eye-slash-fill');
-            });             
-        });        
+            });
+        });
     </script>
     @if($errors->any())
         <script>

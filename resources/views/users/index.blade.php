@@ -77,7 +77,10 @@
     <script>
         $('#table').DataTable({
             "lengthMenu": [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
-            "pagingType": "full_numbers"
+            "pagingType": "full_numbers",
+            "columnDefs": [
+                { "searchable": false, "targets": [0, 2, 5, 6, 7] }
+            ]
         });
     </script>
     @if(session('success'))
