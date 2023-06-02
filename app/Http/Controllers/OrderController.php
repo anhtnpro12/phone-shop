@@ -11,7 +11,7 @@ use App\Repositories\Contracts\UserRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
@@ -47,7 +47,7 @@ class OrderController extends Controller
                 'user_id' => Auth::id()
             ]);
         } else {
-            $orders = $this->orderRepository->paginate();
+            $orders = $this->orderRepository->all();
         }
         return view('orders.index', ['orders' => $orders]);
     }
