@@ -2,22 +2,28 @@
 
 @section('contents')
     <div class="container mb-5 mt-3">
-        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false">
+        <div id="carouselExampleCaptions" class="carousel carousel-dark slide" style="height: 60vh;" data-bs-ride="false">
             <div class="carousel-indicators">
                 @foreach ($trendProducts as $index => $pro)
+                    @if ($index > 3)
+                        @break
+                    @endif
                     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="{{ $index }}"
                         class="{{ $index===0?'active':'' }}" aria-current="{{ $index===0?'true':'' }}" aria-label="Slide 1"></button>
                 @endforeach
             </div>
             <div class="carousel-inner">
                 @foreach ($trendProducts as $index => $pro)
+                    @if ($index > 3)
+                        @break
+                    @endif
                     <div class="carousel-item {{ $index===0?'active':'' }}">
                         <img src="{{ asset('storage/imgs/products/' . $pro->id . '/' . $pro->image) }}"
-                            class="d-block w-100" alt="{{ $pro->name }}">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>{{ $pro->name }}</h5>
-                            <p class="text-truncate">{{ $pro->description }}</p>
-                        </div>
+                            class="d-block mx-auto" style="height: 60vh;" alt="{{ $pro->name }}">
+                        {{-- <div class="carousel-caption d-none d-md-block">
+                            <h5 style="color:white;">{{ $pro->name }}</h5>
+                            <p style="color:white;" class="text-truncate">{{ $pro->description }}</p>
+                        </div> --}}
                     </div>
                 @endforeach
             </div>
@@ -118,7 +124,7 @@
                         <div class="col-md-3 px-3 my-3">
                             <div class="card shadow">
                                 <img src="{{ asset('storage/imgs/products/' . $pro->id . '/' . $pro->image) }}"
-                                    class="card-img-top" alt="{{ $pro->name }}">
+                                    class="card-img-top" style="height: 18rem" alt="{{ $pro->name }}">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ $pro->name }}</h5>
                                     <p class="card-text">{{ $pro->category->name }}</p>
@@ -140,7 +146,7 @@
                 <div class="col-md-3 px-3 my-3">
                     <div class="card shadow">
                         <img src="{{ asset('storage/imgs/products/' . $pro->id . '/' . $pro->image) }}"
-                            class="card-img-top" alt="{{ $pro->name }}">
+                            class="card-img-top" style="height: 18rem" alt="{{ $pro->name }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ $pro->name }}</h5>
                             <p class="card-text">{{ $pro->category->name }}</p>
