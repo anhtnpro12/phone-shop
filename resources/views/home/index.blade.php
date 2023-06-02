@@ -103,7 +103,7 @@
             </div>
         @endif
     </div>
-    
+
     <div class="container mb-5 mt-3">
         @if (Auth::user()->role_as === 1)
             <div class="card">

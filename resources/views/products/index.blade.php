@@ -115,7 +115,10 @@
                 targets: [2, @canany(['update', 'forceDelete'], App\Models\Product::class) 9 @endcanany]
             }],
             "lengthMenu": [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
-            "pagingType": "full_numbers"
+            "pagingType": "full_numbers",
+            "columnDefs": [
+                { "width": "20%", "targets": 2 }
+            ]
         });
     </script>
     @if(session('success'))
