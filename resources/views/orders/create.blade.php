@@ -137,7 +137,7 @@
                                                 <h6>{{ $u->name }}</h6>
                                                 <div><small>{{ $u->phone }}</small></div>
                                                 <div><small>{{ $u->address }}</small></div>
-                                            </div>' ></option>
+                                            </div>' {{ Auth::user()->id===$u->id?'selected':'' }}></option>
                         @endforeach
                     </select>
                 @else

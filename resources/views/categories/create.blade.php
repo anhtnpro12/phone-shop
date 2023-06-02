@@ -120,7 +120,7 @@
             maxFiles: 1,
             storeAsFile: true,
             maxFileSize: 2000000,
-            imageCropAspectRatio: '16:9',
+            // imageCropAspectRatio: '16:9',
             labelIdle: 'Drag & Drop your image or <span class="filepond--label-action"> Browse </span>',
             acceptedFileTypes: ['image/png', 'image/jpeg', 'image/gif']
         });

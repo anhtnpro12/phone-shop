@@ -234,7 +234,7 @@
                         <form action="{{ route('orders.changeStatus', [$order->id, 5]) }}" method="post">
                             @method('put')
                             @csrf
-                            <button class="btn btn-danger me-1">Cancel</button>
+                            <button class="btn btn-danger me-1">Yes</button>
                         </form>
                 </div>
             </div>
