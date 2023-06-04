@@ -91,7 +91,11 @@
             "lengthMenu": [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
             "pagingType": "full_numbers",
             "columnDefs": [
-                { "width": "20%", "targets": 2 }
+                { "width": "20%", "targets": 2 },
+                {
+                    orderable: false,
+                    targets: [2, @canany(['update', 'forceDelete'], App\Models\Product::class) 5 @endcanany]
+                }
             ]
         });
     </script>
